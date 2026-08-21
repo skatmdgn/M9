@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<!-- saved from url=(0043)https://orpina214-glitch.github.io/m9indie/ -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>실전 팀 합류 커뮤니티 8곳 · M9 ACADEMY</title>
+<link href="./css/pretendard.css" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E7E9EE;
+    --bg-2:#DFE2E9;
+    --surface:#FBFBFD;
+    --ink:#14161B;
+    --ink-soft:#565B66;
+    --ink-faint:#8C9099;
+    --line:#CDD2DB;
+    --line-strong:#B7BDC8;
+    --accent:#2B4FD4;
+    --tier-s:#B37A18;
+    --tier-s-bg:#F7ECD3;
+    --tier-a:#2B4FD4;
+    --tier-a-bg:#DEE4FA;
+    --tier-b:#3F7C6E;
+    --tier-b-bg:#DCEAE5;
+    --tier-c:#7C818C;
+    --tier-c-bg:#E3E5EA;
+    --mono:"SFMono-Regular",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:"Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  html{-webkit-text-size-adjust:100%;}
+
+  body{
+    font-family:var(--sans);
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      linear-gradient(var(--bg-2) 1px,transparent 1px),
+      linear-gradient(90deg,var(--bg-2) 1px,transparent 1px);
+    background-size:44px 44px;
+    background-position:-1px -1px;
+  }
+
+  .wrap{max-width:940px;margin:0 auto;padding:0 24px;}
+
+  /* ---------- header ---------- */
+  header{padding:72px 0 44px;}
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--accent);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:26px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:26px;height:2px;
+    background:var(--accent);
+    display:inline-block;
+  }
+
+  h1{
+    font-size:clamp(34px,6vw,58px);
+    font-weight:800;
+    letter-spacing:-0.03em;
+    line-height:1.08;
+    margin-bottom:22px;
+  }
+  h1 .mark{
+    color:var(--accent);
+    position:relative;
+  }
+
+  .lede{
+    font-size:clamp(15px,2.2vw,18px);
+    color:var(--ink-soft);
+    max-width:560px;
+    margin-bottom:34px;
+  }
+  .lede strong{color:var(--ink);font-weight:600;}
+
+  .roles{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    align-items:center;
+  }
+  .roles .rlabel{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.1em;
+    color:var(--ink-faint);
+    text-transform:uppercase;
+    margin-right:4px;
+  }
+  .role-tag{
+    font-size:13px;
+    font-weight:600;
+    padding:5px 11px;
+    border:1px solid var(--line-strong);
+    border-radius:999px;
+    background:var(--surface);
+    color:var(--ink-soft);
+  }
+
+  /* ---------- control bar ---------- */
+  .bar{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:16px 0;
+    border-top:1px solid var(--line-strong);
+    border-bottom:1px solid var(--line-strong);
+    margin-bottom:8px;
+  }
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--ink-soft);
+  }
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .dot{width:9px;height:9px;border-radius:2px;display:inline-block;}
+  .dot.s{background:var(--tier-s);}
+  .dot.a{background:var(--tier-a);}
+  .dot.b{background:var(--tier-b);}
+  .dot.c{background:var(--tier-c);}
+
+  .filter{display:flex;gap:6px;}
+  .filter button{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.04em;
+    padding:7px 13px;
+    border:1px solid var(--line-strong);
+    background:var(--surface);
+    color:var(--ink-soft);
+    border-radius:6px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .filter button:hover{border-color:var(--accent);color:var(--accent);}
+  .filter button.active{
+    background:var(--ink);
+    color:#fff;
+    border-color:var(--ink);
+  }
+  .filter button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+  /* ---------- list ---------- */
+  .list{padding:28px 0 8px;}
+
+  .card{
+    display:grid;
+    grid-template-columns:74px 1fr;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-left:4px solid var(--tier-c);
+    border-radius:4px;
+    margin-bottom:14px;
+    overflow:hidden;
+    transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+    opacity:0;
+    transform:translateY(14px);
+    animation:rise .5s ease forwards;
+  }
+  @keyframes rise{to{opacity:1;transform:translateY(0);}}
+
+  .card.tier-s{border-left-color:var(--tier-s);}
+  .card.tier-a{border-left-color:var(--tier-a);}
+  .card.tier-b{border-left-color:var(--tier-b);}
+  .card.tier-c{border-left-color:var(--tier-c);}
+
+  .card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 24px rgba(20,22,27,0.09);
+    border-color:var(--line-strong);
+  }
+
+  .rank{
+    border-right:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    padding:18px 0;
+    gap:12px;
+    background:linear-gradient(180deg,rgba(0,0,0,0.015),transparent);
+  }
+  .rank .num{
+    font-family:var(--mono);
+    font-size:22px;
+    font-weight:500;
+    color:var(--ink);
+    letter-spacing:-0.02em;
+  }
+  .rank .num .slash{color:var(--ink-faint);font-size:13px;}
+  .tier-badge{
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:15px;
+    width:32px;height:32px;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:6px;
+    letter-spacing:-0.02em;
+  }
+  .tier-s .tier-badge{background:var(--tier-s-bg);color:var(--tier-s);}
+  .tier-a .tier-badge{background:var(--tier-a-bg);color:var(--tier-a);}
+  .tier-b .tier-badge{background:var(--tier-b-bg);color:var(--tier-b);}
+  .tier-c .tier-badge{background:var(--tier-c-bg);color:var(--tier-c);}
+
+  .body{padding:20px 22px 20px;}
+
+  .head-row{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-bottom:4px;
+  }
+  .name{
+    font-size:20px;
+    font-weight:700;
+    letter-spacing:-0.02em;
+  }
+  .kind{
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .fit{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.03em;
+    color:var(--ink-faint);
+    white-space:nowrap;
+  }
+  .fit b{color:var(--ink-soft);font-weight:600;}
+
+  .meta{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:12px 26px;
+    margin:16px 0 14px;
+    padding-top:14px;
+    border-top:1px dashed var(--line-strong);
+  }
+  .field .flabel{
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    display:block;
+    margin-bottom:3px;
+  }
+  .field .fval{font-size:13.5px;color:var(--ink-soft);line-height:1.5;}
+
+  .warn{
+    display:flex;
+    gap:9px;
+    font-size:13px;
+    color:var(--ink-soft);
+    background:var(--bg-2);
+    border-radius:5px;
+    padding:10px 12px;
+    margin-bottom:16px;
+  }
+  .warn .wtag{
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:0.08em;
+    color:#B0621C;
+    font-weight:700;
+    flex-shrink:0;
+    padding-top:1px;
+  }
+
+  .go{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    font-size:13px;
+    font-weight:600;
+    color:var(--accent);
+    text-decoration:none;
+    font-family:var(--mono);
+    letter-spacing:0.02em;
+  }
+  .go .arrow{transition:transform .15s ease;}
+  .go:hover .arrow{transform:translateX(3px);}
+  .go .url{color:var(--ink-faint);font-weight:400;font-size:11px;}
+  .go:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px;}
+
+  /* ---------- footer ---------- */
+  footer{
+    margin:36px 0 60px;
+    padding:32px 0 0;
+    border-top:2px solid var(--ink);
+  }
+  .foot-title{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink);
+    margin-bottom:20px;
+  }
+  .checks{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px 30px;
+    margin-bottom:34px;
+  }
+  .check{display:flex;gap:12px;}
+  .check .cn{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--accent);
+    font-weight:600;
+    flex-shrink:0;
+  }
+  .check .ct{font-size:14px;color:var(--ink-soft);}
+  .check .ct b{color:var(--ink);font-weight:600;}
+
+  .philosophy{
+    font-size:15px;
+    color:var(--ink);
+    padding:18px 20px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:4px;
+    line-height:1.65;
+  }
+  .philosophy b{color:var(--accent);}
+
+  .sig{
+    margin-top:24px;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.06em;
+    color:var(--ink-faint);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:620px){
+    header{padding:48px 0 32px;}
+    .card{grid-template-columns:1fr;}
+    .rank{
+      flex-direction:row;
+      justify-content:flex-start;
+      border-right:none;
+      border-bottom:1px solid var(--line);
+      padding:12px 20px;
+    }
+    .meta{grid-template-columns:1fr;gap:12px;}
+    .checks{grid-template-columns:1fr;}
+    .bar{flex-direction:column;align-items:flex-start;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .card{animation:none;opacity:1;transform:none;}
+    .card,.go .arrow{transition:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">M9 ACADEMY · 수강생 참고 자료</div>
+    <h1>혼자 만든 결과물보다,<br><span class="mark">팀 프로젝트 한 편</span>이<br>이력서를 바꿉니다.</h1>
+    <p class="lede">배운 걸 실전에서 써봐야 진짜 실력이 됩니다. 아래 <strong>8곳</strong>은 인디게임 팀에 직군으로 합류할 수 있는 국내 커뮤니티입니다. 추천 순위와 팀 참여 적합도(S·A·B·C)를 기준으로 정리했습니다.</p>
+    <div class="roles">
+      <span class="rlabel">Your Class</span>
+      <span class="role-tag">SFX</span>
+      <span class="role-tag">게임음악</span>
+      <span class="role-tag">원화</span>
+      <span class="role-tag">UI/UX</span>
+      <span class="role-tag">애니메이션</span>
+      <span class="role-tag">기획</span>
+    </div>
+  </header>
+
+  <div class="bar">
+    <div class="legend">
+      <span><i class="dot s"></i>S 매우 높음</span>
+      <span><i class="dot a"></i>A 높음</span>
+      <span><i class="dot b"></i>B 보통</span>
+      <span><i class="dot c"></i>C 보조 활용</span>
+    </div>
+    <div class="filter">
+      <button class="active" data-filter="all">전체 8곳</button>
+      <button data-filter="top">상위 추천만</button>
+    </div>
+  </div>
+
+  <div class="list" id="list">
+      <article class="card tier-s" style="animation-delay:0ms">
+        <div class="rank">
+          <span class="num">01<span class="slash">/08</span></span>
+          <span class="tier-badge">S</span>
+        </div>
+        <div class="body">
+          <div class="head-row">
+            <div>
+              <span class="name">인디터</span>
+              <div class="kind">인디게임 전문 커뮤니티</div>
+            </div>
+            <span class="fit">FIT · <b>매우 높음</b></span>
+          </div>
+          <div class="meta">
+            <div class="field">
+              <span class="flabel">주요 참여 방식</span>
+              <span class="fval">팀원 모집 · 팀 합류 희망 · 직원 모집 · 외주</span>
+            </div>
+          </div>
+          <div class="warn">
+            <span class="wtag">CHECK</span>
+            <span>취미팀과 출시 목표팀이 섞여 있으니 개발 진행 상황과 보상 조건을 꼭 확인하세요.</span>
+          </div>
+          <a class="go" href="https://inditor.co.kr/" target="_blank" rel="noopener noreferrer">
+            바로가기 <span class="arrow">→</span>
+            <span class="url">inditor.co.kr</span>
+          </a>
+        </div>
+      </article>
+    
+      <article class="card tier-s" style="animation-delay:55ms">
+        <div class="rank">
+          <span class="num">02<span class="slash">/08</span></span>
+          <span class="tier-badge">S</span>
+        </div>
+        <div class="body">
+          <div class="head-row">
+            <div>
+              <span class="name">만들래</span>
+              <div class="kind">인디게임 팀빌딩·행사 전문</div>
+            </div>
+            <span class="fit">FIT · <b>매우 높음</b></span>
+          </div>
+          <div class="meta">
+            <div class="field">
+              <span class="flabel">주요 참여 방식</span>
+              <span class="fval">개발팀 모집 · 게임개발 모임 · 게임잼 · 공모전·지원사업</span>
+            </div>
+          </div>
+          <div class="warn">
+            <span class="wtag">CHECK</span>
+            <span>팀원 모집과 행사·지원사업 공고가 함께 올라오니 모집 유형을 구분해야 합니다.</span>
+          </div>
+          <a class="go" href="https://mandlemandle.com/" target="_blank" rel="noopener noreferrer">
+            바로가기 <span class="arrow">→</span>
+            <span class="url">mandlemandle.com</span>
+          </a>
+        </div>
+      </article>
+    
+      <article class="card tier-a" style="animation-delay:110ms">
+        <div class="rank">
+          <span class="num">03<span class="slash">/08</span></span>
+          <span class="tier-badge">A</span>
+        </div>
+        <div class="body">
+          <div class="head-row">
+            <div>
+              <span class="name">HOLA 홀라</span>
+              <div class="kind">범용 사이드프로젝트 플랫폼</div>
+            </div>
+            <span class="fit">FIT · <b>높음</b></span>
+          </div>
+          <div class="meta">
+            <div class="field">
+              <span class="flabel">주요 참여 방식</span>
+              <span class="fval">프로젝트별 직군 지원 · 오픈채팅 연락 · 온라인 협업</span>
+            </div>
+          </div>
+          <div class="warn">
+            <span class="wtag">CHECK</span>
+            <span>게임 외 웹·앱 프로젝트가 많으니 '인디게임·스팀·Unity·Unreal' 키워드로 검색하세요.</span>
+          </div>
+          <a class="go" href="https://holaworld.io/" target="_blank" rel="noopener noreferrer">
+            바로가기 <span class="arrow">→</span>
+            <span class="url">holaworld.io</span>
+          </a>
+        </div>
+      </article>
+    
+      <article class="card tier-a" style="animation-delay:165ms">
+        <div class="rank">
+          <span class="num">04<span class="slash">/08</span></span>
+          <span class="tier-badge">A</span>
+        </div>
+        <div class="body">
+          <div class="head-row">
+            <div>
+              <span class="name">렛플</span>
+              <div class="kind">직장인·대학생 중심 팀 매칭 플랫폼</div>
+            </div>
+            <span class="fit">FIT · <b>높음</b></span>
+          </div>
+          <div class="meta">
+            <div class="field">
+              <span class="flabel">주요 참여 방식</span>
+              <span class="fval">프로젝트 검색 · 팀원 지원 · 리더와 대화 · 관심 분야 기반 추천</span>
+            </div>
+          </div>
+          <div class="warn">
+            <span class="wtag">CHECK</span>
+            <span>게임 전용이 아니며 장기 창업팀·지분 보상형 프로젝트가 섞여 있습니다.</span>
+          </div>
+          <a class="go" href="https://apps.apple.com/kr/app/id1595017110" target="_blank" rel="noopener noreferrer">
+            바로가기 <span class="arrow">→</span>
+            <span class="url">App Store (렛플)</span>
+          </a>
+        </div>
+      </article>
+    
+      <article class="card tier-b" style="animation-delay:220ms">
+        <div class="rank">
+          <span class="num">05<span class="slash">/08</span></span>
+          <span class="tier-badge">B</span>
+        </div>
+        <div class="body">
+          <div class="head-row">
+            <div>
+              <span class="name">인프런 팀 프로젝트</span>
+              <div class="kind">학습·취업·사이드프로젝트 모집 게시판</div>
+            </div>
+            <span class="fit">FIT · <b>보통 이상</b></span>
+          </div>
+          <div class="meta">
+            <div class="field">
+              <span class="flabel">주요 참여 방식</span>
+              <span class="fval">게시글 지원 · 오픈채팅 · 구글폼 · 직접 모집 글 등록</span>
+            </div>
+          </div>
+          <div class="warn">
+            <span class="wtag">CHECK</span>
+            <span>게임 프로젝트 비중이 낮고, 모집자의 팀 운영 경험을 별도로 확인해야 합니다.</span>
+          </div>
+          <a class="go" href="https://www.inflearn.com/community/projects" target="_blank" rel="noopener noreferrer">
+            바로가기 <span class="arrow">→</span>
+            <span class="url">inflearn.com</span>
+          </a>
+        </div>
+      </article>
+    
+      <article class="card tier-b" style="animation-delay:275ms">
+        <div class="rank">
+          <span class="num">06<span class="slash">/08</span></span>
+          <span class="tier-badge">B</span>
+        </div>
+        <div class="body">
+          <div class="head-row">
+            <div>
+              <span class="name">인디사이드</span>
+              <div class="kind">전통적인 인디게임·RPG 제작 커뮤니티</div>
+            </div>
+            <span class="fit">FIT · <b>보통</b></span>
+          </div>
+          <div class="meta">
+            <div class="field">
+              <span class="flabel">주요 참여 방식</span>
+              <span class="fval">구인·구직 게시판 · 제작자료 공유 · 소규모 팀 모집</span>
+            </div>
+          </div>
+          <div class="warn">
+            <span class="wtag">CHECK</span>
+            <span>최근 모집 글 수가 적고, 오래된 글이나 광고성 게시물이 섞여 있습니다.</span>
+          </div>
+          <a class="go" href="https://indiside.com/" target="_blank" rel="noopener noreferrer">
+            바로가기 <span class="arrow">→</span>
+            <span class="url">indiside.com</span>
+          </a>
+        </div>
+      </article>
+    
+      <article class="card tier-b" style="animation-delay:330ms">
+        <div class="rank">
+          <span class="num">07<span class="slash">/08</span></span>
+          <span class="tier-badge">B</span>
+        </div>
+        <div class="body">
+          <div class="head-row">
+            <div>
+              <span class="name">인디라! 인디게임개발자 모임</span>
+              <div class="kind">페이스북 기반 개발자 네트워크</div>
+            </div>
+            <span class="fit">FIT · <b>보통</b></span>
+          </div>
+          <div class="meta">
+            <div class="field">
+              <span class="flabel">주요 참여 방식</span>
+              <span class="fval">개발자 교류 · 행사 정보 · 프로젝트 소개 · 인맥 기반 합류</span>
+            </div>
+          </div>
+          <div class="warn">
+            <span class="wtag">CHECK</span>
+            <span>구조화된 모집 게시판이 아니며, 로그인 전에는 최근 활동을 확인하기 어렵습니다.</span>
+          </div>
+          <a class="go" href="https://www.facebook.com/groups/indiera" target="_blank" rel="noopener noreferrer">
+            바로가기 <span class="arrow">→</span>
+            <span class="url">facebook.com/groups/indiera</span>
+          </a>
+        </div>
+      </article>
+    
+      <article class="card tier-c" style="animation-delay:385ms">
+        <div class="rank">
+          <span class="num">08<span class="slash">/08</span></span>
+          <span class="tier-badge">C</span>
+        </div>
+        <div class="body">
+          <div class="head-row">
+            <div>
+              <span class="name">디시인사이드 인디 게임 개발 갤러리</span>
+              <div class="kind">익명 인디게임 개발 커뮤니티</div>
+            </div>
+            <span class="fit">FIT · <b>보조 활용</b></span>
+          </div>
+          <div class="meta">
+            <div class="field">
+              <span class="flabel">주요 참여 방식</span>
+              <span class="fval">구인 게시물 · 개발일지 · 게임잼 · 정보 공유 · 프로젝트 피드백</span>
+            </div>
+          </div>
+          <div class="warn">
+            <span class="wtag">CHECK</span>
+            <span>익명성 때문에 팀 신뢰도·신원 확인이 어렵고 반응이 거칠 수 있습니다.</span>
+          </div>
+          <a class="go" href="https://gall.dcinside.com/mgallery/board/lists?id=game_dev" target="_blank" rel="noopener noreferrer">
+            바로가기 <span class="arrow">→</span>
+            <span class="url">gall.dcinside.com</span>
+          </a>
+        </div>
+      </article>
+    </div>
+
+  <footer>
+    <div class="foot-title">// 팀에 연락하기 전, 이것부터 확인하세요</div>
+    <div class="checks">
+      <div class="check"><span class="cn">01</span><span class="ct"><b>보상 조건</b>을 먼저 물어보세요. 무보수·러닝개런티·지분·급여 중 무엇인지에 따라 참여 판단이 완전히 달라집니다.</span></div>
+      <div class="check"><span class="cn">02</span><span class="ct"><b>개발 진행 상황</b>을 확인하세요. 실제로 굴러가는 팀인지, 출시 목표가 있는지, 취미 수준인지 구분해야 합니다.</span></div>
+      <div class="check"><span class="cn">03</span><span class="ct"><b>모집 유형을 구분</b>하세요. 팀원 모집 글과 행사·지원사업·게임잼 공고가 같은 게시판에 섞여 올라옵니다.</span></div>
+      <div class="check"><span class="cn">04</span><span class="ct"><b>익명 커뮤니티</b>는 신원과 팀 신뢰도를 별도로 확인하세요. 반응이 거칠 수 있고 검증이 어렵습니다.</span></div>
+    </div>
+    <div class="philosophy">
+      엠나인은 <b>대신 해주는 곳이 아니라, 스스로 할 수 있게 만드는 곳</b>입니다. 팀을 찾고, 연락하고, 합류하는 건 여러분의 몫입니다. 이 목록은 그 첫걸음을 줄여주는 지도일 뿐입니다.
+    </div>
+    <div class="sig">
+      <span>M9 ACADEMY · 신촌</span>
+      <span>수강생 전용 · 외부 공유 자제</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const data = [
+    { rank:1, tier:"s", tierLabel:"매우 높음", name:"인디터", kind:"인디게임 전문 커뮤니티",
+      join:"팀원 모집 · 팀 합류 희망 · 직원 모집 · 외주",
+      roles:"기획 · 프로그래밍 · 원화 · UI · 애니메이션 · SFX · BGM",
+      warn:"취미팀과 출시 목표팀이 섞여 있으니 개발 진행 상황과 보상 조건을 꼭 확인하세요.",
+      url:"https://inditor.co.kr", host:"inditor.co.kr" },
+    { rank:2, tier:"s", tierLabel:"매우 높음", name:"만들래", kind:"인디게임 팀빌딩·행사 전문",
+      join:"개발팀 모집 · 게임개발 모임 · 게임잼 · 공모전·지원사업",
+      roles:"기획 · 개발 · 아트 · 게임잼 참가자 · 테스터",
+      warn:"팀원 모집과 행사·지원사업 공고가 함께 올라오니 모집 유형을 구분해야 합니다.",
+      url:"https://mandlemandle.com", host:"mandlemandle.com" },
+    { rank:3, tier:"a", tierLabel:"높음", name:"HOLA 홀라", kind:"범용 사이드프로젝트 플랫폼",
+      join:"프로젝트별 직군 지원 · 오픈채팅 연락 · 온라인 협업",
+      roles:"기획 · 개발 · UI · 일러스트 · 마케팅 · 사운드",
+      warn:"게임 외 웹·앱 프로젝트가 많으니 '인디게임·스팀·Unity·Unreal' 키워드로 검색하세요.",
+      url:"https://holaworld.io", host:"holaworld.io" },
+    { rank:4, tier:"a", tierLabel:"높음", name:"렛플", kind:"직장인·대학생 중심 팀 매칭 플랫폼",
+      join:"프로젝트 검색 · 팀원 지원 · 리더와 대화 · 관심 분야 기반 추천",
+      roles:"개발 · 기획 · UI·UX · 3D · 창업형 프로젝트 참여자",
+      warn:"게임 전용이 아니며 장기 창업팀·지분 보상형 프로젝트가 섞여 있습니다.",
+      url:"https://apps.apple.com/kr/app/id1595017110", host:"App Store (렛플)" },
+    { rank:5, tier:"b", tierLabel:"보통 이상", name:"인프런 팀 프로젝트", kind:"학습·취업·사이드프로젝트 모집 게시판",
+      join:"게시글 지원 · 오픈채팅 · 구글폼 · 직접 모집 글 등록",
+      roles:"초보 개발자 · 학생 · 취업준비생 · 기획 · 디자인",
+      warn:"게임 프로젝트 비중이 낮고, 모집자의 팀 운영 경험을 별도로 확인해야 합니다.",
+      url:"https://www.inflearn.com/community/projects", host:"inflearn.com" },
+    { rank:6, tier:"b", tierLabel:"보통", name:"인디사이드", kind:"전통적인 인디게임·RPG 제작 커뮤니티",
+      join:"구인·구직 게시판 · 제작자료 공유 · 소규모 팀 모집",
+      roles:"RPG Maker · 도트 · 2D 아트 · 시나리오 · 프로그래밍",
+      warn:"최근 모집 글 수가 적고, 오래된 글이나 광고성 게시물이 섞여 있습니다.",
+      url:"https://indiside.com", host:"indiside.com" },
+    { rank:7, tier:"b", tierLabel:"보통", name:"인디라! 인디게임개발자 모임", kind:"페이스북 기반 개발자 네트워크",
+      join:"개발자 교류 · 행사 정보 · 프로젝트 소개 · 인맥 기반 합류",
+      roles:"현업 개발자 · 인디개발자 · 팀 리더 · 네트워킹 희망자",
+      warn:"구조화된 모집 게시판이 아니며, 로그인 전에는 최근 활동을 확인하기 어렵습니다.",
+      url:"https://www.facebook.com/groups/indiera", host:"facebook.com/groups/indiera" },
+    { rank:8, tier:"c", tierLabel:"보조 활용", name:"디시인사이드 인디 게임 개발 갤러리", kind:"익명 인디게임 개발 커뮤니티",
+      join:"구인 게시물 · 개발일지 · 게임잼 · 정보 공유 · 프로젝트 피드백",
+      roles:"1인 개발자 · 프로그래머 · 기획자 · 정보 탐색자",
+      warn:"익명성 때문에 팀 신뢰도·신원 확인이 어렵고 반응이 거칠 수 있습니다.",
+      url:"https://gall.dcinside.com/mgallery/board/lists?id=game_dev", host:"gall.dcinside.com" }
+  ];
+
+  const list = document.getElementById('list');
+
+  function render(items){
+    list.innerHTML = items.map((d,i)=>`
+      <article class="card tier-${d.tier}" style="animation-delay:${i*55}ms">
+        <div class="rank">
+          <span class="num">${String(d.rank).padStart(2,'0')}<span class="slash">/08</span></span>
+          <span class="tier-badge">${d.tier.toUpperCase()}</span>
+        </div>
+        <div class="body">
+          <div class="head-row">
+            <div>
+              <span class="name">${d.name}</span>
+              <div class="kind">${d.kind}</div>
+            </div>
+            <span class="fit">FIT · <b>${d.tierLabel}</b></span>
+          </div>
+          <div class="meta">
+            <div class="field">
+              <span class="flabel">주요 참여 방식</span>
+              <span class="fval">${d.join}</span>
+            </div>
+          </div>
+          <div class="warn">
+            <span class="wtag">CHECK</span>
+            <span>${d.warn}</span>
+          </div>
+          <a class="go" href="${d.url}" target="_blank" rel="noopener noreferrer">
+            바로가기 <span class="arrow">→</span>
+            <span class="url">${d.host}</span>
+          </a>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  render(data);
+
+  document.querySelectorAll('.filter button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.filter button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      render(f==='top' ? data.filter(d=>d.tier==='s'||d.tier==='a') : data);
+    });
+  });
+</script>
+
+
+</body></html>

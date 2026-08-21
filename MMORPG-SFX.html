@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<!-- saved from url=(0045)https://orpina214-glitch.github.io/MMORPGSFX/ -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>장르 심화 — MMORPG 사운드 디자인 분석</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link href="./css/styles.css" rel="stylesheet">
+<style>
+  :root{
+    --bg:#101319;
+    --panel:#181c26;
+    --panel2:#1f2431;
+    --ink:#e9e7de;
+    --ink-dim:#a9a89f;
+    --line:#2c3242;
+    --accent:#9a8ae0;
+    --l-world:#5ca8e4;
+    --l-combat:#e4685c;
+    --l-social:#f2c14e;
+    --l-reward:#7ec97e;
+    --l-live:#c78ae0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans KR',-apple-system,'Apple SD Gothic Neo',sans-serif;
+    line-height:1.75;
+    font-size:16px;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:0 20px;}
+
+  header{padding:72px 0 48px;border-bottom:1px solid var(--line);}
+  .era-tag{
+    font-family:'Press Start 2P',monospace;
+    font-size:10px;letter-spacing:2px;
+    color:var(--accent);margin-bottom:20px;
+  }
+  h1{font-size:clamp(26px,5vw,40px);font-weight:700;line-height:1.35;margin-bottom:16px;}
+  .subtitle{color:var(--ink-dim);font-size:15px;max-width:620px;}
+  .hero-wave{display:flex;gap:3px;align-items:flex-end;height:34px;margin-top:32px;}
+  .hero-wave span{width:6px;background:var(--accent);opacity:.85;border-radius:1px;}
+
+  nav.toc{padding:28px 0;border-bottom:1px solid var(--line);}
+  nav.toc ol{
+    list-style:none;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+    gap:8px 24px;
+  }
+  nav.toc a{
+    color:var(--ink-dim);text-decoration:none;font-size:14px;
+    display:flex;gap:10px;align-items:baseline;padding:4px 0;
+  }
+  nav.toc a:hover{color:var(--ink);}
+  nav.toc .num{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--accent);}
+
+  section{padding:56px 0;border-bottom:1px solid var(--line);}
+  .kicker{
+    font-family:'Press Start 2P',monospace;
+    font-size:9px;letter-spacing:2px;
+    color:var(--accent);margin-bottom:14px;text-transform:uppercase;
+  }
+  h2{font-size:24px;font-weight:700;margin-bottom:8px;line-height:1.4;}
+  .meta{color:var(--ink-dim);font-size:13.5px;margin-bottom:24px;}
+  h3{font-size:17px;font-weight:700;margin:32px 0 12px;}
+  p{margin-bottom:14px;}
+  p.lead{font-size:17px;}
+  em{font-style:normal;color:var(--accent);font-weight:500;}
+  .dim{color:var(--ink-dim);}
+  .note{
+    background:var(--panel);
+    border-left:3px solid var(--accent);
+    padding:16px 18px;border-radius:0 8px 8px 0;
+    font-size:14.5px;margin:20px 0;
+  }
+  .note strong{color:var(--accent);}
+  .uncertain{
+    font-size:13px;color:var(--ink-dim);
+    border-top:1px dashed var(--line);
+    margin-top:18px;padding-top:10px;
+  }
+
+  .chip-box{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px 20px;margin:22px 0;
+  }
+  .chip-box .chip-name{
+    font-family:'Press Start 2P',monospace;
+    font-size:9px;color:var(--ink-dim);letter-spacing:1px;margin-bottom:12px;
+  }
+  .ch-row{display:flex;flex-wrap:wrap;gap:6px;}
+  .ch{
+    font-size:12px;padding:5px 10px;border-radius:4px;
+    background:var(--panel2);border:1px solid var(--line);
+    display:flex;align-items:center;gap:7px;white-space:nowrap;
+  }
+  .ch i{width:8px;height:8px;border-radius:2px;display:inline-block;}
+  .c-world{background:var(--l-world);} .c-combat{background:var(--l-combat);}
+  .c-social{background:var(--l-social);} .c-reward{background:var(--l-reward);}
+  .c-live{background:var(--l-live);}
+
+  .sfx{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:20px 22px;margin:18px 0;
+  }
+  .sfx .sfx-name{
+    font-weight:700;font-size:15.5px;margin-bottom:10px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .sfx .sfx-name::before{content:"▶";font-size:10px;color:var(--accent);}
+  .sfx dl{display:grid;grid-template-columns:88px 1fr;gap:6px 14px;font-size:14.5px;}
+  .sfx dt{color:var(--ink-dim);font-weight:500;}
+  .sfx dd{margin:0;}
+  @media(max-width:520px){.sfx dl{grid-template-columns:1fr;gap:2px;}
+    .sfx dt{margin-top:8px;font-size:12.5px;}}
+
+  .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:20px 0;}
+  table{border-collapse:collapse;width:100%;min-width:640px;font-size:13.5px;}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top;}
+  th{background:var(--panel2);font-weight:700;white-space:nowrap;}
+  td{background:var(--panel);}
+
+  .principle{display:flex;gap:16px;margin:22px 0;align-items:flex-start;}
+  .principle .p-num{
+    font-family:'Press Start 2P',monospace;
+    font-size:11px;color:var(--accent);padding-top:5px;flex-shrink:0;
+  }
+  .principle h4{font-size:16px;margin-bottom:6px;}
+  .principle p{font-size:14.5px;margin-bottom:0;}
+
+  #wow{--accent:#e0b34e;} #ff14{--accent:#b98ae0;} #bdo{--accent:#7ec9a8;}
+  #lostark{--accent:#e4915c;} #aion2{--accent:#8fb8e8;}
+
+  .listen{
+    font-size:14px;background:var(--panel2);
+    border:1px solid var(--line);border-radius:8px;
+    padding:14px 16px;margin:18px 0;
+  }
+  .listen strong{color:var(--accent);}
+  .listen ul{margin:8px 0 0 18px;}
+  .listen li{margin-bottom:5px;}
+
+  footer{padding:48px 0 80px;color:var(--ink-dim);font-size:13px;}
+  .src-list{margin-top:14px;}
+  .src-list li{margin-bottom:6px;word-break:break-all;}
+  ul.plain{margin:0 0 14px 20px;}
+  ul.plain li{margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="era-tag">M9 ACADEMY — GENRE DEEP DIVE / MMORPG</div>
+    <h1>장르 심화 — MMORPG<br><span style="color:var(--accent)">끝나지 않는 세계의 소리</span></h1>
+    <p class="subtitle">월드 오브 워크래프트 · 파이널 판타지 14 · 검은사막 · 로스트아크 · 아이온2 —
+    수백 시간을 머무는 세계, 수천 번 반복되는 전투, 수백 명이 뒤엉키는 화면.
+    MMORPG라는 장르가 사운드 디자이너에게 던지는 고유한 과제들을 다섯 작품으로 파고듭니다.
+    시리즈 기존 자료(고전편 → 현대 1·2부)에서 이어지는 장르 심화편입니다.</p>
+    <div class="hero-wave" aria-hidden="true">
+      <span style="height:35%"></span><span style="height:50%"></span><span style="height:45%"></span><span style="height:65%"></span><span style="height:60%"></span><span style="height:80%"></span><span style="height:70%"></span><span style="height:90%"></span><span style="height:85%"></span><span style="height:100%"></span><span style="height:75%"></span><span style="height:88%"></span><span style="height:68%"></span><span style="height:78%"></span><span style="height:58%"></span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <ol>
+      <li><a href="https://orpina214-glitch.github.io/MMORPGSFX/#intro"><span class="num">00</span>MMORPG의 삼중 과제</a></li>
+      <li><a href="https://orpina214-glitch.github.io/MMORPGSFX/#map"><span class="num">01</span>다섯 작품 비교 지도</a></li>
+      <li><a href="https://orpina214-glitch.github.io/MMORPGSFX/#wow"><span class="num">02</span>월드 오브 워크래프트 (2004~)</a></li>
+      <li><a href="https://orpina214-glitch.github.io/MMORPGSFX/#ff14"><span class="num">03</span>파이널 판타지 14 심화</a></li>
+      <li><a href="https://orpina214-glitch.github.io/MMORPGSFX/#bdo"><span class="num">04</span>검은사막 (2015~)</a></li>
+      <li><a href="https://orpina214-glitch.github.io/MMORPGSFX/#lostark"><span class="num">05</span>로스트아크 (2018~)</a></li>
+      <li><a href="https://orpina214-glitch.github.io/MMORPGSFX/#aion2"><span class="num">06</span>아이온2 (2025~)</a></li>
+      <li><a href="https://orpina214-glitch.github.io/MMORPGSFX/#principles"><span class="num">07</span>MMORPG 사운드의 다섯 원칙</a></li>
+      <li><a href="https://orpina214-glitch.github.io/MMORPGSFX/#practice"><span class="num">08</span>실습 가이드</a></li>
+    </ol>
+  </div>
+</nav>
+
+<section id="intro">
+  <div class="wrap">
+    <div class="kicker">00 — INTRODUCTION</div>
+    <h2>MMORPG의 삼중 과제</h2>
+    <p class="lead">MMORPG는 게임이 아니라 <em>거주지</em>입니다. 수백 시간을 사는 세계의 소리는, 두어 시간 감상하는 영화의 소리와 완전히 다른 규칙을 따라야 합니다.</p>
+    <p>이 장르의 사운드 디자이너는 세 개의 과제를 동시에 짊어집니다. 첫째, <em>세계의 지속</em> — 존 하나에 수십 시간을 머무는 플레이어에게 앰비언스는 배경이 아니라 생활 환경입니다. 질리면 안 되고, 꺼버리게 만들어도 안 됩니다. 둘째, <em>반복의 내성</em> — 같은 스킬을 수만 번 쓰고 같은 보스를 수백 번 잡습니다. 스킬음 하나가 플레이어의 수년을 함께합니다. 셋째, <em>군중의 믹스</em> — 8인, 24인, 때로는 수백 인의 스킬과 이펙트가 한 화면에서 터집니다. 전부 들려주면 소음이고, 전부 죽이면 손맛이 없습니다.</p>
+    <p>그리고 하나 더 — MMORPG는 라이브 서비스의 원조입니다. WoW는 20년 넘게 사운드를 쌓아왔고, 국산 MMORPG들은 지금 이 순간에도 패치마다 소리를 추가하고 있습니다. 이 장르를 공부한다는 건 <em>"수십 년을 버틸 사운드 시스템"</em>을 공부한다는 뜻입니다. 국내 게임업계 취업을 준비한다면 가장 확률 높게 만나게 될 장르이기도 합니다.</p>
+    <div class="note"><strong>분석 관점 3가지</strong> — 시리즈 공통 틀로 분석합니다.<br>
+    ① 왜 이렇게 표현되었는가 (장르 조건과 설계 의도)<br>
+    ② 무엇을 표현하고자 했는가 (소리의 기능과 감정)<br>
+    ③ 무엇을 배울 것인가 (실무에 가져갈 것)</div>
+  </div>
+</section>
+
+<section id="map">
+  <div class="wrap">
+    <div class="kicker">01 — COMPARISON MAP</div>
+    <h2>다섯 작품 비교 지도</h2>
+    <p>같은 장르 안에서도 사운드의 무게중심은 작품마다 다릅니다. MMORPG 사운드가 다루는 다섯 영역을 먼저 잡고, 각 작품이 어디에 힘을 실었는지 지도를 그립니다.</p>
+    <div class="chip-box">
+      <div class="chip-name">MMORPG SOUND DOMAINS</div>
+      <div class="ch-row">
+        <span class="ch"><i class="c-world"></i>세계 — 존 앰비언스·환경·이동</span>
+        <span class="ch"><i class="c-combat"></i>전투 — 스킬·타격·기믹</span>
+        <span class="ch"><i class="c-social"></i>군중 — 다인 믹스·타인의 소리</span>
+        <span class="ch"><i class="c-reward"></i>보상 — 성장·획득·달성</span>
+        <span class="ch"><i class="c-live"></i>운영 — 팔레트 확장·패치</span>
+      </div>
+    </div>
+    <div class="tbl-scroll">
+      <table>
+        <tbody><tr><th>게임</th><th>계열 / 전투 형태</th><th>이 자료에서 주목할 설계</th></tr>
+        <tr>
+          <td>월드 오브 워크래프트<br><span class="dim">2004~ · 블리자드</span></td>
+          <td>서구형 클래식 · 탭타겟</td>
+          <td>10만 개 이상으로 쌓인 20년 팔레트, 사물에 물성을 부여하는 디테일, 보상음의 조건반사</td>
+        </tr>
+        <tr>
+          <td>파이널 판타지 14<br><span class="dim">2013~ · 스퀘어에닉스</span></td>
+          <td>일본형 시어터 · 글로벌 쿨다운</td>
+          <td>기믹 타임라인 위의 사운드 설계, 8/24인 난전의 정보 우선순위 (2부 내용의 심화)</td>
+        </tr>
+        <tr>
+          <td>검은사막<br><span class="dim">2015~ · 펄어비스</span></td>
+          <td>국산 오픈월드 · 논타겟 액션</td>
+          <td>운영 중 오디오 전면 리마스터 전략, 상호작용하는 사냥 음악, 자체 엔진 환경</td>
+        </tr>
+        <tr>
+          <td>로스트아크<br><span class="dim">2018~ · 스마일게이트</span></td>
+          <td>국산 쿼터뷰 · 핵앤슬래시형</td>
+          <td>타격감 중심 MMO 사운드, 레이드 패턴의 청각 콜아웃, 게임대상 사운드 부문 수상작</td>
+        </tr>
+        <tr>
+          <td>아이온2<br><span class="dim">2025~ · 엔씨소프트</span></td>
+          <td>국산 신작 · 후판정 수동 전투</td>
+          <td>언리얼 엔진5 기반 최신 사례, 판정 피드백 사운드, 출시 직후 사운드 운영의 실제</td>
+        </tr>
+      </tbody></table>
+    </div>
+    <p class="dim">비교축을 하나 기억해두세요 — 서구형(WoW)은 세계와 물성에서 출발했고, 일본형(FF14)은 연출과 안무에서, 국산 액션 MMO(검은사막·로스트아크·아이온2)는 타격감과 전투 감각에서 출발했습니다. 출발점이 다르면 사운드의 우선순위 전체가 달라집니다.</p>
+  </div>
+</section>
+
+<section id="wow">
+  <div class="wrap">
+    <div class="kicker">02 — BLIZZARD / 2004~ / PC</div>
+    <h2>월드 오브 워크래프트 — 20년을 버틴 팔레트</h2>
+    <p class="meta">블리자드 사운드팀 — 2013년 공식 인터뷰 기준 WoW 전담 사운드 디자이너 5인 체제, 2019년 BBC 취재 기준 게임 내 사운드 10만 개 이상</p>
+
+    <h3>① 왜 이렇게 표현되었는가</h3>
+    <p>WoW의 사운드를 이해하는 열쇠는 시간입니다. 2004년에 만든 소리 옆에 2024년에 만든 소리가 나란히 재생되는 게임. 블리자드 사운드팀 스스로 "10년 넘은 에셋 옆에서 살아갈 새 에셋을 만드는 것"을 고유한 도전으로 꼽았을 정도입니다. 이 조건은 두 가지를 강제합니다. 첫째, 처음부터 유행을 타지 않는 소리를 만들 것. 둘째, 새 소리는 기존 어법 안에서 만들 것. WoW의 사운드가 화려한 최신 기법보다 <em>물성과 명료함</em>에 집착하는 이유입니다.</p>
+    <p>그 물성의 집착이 가장 잘 드러나는 곳이 의외로 인벤토리입니다. 가방 안에서 아이템을 옮길 때마다 카테고리별로 다른 소리가 납니다 — 보석은 결정질의 짤랑임, 총알은 마른 쌀자루를 움직이는 듯한 소리, 검은 금속을 바닥에 끄는 소리. 굳이 안 만들어도 되는 소리들입니다. 하지만 이 소리들이 아이템에 "머릿속의 무게"를 부여하고, 세계를 만질 수 있는 것으로 만듭니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">스펠 사운드 — 클래스의 청각 문장(紋章)</div>
+      <dl>
+        <dt>구조</dt><dd>화염·신성·암흑·자연 등 마법 계열별로 일관된 질감 어법 + 클래스별 시전음의 고유 정체성. 이후 블리자드 타 작품의 스펠 사운드에도 같은 설계 접근이 계승됨</dd>
+        <dt>기능</dt><dd>전투·군중 층 — 파티원이 무엇을 시전하는지, 적이 무슨 계열의 공격을 하는지 청각 식별</dd>
+        <dt>포인트</dt><dd>"화염구는 이렇게 들린다"는 이 게임의 어법이 사실상 판타지 MMO 장르 전체의 표준 어휘가 됨 — 어휘를 만든 자가 장르를 만든다</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">레벨업·달성음 — 조건반사가 된 보상</div>
+      <dl>
+        <dt>구조</dt><dd>수십 년간 거의 변하지 않은 레벨업 팡파르와 퀘스트 완료음</dd>
+        <dt>기능</dt><dd>보상 층 — 수백만 명의 뇌에 새겨진 성취의 청각 기호</dd>
+        <dt>포인트</dt><dd>오래 유지된 보상음은 그 자체로 파블로프적 보상-반응을 형성한다는 분석이 있을 만큼 강력한 자산 — 고전편 젤다 징글, 현대 2부 어콘 논의의 MMO 버전. 함부로 바꾸면 안 되는 소리의 대표 사례</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">크리처 보이스 — 레이어로 짓는 생물</div>
+      <dl>
+        <dt>구조</dt><dd>공식 해설 기준, 대형 크리처의 포효는 성우의 연기 + 실제 동물 녹음 + 가공 레이어를 하나의 목소리로 통합해 제작. 확장팩마다 동물 필드 레코딩을 우선 확보</dd>
+        <dt>기능</dt><dd>세계 층 — 존마다 다른 생태계의 청각적 실감</dd>
+        <dt>포인트</dt><dd>"성우 + 동물 + 가공"의 3층 크리처 보이스 공식은 지금도 업계 표준 제작법 — 포트폴리오의 크리처 사운드 과제에서 그대로 쓸 수 있는 레시피</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">확장팩 믹스의 진화 — 내 소리가 먼저</div>
+      <dl>
+        <dt>구조</dt><dd>격전의 아제로스 개발 인터뷰 기준, 특정 순간에 소리의 초점을 맞추는 새 믹싱 시스템 도입 — 내 캐릭터의 소리가 타인의 스펠보다 명확하게 들리도록</dd>
+        <dt>기능</dt><dd>군중 층 — 수십 명이 뒤엉킨 레이드·전장에서 "나"를 잃지 않게 하는 장치</dd>
+        <dt>포인트</dt><dd>오버워치의 위협도 믹스가 "적 중심"이라면 WoW는 "자기 중심" — 장르가 다르면 믹스의 주인공도 달라짐</dd>
+      </dl>
+    </div>
+
+    <h3>③ 무엇을 배울 것인가</h3>
+    <ul class="plain">
+      <li><strong>수명이 긴 소리의 조건</strong> — 유행하는 프로세싱일수록 빨리 늙습니다. 물성 기반의 담백한 소리가 20년을 버팁니다. 에셋을 만들 때 "이 소리가 10년 뒤에도 촌스럽지 않을까"를 자문하는 습관.</li>
+      <li><strong>안 만들어도 되는 소리의 가치</strong> — 인벤토리 아이템 소리 같은 디테일이 세계의 밀도를 만듭니다. 명세서에 없는 소리를 제안할 줄 아는 디자이너가 팀의 자산이 됩니다.</li>
+      <li><strong>기존 어법 안에서 만들기</strong> — 라이브 게임에 합류하면 백지에서 시작할 수 없습니다. 기존 사운드를 분석해 어법을 추출하고 그 안에서 새것을 만드는 능력이 실무의 절반입니다.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>인벤토리에서 아이템 종류별로 옮기며 물성 사운드 카테고리 정리해보기</li>
+        <li>2004년 오리지널 존과 최신 확장팩 존의 앰비언스를 연속 청취 — 20년의 어법 일관성 확인</li>
+        <li>레이드 난전에서 자기 캐릭터 스킬음이 어떻게 앞으로 나오는지 관찰</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="ff14">
+  <div class="wrap">
+    <div class="kicker">03 — SQUARE ENIX / 2013~ / PC·CONSOLE</div>
+    <h2>파이널 판타지 14 심화 — 안무가 된 사운드</h2>
+    <p class="meta">사운드 디렉터: 소켄 마사요시 / 배틀 사운드: 키누야 고 외 — 2부 「정보와 식별」의 FF14 항목을 전제로 한 심화</p>
+
+    <h3>① 왜 이렇게 표현되었는가</h3>
+    <p>2부에서 FF14의 제작 프로세스(전투 기획 공유 → 플레이스홀더 → 전투 흐름과 통합)와 기믹-사운드 동기화를 다뤘습니다. 심화편에서는 그 설계가 <em>MMORPG라는 조건</em>과 어떻게 맞물리는지를 봅니다. 핵심은 반복입니다. 레이드 하나를 클리어까지 수십~수백 번 도전하는 게임에서, 기믹 사운드는 두 가지 상반된 요구를 동시에 받습니다. 처음 듣는 사람에게는 위협을 전달해야 하고, 백 번째 듣는 사람에게는 피로를 주지 않아야 합니다.</p>
+    <p>FF14의 해법은 사운드를 <em>공략의 언어</em>로 격상시키는 것이었습니다. 시전음·장판음·콜아웃이 각각 고정된 의미를 갖고, 숙련자는 화면 대신 소리와 캐스트바로 기믹을 읽습니다. 반복될수록 소리는 지겨워지는 게 아니라 악보처럼 익숙해집니다. 리듬에 맞춰 회피하는 최근 레이드처럼, 음악의 박자 자체가 기믹 타이밍이 되는 실험은 그 논리의 끝단입니다 — 타이밍 제어가 어려운 MMORPG에서 "그 어려움이 없는 것처럼" 느끼게 만드는 데 새로운 엔지니어링이 필요했다는 소켄의 회고 그대로입니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">기믹 사운드의 이중 수명 설계</div>
+      <dl>
+        <dt>구조</dt><dd>시전음(예고) → 전개음(위치) → 폭발음(판정)의 3단 타임라인. 각 단계가 고정 의미를 유지</dd>
+        <dt>기능</dt><dd>초견에는 경고, 숙련 후에는 메트로놈 — 같은 소리가 학습 단계에 따라 다른 역할</dd>
+        <dt>포인트</dt><dd>반복 콘텐츠 사운드의 이상형: 정보는 선명하게, 자극은 절제되게. 화려한 원샷보다 구조의 명료함이 수명을 결정</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">24인 얼라이언스 레이드의 믹스</div>
+      <dl>
+        <dt>구조</dt><dd>타인 스킬음의 대폭 감쇠 + 자기 행동과 보스 기믹의 우선 확보</dd>
+        <dt>기능</dt><dd>군중 층 — 24인의 이펙트 폭풍 속에서 "내 로테이션"과 "보스의 위협"만 남기는 편집</dd>
+        <dt>포인트</dt><dd>MMORPG 믹스의 보편 해법: 남의 소리는 존재감만, 내 소리는 정보까지. WoW의 자기 중심 믹스와 같은 결론에 도달</dd>
+      </dl>
+    </div>
+
+    <h3>③ 무엇을 배울 것인가</h3>
+    <ul class="plain">
+      <li><strong>수명 곡선으로 사운드를 평가하기</strong> — "첫인상이 좋은 소리"와 "백 번 들어도 괜찮은 소리"는 다른 소리입니다. 시안 단계에서 열 번 연속 재생해보는 검수 습관.</li>
+      <li><strong>의미의 고정이 곧 친절</strong> — 시전음의 의미가 콘텐츠마다 흔들리면 플레이어의 학습이 무너집니다. 사운드 어휘 사전을 문서로 관리하는 프로젝트 운영 감각.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>같은 레이드의 초견 트라이와 클리어 트라이 녹화를 비교 — 소리를 듣는 방식이 어떻게 달라졌는지 자가 관찰</li>
+        <li>24인 콘텐츠에서 타인 스킬음이 얼마나 감쇠되는지 솔로 플레이와 비교</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="bdo">
+  <div class="wrap">
+    <div class="kicker">04 — PEARL ABYSS / 2015~ / PC·CONSOLE</div>
+    <h2>검은사막 — 운영 중에 소리를 전부 갈아엎는다는 것</h2>
+    <p class="meta">펄어비스 오디오 디렉터 류휘만 — GDC 2018 강연 "검은사막 오디오 리마스터" 기준 / 자체 엔진 환경</p>
+
+    <h3>① 왜 이렇게 표현되었는가</h3>
+    <p>검은사막이 이 자료에서 특별한 이유는, 라이브 서비스 게임이 <em>운영 도중 오디오를 전면 리마스터</em>한 드문 사례이기 때문입니다. 이미 수십만 명이 플레이 중인 게임의 소리를 갈아엎는 결정 — 류휘만 디렉터는 GDC 2018에서 이 과정을 직접 공유했습니다. 오케스트라 녹음은 처음이었고 우여곡절이 많았다는 것, 비용 문제 때문에 왜 할리우드 음악이 "뻔한 음악"으로 제작되는지 몸으로 이해하게 됐다는 것까지 — 예산과 품질 사이에서 싸우는 실무의 기록입니다. 녹음 파트너로는 여러 후보 중 작업 범위·비용·품질을 기준으로 오케스트라 에이전시 다이나미디온을 선택했습니다.</p>
+    <p>강연의 핵심 개념 두 가지가 특히 배울 가치가 있습니다. 하나는 <em>테마 시드</em> — 하나의 테마 골격에서 슬픈 버전, 무서운 버전, 평화로운 버전이 자라나는 작법으로, 멜로디를 매번 새로 만드는 시간을 단축하면서 음악에 통일성과 변화를 동시에 부여합니다. 다른 하나는 그가 "소맥"이라 부른 블렌딩 기법 — 서로 다른 소스를 섞어 원하는 질감을 만드는 실용주의적 접근입니다. 방대한 오픈월드를 소수 인력으로 감당하기 위한 물량 전략이 그대로 방법론이 된 경우입니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">상호작용하는 사냥 음악</div>
+      <dl>
+        <dt>구조</dt><dd>사냥 중 퍼커션 중심으로 플레이어와 상호작용하는 음악 레이어. 정복전·필드보스·월드보스·낮밤·진영별로 음악 체계가 분화</dd>
+        <dt>기능</dt><dd>전투 층 — 논타겟 연속 사냥의 리듬감을 음악이 증폭. 사냥의 "그루브"를 만드는 장치</dd>
+        <dt>포인트</dt><dd>SFX와 음악의 경계가 흐려지는 지점 — 타격의 쾌감을 퍼커션이 나눠 짊어짐. 사운드 디자이너와 작곡가의 협업이 필수인 구조</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">리마스터의 우선순위</div>
+      <dl>
+        <dt>구조</dt><dd>이미 서비스 중인 방대한 콘텐츠의 오디오를 영역별로 나눠 단계적 교체</dd>
+        <dt>기능</dt><dd>운영 층 — 유저 이탈 없이 품질을 끌어올리는 점진 전략</dd>
+        <dt>포인트</dt><dd>"무엇부터 갈아엎을 것인가"는 순수한 우선순위 판단 문제 — 플레이어가 가장 오래 듣는 소리부터. 시리즈 전체를 관통하는 코어 루프 우선 원칙의 운영 버전</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">논타겟 액션의 타격 피드백</div>
+      <dl>
+        <dt>구조</dt><dd>다수의 적을 한 번에 베는 광역 전투에서 타격음·피격 리액션·이펙트가 뭉개지지 않게 정리된 사운드</dd>
+        <dt>기능</dt><dd>전투 층 — "몇 마리를 맞췄는가"의 체감을 소리가 담당</dd>
+        <dt>포인트</dt><dd>동시 타격이 수십 건일 때 전부 재생하면 소음 — 대표음 + 밀도 레이어로 요약하는 설계가 필요해짐 (보이스 관리의 실전)</dd>
+      </dl>
+    </div>
+    <p class="uncertain">확실하지 않음 표기 — GDC 2018 강연은 음악 리마스터 중심이라, 효과음(SFX) 계층의 세부 제작 방식은 공개 자료가 제한적입니다. 위 "논타겟 타격 피드백" 항목은 플레이 관찰과 장르 일반론에 기반한 분석적 재구성입니다.</p>
+
+    <h3>③ 무엇을 배울 것인가</h3>
+    <ul class="plain">
+      <li><strong>예산은 창의성의 조건이다</strong> — "왜 할리우드 음악이 뻔해지는지 알게 됐다"는 고백은 귀중한 실무 교훈입니다. 예산·일정 제약 안에서 품질을 지키는 판단이 디렉터의 일입니다.</li>
+      <li><strong>시드 기반 작법</strong> — 테마 시드처럼 골격 하나에서 변주를 길러내는 방식은 SFX에도 그대로 적용됩니다. 시그니처 음형 하나를 정하고 상황별 버전을 파생시키는 훈련.</li>
+      <li><strong>국산 개발사의 GDC 발표라는 이정표</strong> — 국내 오디오 팀이 글로벌 무대에서 방법론을 공유한 사례입니다. 국내 취업을 준비하며 해외 컨퍼런스 자료를 읽는 것이 왜 실무 준비인지 보여주는 증거.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>사냥 시작 전후의 음악 변화 — 퍼커션 레이어가 언제 들어오고 빠지는지 추적</li>
+        <li>같은 지역의 낮과 밤 음악·앰비언스 비교</li>
+        <li>광역기로 다수 적 타격 시 타격음이 몇 겹으로 요약되는지 세어보기</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="lostark">
+  <div class="wrap">
+    <div class="kicker">05 — SMILEGATE RPG / 2018~ / PC</div>
+    <h2>로스트아크 — 타격감으로 증명한 국산 MMO 사운드</h2>
+    <p class="meta">스마일게이트알피지 — 2019 대한민국 게임대상 대상(6관왕) 및 기술창작상 사운드 부문 수상작</p>
+
+    <h3>① 왜 이렇게 표현되었는가</h3>
+    <p>로스트아크는 2019 대한민국 게임대상에서 대상을 포함한 6관왕에 오르며 기술창작상 사운드 부문을 수상했습니다. 수상 무대에서 금강선 디렉터는 사운드에 많은 투자를 했다는 점을 직접 언급했습니다 — 국산 MMORPG에서 사운드가 공식적으로 "투자 대상"이자 "수상 실적"으로 인정된 상징적 장면입니다.</p>
+    <p>이 게임의 사운드 정체성은 장르 배합에서 나옵니다. 쿼터뷰 핵앤슬래시의 전투 감각과 MMORPG의 콘텐츠 구조를 결합했기 때문에, 사운드도 두 문법을 모두 감당해야 합니다. 사냥 구간에서는 디아블로 계열처럼 타격의 쾌감이 초 단위로 쏟아져야 하고, 군단장 레이드에서는 FF14처럼 기믹 정보가 정확히 전달되어야 합니다. 쾌감의 사운드와 정보의 사운드를 한 게임 안에서 오가는 구조 — 이 자료 전체의 두 축(1부 몰입 / 2부 정보)이 한 작품에 공존하는 사례입니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">스킬 타격음 — 쿼터뷰의 손맛</div>
+      <dl>
+        <dt>구조</dt><dd>클래스별 무기·속성 질감 + 타격 확정의 임팩트 + 다단히트의 리듬 설계</dd>
+        <dt>기능</dt><dd>전투 층 — 카메라가 멀리 있는 쿼터뷰에서 시각적 타격감의 부족분을 소리가 보충</dd>
+        <dt>포인트</dt><dd>시점이 멀수록 사운드의 책임이 커진다는 원리 — 1인칭 FPS와 정반대의 조건에서 같은 "타격감" 문제를 푸는 방식 비교가 유익함</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">레이드 패턴의 청각 콜아웃</div>
+      <dl>
+        <dt>구조</dt><dd>보스의 대사·시전음·전조음이 패턴 예고 역할 — 실제로 플레이어들 사이에서 "보스 대사를 듣고 패턴을 준비한다", "레이드에선 대사·효과음 위주로 설정한다"는 청취 요령이 공유될 정도</dd>
+        <dt>기능</dt><dd>전투 층 — 이펙트가 화면을 덮는 순간에도 살아남는 정보 회선</dd>
+        <dt>포인트</dt><dd>플레이어 커뮤니티가 오디오 설정 가이드를 만들어 공유한다는 사실 자체가 "소리가 공략 정보"라는 증거 — 유저의 청취 문화까지가 사운드 디자인의 결과물</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">무력화·카운터 — 판정의 청각 봉인</div>
+      <dl>
+        <dt>구조</dt><dd>카운터 성공, 무력화 완료 같은 핵심 판정 순간의 명확한 확정음</dd>
+        <dt>기능</dt><dd>보상 층 — 파티 전체가 공유하는 "됐다!"의 순간을 소리가 선언</dd>
+        <dt>포인트</dt><dd>협동 판정의 확정음은 개인 보상음보다 크고 명확해야 함 — FF14 리미트 브레이크와 같은 "공동체 보상음" 계열</dd>
+      </dl>
+    </div>
+    <p class="uncertain">확실하지 않음 표기 — 스마일게이트알피지 오디오 팀의 내부 제작 방식을 상세히 다룬 공개 인터뷰는 찾지 못했습니다. 위 분석은 수상 기록·디렉터 발언·플레이 관찰·커뮤니티의 청취 문화에 기반한 재구성이며, 세부 기법은 추정입니다.</p>
+
+    <h3>③ 무엇을 배울 것인가</h3>
+    <ul class="plain">
+      <li><strong>시점과 사운드 책임의 반비례</strong> — 카메라가 멀어질수록, 화면이 작아질수록 사운드가 체감을 책임집니다. 쿼터뷰·모바일 프로젝트에서 특히 유효한 원리.</li>
+      <li><strong>쾌감 모드와 정보 모드의 전환 설계</strong> — 사냥에서는 쾌감을, 레이드에서는 정보를 우선하는 콘텐츠별 믹스 정책. 한 게임 안에서도 믹스 철학은 하나가 아닙니다.</li>
+      <li><strong>수상 실적이라는 언어</strong> — 게임대상 사운드 부문 같은 공식 실적은 사운드의 가치를 회사에 설득하는 근거가 됩니다. 업계 수상 이력을 아는 것도 실무 교양입니다.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>필드 사냥 10분과 군단장 레이드 10분의 사운드 밀도·우선순위 비교</li>
+        <li>카운터 성공음이 다른 타격음과 어떻게 차별화되어 있는지 분석</li>
+        <li>보스 대사 → 패턴 발동까지의 시간 간격 측정 — 예고 사운드의 리드타임 설계</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="aion2">
+  <div class="wrap">
+    <div class="kicker">06 — NCSOFT / 2025~ / PC·MOBILE</div>
+    <h2>아이온2 — 출시 직후의 사운드, 실시간 관찰기</h2>
+    <p class="meta">엔씨소프트 — 2025년 11월 19일 한국·대만 출시, 언리얼 엔진5 기반, 후판정 수동 전투 채택</p>
+
+    <h3>① 왜 이렇게 표현되었는가</h3>
+    <p>아이온2를 마지막에 둔 이유는 앞의 네 작품과 성격이 다르기 때문입니다. WoW는 20년의 결과를, 검은사막은 리마스터의 기록을 보여주지만, 아이온2는 <em>지금 막 시작된 라이브 서비스의 사운드가 실시간으로 다듬어지는 과정</em>을 보여줍니다. 학습자 입장에서는 완성된 교과서보다 귀한 관찰 대상입니다.</p>
+    <p>설계 조건부터 봅시다. 언리얼 엔진5 기반, 원작 대비 대폭 넓어진 월드, 비행과 수영을 통한 이동, 그리고 <em>후판정 기반 수동 전투</em>. 이 마지막 항목이 사운드에 결정적입니다. 후판정 전투는 입력과 판정 사이의 타이밍 감각이 핵심이라, 타격 확정음이 판정 피드백의 최전선에 섭니다. 소리가 애매하면 전투 감각 전체가 애매해지는 구조입니다.</p>
+    <p>실제로 출시 초기, 패치 이후 타격 사운드가 달라졌다는 유저 반응이 커뮤니티에서 화제가 된 일이 있었습니다. 진위나 의도 여부와 별개로, 이 소동 자체가 중요한 교훈입니다 — 라이브 서비스에서 타격음은 유저가 즉각 감지하고 여론을 형성하는 요소이며, 사운드 패치는 그래픽 패치만큼 공지와 설명이 필요한 운영 행위라는 것.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">후판정 전투의 타격 확정음</div>
+      <dl>
+        <dt>구조</dt><dd>입력 → 모션 → 판정 확정의 타임라인에서 판정 순간에 정렬된 임팩트</dd>
+        <dt>기능</dt><dd>전투 층 — "지금 맞았다/빗나갔다"의 프레임 단위 통보</dd>
+        <dt>포인트</dt><dd>타이밍 기반 전투일수록 사운드 싱크의 허용 오차가 좁아짐 — 애니메이션·판정·사운드 3자의 동기화가 품질의 본체</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">비행 — 아이온 IP의 청각 상징</div>
+      <dl>
+        <dt>구조</dt><dd>날개 전개·활공·상승의 이동 사운드 세트. 비행은 원작부터 이어지는 IP의 핵심 정체성</dd>
+        <dt>기능</dt><dd>세계 층 — 지상과 다른 공기감, 고도감의 청각화</dd>
+        <dt>포인트</dt><dd>IP 계승작의 사운드는 "무엇을 물려받을 것인가"의 결정 — 1부 FF7R·데드 스페이스에서 본 계승 문제의 국산 현재진행형</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">PC·모바일 동시 서비스의 믹스</div>
+      <dl>
+        <dt>구조</dt><dd>PC와 모바일을 아우르는 플랫폼 스펙트럼에서 동일 콘텐츠의 사운드 재생</dd>
+        <dt>기능</dt><dd>운영 층 — 2부 원신에서 다룬 크로스플랫폼 과제의 MMORPG 버전</dd>
+        <dt>포인트</dt><dd>국산 신작 MMORPG의 표준 조건이 된 멀티플랫폼 — 이 과제를 다뤄본 경험이 국내 취업 시장에서 갖는 가치</dd>
+      </dl>
+    </div>
+    <p class="uncertain">확실하지 않음 표기 — 아이온2는 출시 초기 작품이라 오디오 팀의 공식 제작 인터뷰·강연이 아직 공개되지 않았습니다. 이 섹션은 공식 발표(엔진·전투 방식·플랫폼)와 출시 후 커뮤니티 관찰에 기반한 분석이며, 사운드 제작의 내부 사정은 확인된 바 없습니다. 이후 개발진 발표가 나오면 이 자료를 갱신하는 것을 권합니다.</p>
+
+    <h3>③ 무엇을 배울 것인가</h3>
+    <ul class="plain">
+      <li><strong>라이브 관찰이라는 공부법</strong> — 갓 출시된 게임의 패치노트와 사운드 변화를 추적하는 것은 살아 있는 교재입니다. 지금 아이온2를 관찰 일지로 기록하면 어디서도 못 구하는 학습 자료가 됩니다.</li>
+      <li><strong>사운드 패치의 커뮤니케이션</strong> — 소리를 바꾸는 일은 기술 행위이자 운영 행위입니다. 변경 사유를 공지하는 문화가 왜 필요한지 보여주는 실시간 사례.</li>
+      <li><strong>판정 게임의 싱크 감각</strong> — 후판정 전투처럼 타이밍이 핵심인 게임에서는 사운드 지연 몇 프레임이 게임성 문제가 됩니다. 구현·최적화 지식이 사운드 품질에 직결되는 지점.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>일반 공격의 입력~판정~사운드 타이밍을 프레임 단위로 녹화 분석</li>
+        <li>비행 전환 순간의 사운드 시퀀스(도약→날개→활공) 분해</li>
+        <li>패치 전후의 전투 사운드 비교 녹음 — 라이브 서비스 관찰 일지의 시작점으로</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="principles">
+  <div class="wrap">
+    <div class="kicker">07 — DESIGN PRINCIPLES</div>
+    <h2>MMORPG 사운드의 다섯 원칙</h2>
+
+    <div class="principle"><div class="p-num">01</div><div>
+      <h4>거주지의 소리는 손님용 소리와 다르다</h4>
+      <p>수백 시간을 사는 세계의 앰비언스와 스킬음은 첫인상보다 천 번째 인상이 중요합니다. 자극적인 소리는 빨리 늙고, 물성 있는 담백한 소리가 오래 삽니다. WoW의 20년이 그 증명입니다.</p>
+    </div></div>
+
+    <div class="principle"><div class="p-num">02</div><div>
+      <h4>내 소리가 주인공, 남의 소리는 기척</h4>
+      <p>다인 콘텐츠 믹스의 보편 해법 — 타인의 스킬은 존재감 수준으로 감쇠하고, 내 행동과 보스의 위협만 정보 수준으로 유지합니다. WoW와 FF14가 각자의 길로 같은 결론에 도달했습니다.</p>
+    </div></div>
+
+    <div class="principle"><div class="p-num">03</div><div>
+      <h4>기믹 사운드는 어휘 사전이다</h4>
+      <p>시전음·전조음·확정음의 의미를 고정하고 게임 전체에서 일관되게 지키는 것. 반복 콘텐츠에서 소리는 자극이 아니라 언어이며, 언어의 생명은 일관성입니다.</p>
+    </div></div>
+
+    <div class="principle"><div class="p-num">04</div><div>
+      <h4>시점이 멀수록 소리의 책임이 커진다</h4>
+      <p>쿼터뷰·탑뷰처럼 카메라가 먼 게임에서 타격의 체감은 대부분 소리의 몫입니다. 로스트아크의 손맛은 이 원리의 실증 — 화면 크기와 시점을 먼저 확인하고 사운드 예산을 배분할 것.</p>
+    </div></div>
+
+    <div class="principle"><div class="p-num">05</div><div>
+      <h4>운영이 절반이다</h4>
+      <p>리마스터의 우선순위(검은사막), 바꾸면 안 되는 보상음(WoW), 사운드 패치의 공지(아이온2) — MMORPG 사운드 디자이너의 일은 만들기 절반, 운영하기 절반입니다. 라이브 감각은 이력서에 적을 수 있는 역량입니다.</p>
+    </div></div>
+  </div>
+</section>
+
+<section id="practice">
+  <div class="wrap">
+    <div class="kicker">08 — PRACTICE</div>
+    <h2>실습 가이드</h2>
+
+    <div class="sfx">
+      <div class="sfx-name">실습 A — 천 번 들을 스킬음</div>
+      <dl>
+        <dt>내용</dt><dd>가상의 클래스 1종에 핵심 스킬 3개(평타·주력기·궁극기)의 사운드 제작. 완성 후 각 사운드를 30회 연속 재생하는 검수 영상 포함</dd>
+        <dt>목표</dt><dd>반복 내성 설계 — 첫인상과 천 번째 인상의 균형 감각</dd>
+        <dt>확인</dt><dd>30회 연속 재생 후에도 듣기 괴롭지 않으면서, 3종의 위계(평타&lt;주력기&lt;궁극기)가 유지되는가</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">실습 B — 보스 기믹 사운드 타임라인</div>
+      <dl>
+        <dt>내용</dt><dd>가상 보스의 광역기 1종을 시전음(3초 전) → 전개음(1초 전) → 판정음의 3단 구조로 설계하고, 타임라인 문서와 함께 제출</dd>
+        <dt>목표</dt><dd>FF14식 예고-확정 구조 체득 — 소리로 리드타임을 설계하는 훈련</dd>
+        <dt>확인</dt><dd>소리만 듣고 회피 타이밍을 잡을 수 있는가 (동료 블라인드 테스트)</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">실습 C — 다인 믹스 시뮬레이션 (Wwise)</div>
+      <dl>
+        <dt>내용</dt><dd>실습 A의 스킬음을 8개 인스턴스로 동시 재생하는 상황을 Wwise로 구성 — 자기 캐릭터 1개만 풀 정보, 나머지 7개는 감쇠·요약되는 버스 구조 설계</dd>
+        <dt>목표</dt><dd>"내 소리가 주인공" 원칙의 구현 — 보이스 리미트·버스·덕킹의 실전</dd>
+        <dt>확인</dt><dd>8인 동시 재생에서도 자기 스킬의 판정 정보가 손실 없이 들리는가</dd>
+      </dl>
+    </div>
+    <div class="note"><strong>포트폴리오 연결</strong> — 실습 A+B+C를 하나의 "가상 MMORPG 사운드 패키지"로 묶으면 국내 MMORPG 개발사 지원용 포트폴리오의 중심 프로젝트가 됩니다. 아이온2 관찰 일지를 곁들이면 라이브 감각까지 증빙할 수 있습니다.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><strong>참고 자료 및 출처</strong> — 본 자료의 사실 관계는 아래 공개 자료를 기반으로 정리했습니다. 개발자 발언은 해당 매체의 인터뷰·강연을 재정리한 것입니다.</p>
+    <ul class="src-list">
+      <li>블리자드 공식 — "Under the Hood: Anatomy of Sound Design" (WoW 전담 사운드 디자이너 5인, 크리처 보이스 3층 제작법, 필드 레코딩)</li>
+      <li>BBC "In The Studio" 블리자드 취재 정리 — WoW 사운드 10만 개 이상, 존 강도 맵 기반 설계</li>
+      <li>Massively Overpowered — WoW 인벤토리 아이템 물성 사운드 분석</li>
+      <li>PCGamesN — 격전의 아제로스 개발 인터뷰 (자기 중심 신규 믹싱 시스템)</li>
+      <li>Designing Sound — "Psychology of 10 Years of Sound in World of Warcraft" (구 에셋과의 공존, 레벨업 사운드의 보상-반응)</li>
+      <li>RPGFan / PCGamesN / Siliconera — FF14 소켄 마사요시·키누야 고 인터뷰 (2부와 공통 출처)</li>
+      <li>인벤 — [GDC 2018] "검은사막 오디오 리마스터" 류휘만 강연 취재 (테마 시드, 소맥 블렌딩, 다이나미디온, 음악 카테고리 체계)</li>
+      <li>인벤·이투데이·ZDNet 외 — 2019 대한민국 게임대상 로스트아크 6관왕 및 기술창작상 사운드 부문 수상, 금강선 디렉터 수상 소감</li>
+      <li>엔씨소프트 공식 보도자료·나무위키 — 아이온2 출시일, 언리얼 엔진5, 후판정 수동 전투, 월드 스케일 / 커뮤니티(루리웹 등) 출시 초 사운드 패치 반응</li>
+    </ul>
+    <p style="margin-top:24px">엠나인아카데미 게임사운드디자인 과정 · 학습용 자료 · 장르 심화: MMORPG편 (FPS편으로 이어짐)</p>
+  </div>
+</footer>
+
+
+
+</body></html>

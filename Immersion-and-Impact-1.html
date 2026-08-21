@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)https://orpina214-glitch.github.io/Immersion-and-Impact/ -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>현대 게임 SFX 디자인 분석 1부 — 몰입과 임팩트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link href="./css/styles.css" rel="stylesheet">
+<style>
+  :root{
+    --bg:#101319;
+    --panel:#181c26;
+    --panel2:#1f2431;
+    --ink:#e9e7de;
+    --ink-dim:#a9a89f;
+    --line:#2c3242;
+    --accent:#6fb8d4;
+    --l-source:#e4685c;
+    --l-layer:#f2c14e;
+    --l-mw:#7ec97e;
+    --l-rtpc:#c78ae0;
+    --l-mix:#5ca8e4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans KR',-apple-system,'Apple SD Gothic Neo',sans-serif;
+    line-height:1.75;
+    font-size:16px;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:0 20px;}
+
+  header{padding:72px 0 48px;border-bottom:1px solid var(--line);}
+  .era-tag{
+    font-family:'Press Start 2P',monospace;
+    font-size:10px;letter-spacing:2px;
+    color:var(--accent);margin-bottom:20px;
+  }
+  h1{font-size:clamp(26px,5vw,40px);font-weight:700;line-height:1.35;margin-bottom:16px;}
+  .subtitle{color:var(--ink-dim);font-size:15px;max-width:620px;}
+  .hero-wave{display:flex;gap:3px;align-items:flex-end;height:34px;margin-top:32px;}
+  .hero-wave span{width:6px;background:var(--accent);opacity:.85;border-radius:1px;}
+
+  nav.toc{padding:28px 0;border-bottom:1px solid var(--line);}
+  nav.toc ol{
+    list-style:none;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+    gap:8px 24px;
+  }
+  nav.toc a{
+    color:var(--ink-dim);text-decoration:none;font-size:14px;
+    display:flex;gap:10px;align-items:baseline;padding:4px 0;
+  }
+  nav.toc a:hover{color:var(--ink);}
+  nav.toc .num{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--accent);}
+
+  section{padding:56px 0;border-bottom:1px solid var(--line);}
+  .kicker{
+    font-family:'Press Start 2P',monospace;
+    font-size:9px;letter-spacing:2px;
+    color:var(--accent);margin-bottom:14px;text-transform:uppercase;
+  }
+  h2{font-size:24px;font-weight:700;margin-bottom:8px;line-height:1.4;}
+  .meta{color:var(--ink-dim);font-size:13.5px;margin-bottom:24px;}
+  h3{font-size:17px;font-weight:700;margin:32px 0 12px;}
+  p{margin-bottom:14px;}
+  p.lead{font-size:17px;}
+  em{font-style:normal;color:var(--accent);font-weight:500;}
+  .dim{color:var(--ink-dim);}
+  .note{
+    background:var(--panel);
+    border-left:3px solid var(--accent);
+    padding:16px 18px;border-radius:0 8px 8px 0;
+    font-size:14.5px;margin:20px 0;
+  }
+  .note strong{color:var(--accent);}
+
+  /* 시스템 구성 박스 (고전편 칩 박스에 대응) */
+  .chip-box{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px 20px;margin:22px 0;
+  }
+  .chip-box .chip-name{
+    font-family:'Press Start 2P',monospace;
+    font-size:9px;color:var(--ink-dim);letter-spacing:1px;margin-bottom:12px;
+  }
+  .ch-row{display:flex;flex-wrap:wrap;gap:6px;}
+  .ch{
+    font-size:12px;padding:5px 10px;border-radius:4px;
+    background:var(--panel2);border:1px solid var(--line);
+    display:flex;align-items:center;gap:7px;white-space:nowrap;
+  }
+  .ch i{width:8px;height:8px;border-radius:2px;display:inline-block;}
+  .c-source{background:var(--l-source);} .c-layer{background:var(--l-layer);}
+  .c-mw{background:var(--l-mw);} .c-rtpc{background:var(--l-rtpc);} .c-mix{background:var(--l-mix);}
+
+  .sfx{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:20px 22px;margin:18px 0;
+  }
+  .sfx .sfx-name{
+    font-weight:700;font-size:15.5px;margin-bottom:10px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .sfx .sfx-name::before{content:"▶";font-size:10px;color:var(--accent);}
+  .sfx dl{display:grid;grid-template-columns:88px 1fr;gap:6px 14px;font-size:14.5px;}
+  .sfx dt{color:var(--ink-dim);font-weight:500;}
+  .sfx dd{margin:0;}
+  @media(max-width:520px){.sfx dl{grid-template-columns:1fr;gap:2px;}
+    .sfx dt{margin-top:8px;font-size:12.5px;}}
+
+  .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:20px 0;}
+  table{border-collapse:collapse;width:100%;min-width:640px;font-size:13.5px;}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top;}
+  th{background:var(--panel2);font-weight:700;white-space:nowrap;}
+  td{background:var(--panel);}
+  td .small{font-size:12px;color:var(--ink-dim);}
+
+  .principle{display:flex;gap:16px;margin:22px 0;align-items:flex-start;}
+  .principle .p-num{
+    font-family:'Press Start 2P',monospace;
+    font-size:11px;color:var(--accent);padding-top:5px;flex-shrink:0;
+  }
+  .principle h4{font-size:16px;margin-bottom:6px;}
+  .principle p{font-size:14.5px;margin-bottom:0;}
+
+  #gow{--accent:#8fd0e8;} #ff7r{--accent:#7ed89a;} #botw{--accent:#c3d47e;}
+  #doom{--accent:#e8794a;} #deadspace{--accent:#d46a6a;}
+
+  .listen{
+    font-size:14px;background:var(--panel2);
+    border:1px solid var(--line);border-radius:8px;
+    padding:14px 16px;margin:18px 0;
+  }
+  .listen strong{color:var(--accent);}
+  .listen ul{margin:8px 0 0 18px;}
+  .listen li{margin-bottom:5px;}
+
+  footer{padding:48px 0 80px;color:var(--ink-dim);font-size:13px;}
+  .src-list{margin-top:14px;}
+  .src-list li{margin-bottom:6px;word-break:break-all;}
+  ul.plain{margin:0 0 14px 20px;}
+  ul.plain li{margin-bottom:8px;}
+  .bridge{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;padding:6px 0;margin:20px 0;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="era-tag">M9 ACADEMY — MODERN GAME SFX / PART 1 OF 2</div>
+    <h1>현대 게임 SFX 디자인 분석 1부<br><span style="color:var(--accent)">몰입과 임팩트 — 세계를 만드는 소리</span></h1>
+    <p class="subtitle">갓 오브 워 · 파이널 판타지 7 리메이크 · 젤다: 야생의 숨결/왕국의 눈물 · 둠(2016·이터널) · 데드 스페이스 리메이크 —
+    싱글플레이어 계열 다섯 작품을 통해 채널이 무한해진 시대의 새로운 질문, "무엇을 들려주고 무엇을 뺄 것인가"를 분석합니다.
+    2부 「정보와 식별」(경쟁·라이브 서비스 계열)으로 이어집니다.</p>
+    <div class="hero-wave" aria-hidden="true">
+      <span style="height:20%"></span><span style="height:45%"></span><span style="height:80%"></span><span style="height:100%"></span><span style="height:70%"></span><span style="height:90%"></span><span style="height:55%"></span><span style="height:75%"></span><span style="height:100%"></span><span style="height:60%"></span><span style="height:85%"></span><span style="height:40%"></span><span style="height:65%"></span><span style="height:30%"></span><span style="height:50%"></span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <ol>
+      <li><a href="https://orpina214-glitch.github.io/Immersion-and-Impact/#intro"><span class="num">00</span>제약 이후의 시대 — 새로운 문제</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Immersion-and-Impact/#pipeline"><span class="num">01</span>현대 SFX 파이프라인 지도</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Immersion-and-Impact/#gow"><span class="num">02</span>갓 오브 워 (2018)</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Immersion-and-Impact/#ff7r"><span class="num">03</span>파이널 판타지 7 리메이크 (2020)</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Immersion-and-Impact/#botw"><span class="num">04</span>젤다: 야생의 숨결 / 왕국의 눈물</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Immersion-and-Impact/#doom"><span class="num">05</span>둠 2016 · 둠 이터널</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Immersion-and-Impact/#deadspace"><span class="num">06</span>데드 스페이스 리메이크 (2023)</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Immersion-and-Impact/#principles"><span class="num">07</span>1부를 관통하는 다섯 가지 원칙</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Immersion-and-Impact/#bridge"><span class="num">08</span>고전 → 현대 브리지</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Immersion-and-Impact/#practice"><span class="num">09</span>실습 가이드</a></li>
+    </ol>
+  </div>
+</nav>
+
+<section id="intro">
+  <div class="wrap">
+    <div class="kicker">00 — INTRODUCTION</div>
+    <h2>제약 이후의 시대 — 새로운 문제</h2>
+    <p class="lead">고전 시대의 문제가 "채널 4개로 무엇을 할 것인가"였다면, 현대의 문제는 정반대입니다. <em>"무한히 넣을 수 있을 때, 무엇을 빼고 무엇을 들려줄 것인가."</em></p>
+    <p>고전편에서 우리는 제약이 기능을 순수하게 드러내는 과정을 봤습니다. 현대 게임은 그 제약이 사라진 세계입니다. 수백 보이스의 동시 재생, 기가바이트 단위의 샘플, 실시간 DSP. 그런데 이상하게도, 소리를 마음껏 넣을 수 있게 되자 사운드 디자이너의 일은 더 어려워졌습니다. 모든 소리가 울리면 아무 소리도 들리지 않기 때문입니다.</p>
+    <p>그래서 현대 SFX 디자인의 핵심 기술은 세 가지로 요약됩니다. 첫째, <em>레이어링</em> — 하나의 사운드를 여러 층의 소재로 쌓아 서사를 담는 기술. 둘째, <em>시스템 설계</em> — 완성된 소리를 납품하는 게 아니라, 게임 상태에 따라 소리가 실시간으로 변하는 규칙을 설계하는 일. 셋째, <em>믹스</em> — 무엇을 키우고 무엇을 죽일지 우선순위를 정하는 편집자의 일. 1부의 다섯 게임은 각각 이 기술들의 정점을 보여줍니다.</p>
+    <div class="note"><strong>분석 관점 3가지</strong> — 고전편과 동일한 틀로 분석합니다.<br>
+    ① 왜 이렇게 표현되었는가 (기술 환경과 설계 의도)<br>
+    ② 무엇을 표현하고자 했는가 (소리의 기능과 감정)<br>
+    ③ 무엇을 배울 것인가 (여러분의 작업에 가져갈 것)</div>
+  </div>
+</section>
+
+<section id="pipeline">
+  <div class="wrap">
+    <div class="kicker">01 — PIPELINE MAP</div>
+    <h2>현대 SFX 파이프라인 지도</h2>
+    <p>고전편의 "하드웨어 지도"에 대응하는 현대판 지도입니다. 칩이 소리를 결정하던 시대에서, 이제는 <em>파이프라인의 어느 단계에 공을 들였는가</em>가 게임의 소리를 결정합니다.</p>
+    <div class="chip-box">
+      <div class="chip-name">MODERN SFX PIPELINE</div>
+      <div class="ch-row">
+        <span class="ch"><i class="c-source"></i>소스 (폴리·필드 녹음·신스·라이브러리)</span>
+        <span class="ch"><i class="c-layer"></i>DAW 레이어링·에디팅</span>
+        <span class="ch"><i class="c-mw"></i>미들웨어/사운드 엔진 (Wwise·자체 엔진)</span>
+        <span class="ch"><i class="c-rtpc"></i>실시간 파라미터 (RTPC·게임 상태 연동)</span>
+        <span class="ch"><i class="c-mix"></i>런타임 믹스 (HDR·덕킹·오클루전)</span>
+      </div>
+    </div>
+    <div class="tbl-scroll">
+      <table>
+        <tbody><tr><th>게임</th><th>개발사 / 오디오 환경</th><th>이 자료에서 주목할 기술</th></tr>
+        <tr>
+          <td>갓 오브 워 (2018)</td>
+          <td>산타모니카 스튜디오 · Wwise</td>
+          <td>RTPC 거리 연동 무기 사운드 시스템, 씨킹(seek) 재생, 스위트너 레이어</td>
+        </tr>
+        <tr>
+          <td>FF7 리메이크 (2020)</td>
+          <td>스퀘어에닉스 · 자체 사운드 드라이버</td>
+          <td>모션 자동 트리거 시스템(MASTS), 폴리 중심 캐릭터 사운드, 리메이크의 계승 전략</td>
+        </tr>
+        <tr>
+          <td>젤다: 야숨/왕눈 (2017/2023)</td>
+          <td>닌텐도 EPD · 자체 엔진</td>
+          <td>1만 개 이상의 폴리 녹음, 공간별 감쇠·에코 시스템, "비우는" 믹스</td>
+        </tr>
+        <tr>
+          <td>둠 2016 · 이터널 (2016/2020)</td>
+          <td>id 소프트웨어 · id Tech</td>
+          <td>임팩트 레이어링, 무기음에 공간 리버브를 심는 설계, 전투 정보 사운드</td>
+        </tr>
+        <tr>
+          <td>데드 스페이스 리메이크 (2023)</td>
+          <td>EA 모티브 · 프로스트바이트</td>
+          <td>A.L.I.V.E. 시스템(주인공 생체 반응), 오클루전/옵스트럭션, 원작 오디오 "고고학"</td>
+        </tr>
+      </tbody></table>
+    </div>
+    <p class="dim">공통점을 미리 말해두면 — 다섯 게임 모두 "좋은 소리를 만드는 것"보다 <em>"소리가 언제, 어떻게, 얼마나 재생될지를 설계하는 것"</em>에 더 많은 공을 들였습니다. 에셋 제작자에서 시스템 설계자로. 이것이 현대 사운드 디자이너 직무의 실체입니다.</p>
+  </div>
+</section>
+
+<section id="gow">
+  <div class="wrap">
+    <div class="kicker">02 — SANTA MONICA STUDIO / 2018 / PS4</div>
+    <h2>갓 오브 워 — 도끼 한 자루의 사운드 아이덴티티</h2>
+    <p class="meta">리드 사운드 디자이너: 마이크 니더퀠(Mike Niederquell) 외 산타모니카 오디오 팀</p>
+
+    <h3>① 왜 이렇게 표현되었는가</h3>
+    <p>리바이어던 도끼의 리콜(회수)은 이 게임에서 가장 사랑받는 사운드입니다. 던진 도끼가 벽에 박혀 있다가, 버튼을 누르면 공중을 가르며 돌아와 손바닥에 "턱" 하고 잡히는 그 일련의 소리. 개발진 인터뷰에 따르면 이 사운드는 완성된 오디오 파일 하나가 아니라 <em>실시간으로 조립되는 시스템</em>입니다.</p>
+    <p>던지기와 회수는 각각 여러 원샷 레이어가 랜덤 컨테이너 안에서 겹쳐 재생되는 구조이고, 그 트리거 속도와 피치가 '도끼와 플레이어 사이의 거리' RTPC로 실시간 변조됩니다. 던질 때와 돌아올 때 회전 속도가 다르기 때문에 RTPC도 두 개를 따로 팠습니다. 여기에 도끼 강화 레벨에 따라 믹스가 달라지는 "스위트너" 레이어가 회수 시 한 번씩 얹히고, 도끼가 얼마나 멀리 있는지에 따라 이 스위트너의 <em>재생 시작 지점을 탐색(seek)해서</em> 도착 타이밍과 클라이맥스가 정확히 맞아떨어지게 만들었습니다. 번지(Bungie)의 로켓 비행음 기법에서 착안한 접근이라고 디자이너 본인이 밝혔습니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">도끼 리콜 — 회전 → 접근 → 캐치</div>
+      <dl>
+        <dt>구조</dt><dd>거리 RTPC로 변조되는 회전 루프 레이어 + 거리 기반 시킹으로 정렬되는 스위트너 + 손에 잡히는 캐치 원샷</dd>
+        <dt>기능</dt><dd>보이지 않는 곳의 도끼 위치를 소리로 추적하게 하고, 캐치 순간의 촉각적 만족을 극대화</dd>
+        <dt>포인트</dt><dd>"예측 가능한 경험을 소리로 설계했다"는 개발진의 표현 그대로 — 쾌감은 우연이 아니라 타이밍 설계의 결과</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">캐치 ("턱!")</div>
+      <dl>
+        <dt>구조</dt><dd>의외로 단 몇 개의 레이어 — 무겁고 짧은 임팩트 중심</dd>
+        <dt>기능</dt><dd>회수 시퀀스의 종지부. 긴 상승(접근음) 뒤의 짧은 해결이라는 음악적 구조</dd>
+        <dt>포인트</dt><dd>레이어 수가 품질을 결정하지 않음 — 앞의 긴장이 잘 설계되면 해결은 단순해도 강력함</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">무기 업그레이드와 소리의 성장</div>
+      <dl>
+        <dt>구조</dt><dd>도끼 강화 레벨이 스위트너 레이어 믹스를 결정</dd>
+        <dt>기능</dt><dd>성장을 수치가 아닌 소리의 밀도로 체감시킴</dd>
+        <dt>포인트</dt><dd>고전편 록맨 차지샷·소닉 스핀대시의 "피치 = 내부 수치" 문법이 "레이어 믹스 = 성장"으로 진화한 형태</dd>
+      </dl>
+    </div>
+
+    <h3>③ 무엇을 배울 것인가</h3>
+    <ul class="plain">
+      <li><strong>시그니처 사운드 전략</strong> — 게임 하나에 수만 개의 소리가 있어도, 플레이어가 기억하는 건 한두 개입니다. 핵심 메카닉 하나에 사운드 리소스를 집중 투자해 "이 게임의 소리"를 만드는 전략.</li>
+      <li><strong>RTPC 사고방식</strong> — "이 소리는 어떤 게임 변수에 반응해야 하는가"를 먼저 묻는 습관. Wwise를 다룰 때 가장 먼저 연습해볼 지점입니다.</li>
+      <li><strong>레퍼런스의 계보</strong> — 번지의 로켓음 기법을 도끼에 이식했듯, 좋은 디자이너는 타 장르의 해법을 훔쳐옵니다. GDC/개발 인터뷰를 읽는 것이 실무 능력인 이유.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>도끼를 최소 거리/최대 거리에서 회수하며 접근음 길이와 밀도 변화 비교</li>
+        <li>도끼 강화 전후의 리콜 사운드 A/B — 스위트너 레이어 변화 찾기</li>
+        <li>눈 감고 리콜만 듣고 도끼가 어느 방향, 어느 거리에서 오는지 맞혀보기</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="ff7r">
+  <div class="wrap">
+    <div class="kicker">03 — SQUARE ENIX / 2020 / PS4</div>
+    <h2>파이널 판타지 7 리메이크 — 리메이크는 소리를 어떻게 계승하는가</h2>
+    <p class="meta">사운드 디렉터: 이세 마코토(伊勢誠) 외 스퀘어에닉스 사운드부 — CEDEC 어워드 사운드 부문 최우수상 수상작</p>
+
+    <h3>① 왜 이렇게 표현되었는가</h3>
+    <p>고전편에서 FF6의 64KB 오케스트라를 다뤘습니다. 그 계보의 현대편이 FF7 리메이크입니다. 흥미로운 건 개발진의 선택입니다. 이세 마코토는 인터뷰에서 <em>원작(1997)의 효과음에 얽매이지 않기로 했다</em>고 밝혔습니다. 원작과 리메이크 사이의 기술 격차가 너무 커서, 옛 소리를 재현하는 대신 "미드가르라는 세계를 현대적으로 다시 개념화"하는 쪽을 택한 겁니다. 대신 레퍼런스로 삼은 것은 CG 영화 〈어드벤트 칠드런〉 — 이세 본인이 폴리 아티스트로 참여했던 작품입니다.</p>
+    <p>기술적 핵심은 자체 개발한 <em>MASTS(Motion Automated Sound Triggering System)</em>입니다. 캐릭터의 모션 데이터에서 발소리·의상·장비 소리를 자동으로 트리거하는 시스템으로, 전투·탐험·컷신을 가리지 않고 캐릭터 움직임의 소리가 거의 자동으로 재생됩니다. 수작업 사운드 태깅의 시대에서 시스템 기반 자동화로 — 대형 프로젝트의 물량을 감당하는 현대적 해법입니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">캐릭터별 폴리 — 발소리와 장비의 인격</div>
+      <dl>
+        <dt>구조</dt><dd>MASTS 기반 자동 트리거 + 캐릭터별로 구분 설계된 폴리(클라우드의 대검, 티파의 경장, 배럿의 중량감)</dd>
+        <dt>기능</dt><dd>움직임의 소리만으로 캐릭터의 체격·성격·직업을 전달</dd>
+        <dt>포인트</dt><dd>고전편 젤다의 "발소리 = 정보" 원칙이 캐릭터 서사의 영역까지 확장된 형태</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">전투 SFX — 음악 우선 믹스 속의 임팩트</div>
+      <dl>
+        <dt>구조</dt><dd>아이코닉한 원작 스코어를 전면에 세운 믹스 안에서, 대역을 비집고 들어가도록 조각된 타격·마법음</dd>
+        <dt>기능</dt><dd>음악의 감정과 전투 정보의 양립 — 서구 게임보다 음악 비중이 높은 믹스라는 점을 개발 관계자도 언급</dd>
+        <dt>포인트</dt><dd>믹스 철학은 문화권·IP마다 다름. "정답 믹스"는 없고 "이 게임의 믹스"가 있을 뿐</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">계승의 순간들</div>
+      <dl>
+        <dt>구조</dt><dd>전투 승리 팡파르, 메뉴 조작음 등 상징적 사운드의 음형을 현대 음색으로 재제작</dd>
+        <dt>기능</dt><dd>23년 전 플레이어의 청각 기억을 소환하는 노스탤지어 장치</dd>
+        <dt>포인트</dt><dd>"전부 새로 만들되, 기억의 앵커는 남긴다" — 리메이크 사운드의 표준 전략. 고전편에서 본 젤다 징글 계승과 같은 원리</dd>
+      </dl>
+    </div>
+
+    <h3>③ 무엇을 배울 것인가</h3>
+    <ul class="plain">
+      <li><strong>리메이크 브리프 읽는 법</strong> — "원작을 존중하라"는 지시가 "원작 소리를 복제하라"는 뜻이 아님을 보여주는 사례. 무엇이 기억의 앵커이고 무엇이 갱신 대상인지 구분하는 판단력.</li>
+      <li><strong>자동화 시스템의 가치</strong> — 수천 개 애니메이션에 일일이 사운드를 붙일 수 없는 규모에서는 트리거 시스템 설계가 곧 사운드 디자인입니다. 툴·파이프라인 이해가 채용 요건인 이유.</li>
+      <li><strong>영상 폴리 → 게임의 기술 이전</strong> — 어드벤트 칠드런의 폴리 경험이 게임에 이식됐듯, 영상 사운드 경력은 게임에서도 자산이 됩니다. 영상 쪽 경험이 있다면 특히 눈여겨볼 관점.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>원작(1997)과 리메이크의 같은 장면(마코로 1번 폭파 등) 사운드 비교</li>
+        <li>클라우드/티파/배럿 셋의 달리기 소리만 따로 듣고 캐릭터 구분 훈련</li>
+        <li>전투 중 음악과 SFX의 대역 분담 — 스펙트럼 애널라이저 띄워놓고 관찰</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="botw">
+  <div class="wrap">
+    <div class="kicker">04 — NINTENDO EPD / 2017·2023 / SWITCH</div>
+    <h2>젤다: 야생의 숨결 / 왕국의 눈물 — 비우는 사운드 디자인</h2>
+    <p class="meta">사운드 총괄: 와카이 하지메(若井淑) / 왕눈 리드 사운드 엔지니어: 오사다 준야(長田潤也) 외</p>
+
+    <h3>① 왜 이렇게 표현되었는가</h3>
+    <p>오픈월드 장르의 통념은 "채워라"였습니다. 광활한 맵, 끊이지 않는 BGM, 빽빽한 앰비언스. 야생의 숨결은 정반대로 갔습니다. 오버월드 음악은 드문드문한 피아노 조각으로 물러나고, 그 빈자리를 <em>바람, 풀, 새, 그리고 링크의 발소리</em>가 채웁니다. 앰비언트 사운드가 팀의 최우선 과제였고, 플레이어는 처음부터 끝까지 그 소리들에 노출됩니다.</p>
+    <p>그 "자연스러움"의 뒤에는 물량이 있습니다. 개발 블로그에 따르면 이 게임을 위해 <em>1만 개가 넘는 소리</em>가 전문 스튜디오에서 녹음됐습니다. 얼음판을 실제로 밟아 깨뜨리고(밟으면 녹고 깨져서 녹음이 몹시 어려웠다는 후일담), 여러 종류의 모래를 섞어 발소리를 만들고, 스튜디오가 풀냄새로 가득 찰 만큼 실제 풀을 썼습니다. 링크의 발소리는 여성 폴리 아티스트가 연기했습니다. 발소리는 속도, 지면 재질, 신발, 은신 상태에 따라 달라지고, 등에 멘 무기와 방패가 방어구·은신 정도에 따라 다르게 덜그럭거립니다.</p>
+    <p>속편 왕국의 눈물에서는 이 철학이 시스템으로 진화했습니다. GDC 2024 강연에서 오사다 준야는 하늘·동굴·복잡한 지형 등 <em>공간의 형태에 따라 소리의 감쇠와 에코가 자연스럽게 달라지는</em> 설계를 소개했습니다. 공간이 소리를 만드는 게 아니라, 소리가 공간을 증명하는 구조입니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">발소리 — 세계와의 접촉면</div>
+      <dl>
+        <dt>구조</dt><dd>재질 × 속도 × 신발 × 은신 상태의 매트릭스로 분기하는 폴리 발소리 + 장비 덜그럭 레이어</dd>
+        <dt>기능</dt><dd>지형 정보 전달 + "내가 이 세계를 딛고 있다"는 존재감의 지속적 확인</dd>
+        <dt>포인트</dt><dd>가장 많이 재생되는 소리에 가장 많은 공을 들인다는 우선순위 판단 — 고전편 원칙 3(반복 내성)의 현대적 극한</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">침묵과 여백</div>
+      <dl>
+        <dt>구조</dt><dd>BGM이 물러난 자리의 바람·환경음, 그리고 의도된 무음의 순간들</dd>
+        <dt>기능</dt><dd>고독감·평온함의 정서 + 이벤트 사운드(적 조우, 사당 발견)의 대비 극대화</dd>
+        <dt>포인트</dt><dd>"넣지 않는 결정"도 사운드 디자인. 조용한 바탕이 있어야 작은 소리가 정보가 됨</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">계승된 징글들</div>
+      <dl>
+        <dt>구조</dt><dd>퍼즐 해결음, 아이템 획득 팡파르 등 1986년산 음형의 현대적 리보이싱</dd>
+        <dt>기능</dt><dd>미니멀한 사운드스케이프 속에서 보상 순간만은 명확한 "젤다어(語)"로 발화</dd>
+        <dt>포인트</dt><dd>고전편 젤다 섹션과 직결 — 37년간 유지된 어콘이 실제로 작동하는 현장</dd>
+      </dl>
+    </div>
+
+    <h3>③ 무엇을 배울 것인가</h3>
+    <ul class="plain">
+      <li><strong>빼기의 용기</strong> — 클라이언트(또는 디렉터)는 대개 "소리를 더 채워달라"고 요구합니다. 왜 비웠는지 논리로 설득할 수 있는 디자이너가 되는 것.</li>
+      <li><strong>폴리의 물량과 디테일</strong> — 1만 개 녹음이라는 숫자는 "자연스러움은 공짜가 아니다"라는 뜻입니다. 폴리 녹음을 직접 경험해봐야 하는 이유.</li>
+      <li><strong>비선형 오디오의 교과서</strong> — 이 게임은 해외 게임 오디오 교육 과정에서 비선형 오디오의 정점 사례로 실제 교재로 쓰입니다. 전투 개시·발각·타격 여부에 따라 조각 단위로 반응하는 음악과 SFX의 통합 설계까지 함께 보세요.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>같은 이동 구간을 풀밭 → 바위 → 눈밭 순으로 걸으며 발소리 매트릭스 청취</li>
+        <li>은신 상태 전환 시 장비 덜그럭 소리 변화 확인</li>
+        <li>왕눈의 동굴 진입 전후 에코 변화 — 공간이 바뀌는 순간의 소리 처리</li>
+        <li>고전편에서 다룬 1986년 시크릿 징글과 현행 버전 연속 재생 비교</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="doom">
+  <div class="wrap">
+    <div class="kicker">05 — ID SOFTWARE / 2016·2020 / PC·CONSOLE</div>
+    <h2>둠 2016 · 둠 이터널 — 폭력의 오케스트레이션</h2>
+    <p class="meta">id 소프트웨어 오디오 팀 (둠 2016 개발진 Q&amp;A 기반 + 이터널로의 확장)</p>
+
+    <h3>① 왜 이렇게 표현되었는가</h3>
+    <p>둠 리부트의 사운드 브리프는 한 단어였습니다 — <em>비서럴(visceral, 내장을 울리는)</em>. 개발진 Q&amp;A에서 한 디자이너는 첫 과제였던 아머 픽업 사운드를 이렇게 설명합니다. 커다란 금속 임팩트들을 살짝 디스토션 걸어 레이어링했고, "청키(chunky)해야 했다"고. 파편 하나를 주웠을 뿐인데 생존 확률이 올라갔다는 사실을 소리가 몸으로 전달해야 한다는 겁니다. 고전편 마리오의 코인이 "밝은 보상"이었다면, 둠의 아머는 "묵직한 보상"입니다. 같은 기능, 완전히 다른 미학 — 게임의 정체성이 보상음의 질감까지 결정합니다.</p>
+    <p>기술적으로 흥미로운 결정 하나: 무기 발사음에 <em>공간별 리버브를 미리 구워(bake) 레이어로 심었습니다</em>. 어느 공간에서 쏘느냐에 따라 발사음에 포함된 리버브 레이어가 달라지는 방식으로, 실시간 리버브 연산에만 의존하지 않고 "그 공간에서 쏜 총소리"의 완성된 질감을 보장한 겁니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">슈퍼 샷건 — 쾌감의 물리학</div>
+      <dl>
+        <dt>구조</dt><dd>발사 임팩트 + 공간 리버브 레이어 + 탄피 배출·장전의 기계식 폴리</dd>
+        <dt>기능</dt><dd>화력의 체감. 장전음의 기계적 디테일이 "다음 한 방"의 의식(儀式)이 됨</dd>
+        <dt>포인트</dt><dd>총기음은 발사 순간보다 전후(장전·탄피·테일)가 캐릭터를 만든다는 것을 보여주는 사례</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">글로리킬 — 폭력의 촉각화</div>
+      <dl>
+        <dt>구조</dt><dd>근접 처형 연출에 맞춘 고밀도 고어 폴리 (개발진이 사내 "트림 재능 기부자"까지 동원했다는 제작 일화)</dd>
+        <dt>기능</dt><dd>처형 = 자원 회복이라는 핵심 루프의 보상을 청각적 카타르시스로 봉인</dd>
+        <dt>포인트</dt><dd>불쾌할 수 있는 소재를 게임 톤 안에서 "만화적 과장"으로 조율하는 균형 감각</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">전투 정보 사운드 — 악마의 식별음</div>
+      <dl>
+        <dt>구조</dt><dd>악마 종별로 구분되는 울음·이동·공격 예고음</dd>
+        <dt>기능</dt><dd>초고속 전투에서 화면 밖 위협의 종류와 방향을 청각으로 선(先)전달</dd>
+        <dt>포인트</dt><dd>2부에서 다룰 "정보로서의 소리"가 싱글플레이어 액션에도 똑같이 적용됨을 보여주는 다리 — 쾌감과 정보는 대립하지 않음</dd>
+      </dl>
+    </div>
+
+    <h3>③ 무엇을 배울 것인가</h3>
+    <ul class="plain">
+      <li><strong>형용사를 스펙으로 번역하기</strong> — "비서럴하게", "청키하게" 같은 디렉터의 형용사를 레이어 구성·디스토션·대역 설계로 번역하는 능력. 실무 커뮤니케이션의 핵심 기술입니다.</li>
+      <li><strong>임팩트 레이어링의 기본기</strong> — 저역 펀치 + 중역 바디 + 고역 트랜지언트 + 공간 테일이라는 임팩트 4층 구조를 가장 배우기 좋은 레퍼런스.</li>
+      <li><strong>고전과의 연결</strong> — 고전편 파이널 파이트에서 본 "타격감 = 소리 절반"의 원칙이 30년 뒤 어떤 밀도로 진화했는지 직접 비교할 것.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>같은 무기를 좁은 복도와 넓은 홀에서 발사 — 리버브 질감 차이 청취</li>
+        <li>슈퍼 샷건 1발을 발사~재장전까지 타임라인으로 쪼개 레이어 구간 표시</li>
+        <li>음악(믹 고든의 메탈 스코어)이 극도로 큰 믹스에서 SFX가 살아남는 대역 전략 관찰</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="deadspace">
+  <div class="wrap">
+    <div class="kicker">06 — EA MOTIVE / 2023 / PS5·XSX·PC</div>
+    <h2>데드 스페이스 리메이크 — 공포를 시스템으로 짓다</h2>
+    <p class="meta">오디오 디렉터: 올리비에 아슬랭(Olivier Asselin) 외 EA 모티브 오디오 팀</p>
+
+    <h3>① 왜 이렇게 표현되었는가</h3>
+    <p>호러는 사운드 장르입니다. 그리고 데드 스페이스 리메이크는 그 명제를 시스템 수준까지 밀어붙였습니다. 상징이 <em>A.L.I.V.E. 시스템</em>입니다. Adrenaline(아드레날린), Limbic System Response(변연계 반응), Intelligent Dialogue(지능형 대사), Vitals(생체 신호), Exertions(육체적 부하)의 약자로, 주인공 아이작의 심박·호흡·대사가 게임 상태에 따라 실시간으로 변하는 시스템입니다. 오래 달리면 숨이 차고, 점프 스케어를 당하면 아드레날린이 치솟아 호흡이 빨라지며, 피로도에 따라 같은 대사도 다른 버전으로 재생됩니다. 개발진은 아이작 나이·체격대 평균 남성의 안정 시 심박수까지 리서치했습니다.</p>
+    <p>또 하나의 축은 <em>오클루전과 옵스트럭션</em>입니다. 소리가 재질과 벽을 통과하며 어떻게 감쇠·필터링되는지, 복도를 따라 어떻게 투사되는지를 정밀하게 처리해, "보이지 않는 곳에서 나는 소리"의 위치와 거리를 신뢰할 수 있게 만들었습니다. 호러에서 이 신뢰가 왜 중요한가 — 플레이어가 소리를 믿어야, 소리로 겁줄 수 있기 때문입니다.</p>
+    <p>동시에 이 프로젝트는 리메이크로서 원작(2008)의 오디오 소스 파일을 파고드는 <em>"고고학"</em> 작업을 병행했습니다. 플라즈마 커터에는 더 크런치한 레이어가 더해지고 펄스 라이플은 덜 먹먹하게 — 원작의 아이코닉한 음형을 보존하며 해상도를 올리는 접근입니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">A.L.I.V.E. — 주인공의 몸이 내는 소리</div>
+      <dl>
+        <dt>구조</dt><dd>심박·호흡·대사·기합이 아드레날린/피로/스트레스 변수로 분기하는 상태 기계</dd>
+        <dt>기능</dt><dd>공포의 1차 전달자를 몬스터가 아닌 "나 자신의 몸"으로 설정 — 플레이어와 아바타의 생리적 동기화</dd>
+        <dt>포인트</dt><dd>SFX·VO·시스템 설계의 경계가 무너진 현대적 직무 형태. "보이스 디자이너"가 별도 직군인 이유</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">오클루전 — 벽 너머의 공포</div>
+      <dl>
+        <dt>구조</dt><dd>재질·구조별 감쇠와 필터, 통로를 따라 전파되는 사운드 프로젝션</dd>
+        <dt>기능</dt><dd>네크로모프의 위치 정보를 "정확히, 그러나 불완전하게" 전달해 상상 공포를 증폭</dd>
+        <dt>포인트</dt><dd>정보의 정확도가 아니라 신뢰도가 공포를 만든다 — 은폐된 정보 설계의 정석</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">플라즈마 커터 — 계승과 해상도</div>
+      <dl>
+        <dt>구조</dt><dd>원작 음형 위에 크런치 레이어 추가, 현대적 다이내믹스로 재믹스</dd>
+        <dt>기능</dt><dd>시리즈 팬의 청각 기억 보존 + 신규 플레이어 기준의 임팩트 확보</dd>
+        <dt>포인트</dt><dd>FF7R과 같은 과제의 다른 해법 — FF7R은 "새로 개념화", 데드 스페이스는 "원본 발굴 + 증축". 리메이크 사운드의 두 노선을 비교할 것</dd>
+      </dl>
+    </div>
+
+    <h3>③ 무엇을 배울 것인가</h3>
+    <ul class="plain">
+      <li><strong>공포는 볼륨이 아니라 설계</strong> — 큰 소리가 아니라 침묵, 신뢰, 불완전한 정보가 공포를 만듭니다. 고전편 젤다의 "정보 전달"이 뒤집힌 형태 — 정보를 일부러 흐리는 디자인.</li>
+      <li><strong>주인공도 사운드 소스다</strong> — 발소리 너머, 호흡·심박·대사까지 포함한 플레이어 캐릭터 사운드의 전체 설계라는 관점.</li>
+      <li><strong>리메이크 포트폴리오 소재로 최적</strong> — "원작 사운드 분석 → 보존할 음형 정의 → 현대적 재설계"라는 이 게임의 프로세스는 그대로 포트폴리오 리디자인 작업의 모범 절차입니다.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>모티브가 공개한 원작/리메이크 무기음 비교 영상으로 레이어 변화 분석</li>
+        <li>전투 직후 아이작의 호흡 회복 곡선 청취 — 상태 변수의 감쇠 속도 추정</li>
+        <li>문 하나를 사이에 둔 네크로모프 소리 → 문이 열리는 순간의 필터 해제 청취</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="principles">
+  <div class="wrap">
+    <div class="kicker">07 — DESIGN PRINCIPLES</div>
+    <h2>1부를 관통하는 다섯 가지 원칙</h2>
+    <p>다섯 게임의 공통 구조를 뽑으면, 현대 싱글플레이어 SFX 디자인의 골격이 나옵니다.</p>
+
+    <div class="principle"><div class="p-num">01</div><div>
+      <h4>에셋이 아니라 시스템을 설계한다</h4>
+      <p>도끼 리콜의 RTPC, FF7R의 MASTS, 데드 스페이스의 A.L.I.V.E. — 다섯 게임 모두 "완성된 소리 파일"이 아니라 "소리가 변하는 규칙"이 핵심이었습니다. 현대 사운드 디자이너의 이력서에서 미들웨어 항목이 DAW 항목만큼 중요한 이유입니다.</p>
+    </div></div>
+
+    <div class="principle"><div class="p-num">02</div><div>
+      <h4>레이어는 서사다</h4>
+      <p>임팩트 하나에도 저역 펀치, 중역 바디, 고역 트랜지언트, 공간 테일, 그리고 강화 레벨에 따라 붙는 스위트너까지 — 각 레이어가 각자의 정보를 나릅니다. 레이어를 "소리를 크게 하려고" 쌓으면 소음이 되고, "정보를 더하려고" 쌓으면 디자인이 됩니다.</p>
+    </div></div>
+
+    <div class="principle"><div class="p-num">03</div><div>
+      <h4>가장 자주 들리는 소리에 가장 공을 들인다</h4>
+      <p>젤다의 발소리, 둠의 샷건, 갓 오브 워의 도끼 — 플레이 시간의 대부분을 차지하는 소리가 게임의 인상을 결정합니다. 화려한 컷신 사운드보다 코어 루프 사운드가 우선입니다.</p>
+    </div></div>
+
+    <div class="principle"><div class="p-num">04</div><div>
+      <h4>침묵과 여백도 설계 대상이다</h4>
+      <p>야숨의 빈 들판, 데드 스페이스의 조용한 복도. 조용한 바탕이 있어야 작은 소리가 정보가 되고 큰 소리가 사건이 됩니다. 다이내믹 레인지는 믹스 엔지니어만의 일이 아니라 디자인 단계의 결정입니다.</p>
+    </div></div>
+
+    <div class="principle"><div class="p-num">05</div><div>
+      <h4>계승은 복제가 아니다</h4>
+      <p>FF7R은 새로 개념화하며 앵커만 남겼고, 데드 스페이스는 원본을 발굴해 증축했고, 젤다는 37년 된 징글을 리보이싱했습니다. 방법은 달라도 원리는 하나 — 플레이어의 청각 기억에서 무엇이 본질인지 정의한 뒤에 손을 대는 것.</p>
+    </div></div>
+  </div>
+</section>
+
+<section id="bridge">
+  <div class="wrap">
+    <div class="kicker">08 — BRIDGE</div>
+    <h2>고전 → 현대 브리지</h2>
+    <p>고전편에서 도출한 원칙이 1부의 게임들에서 어떻게 진화했는지 한 표로 잇습니다. 두 자료를 관통하는 핵심 정리이자, 면접에서 "고전 게임에서 뭘 배웠나"는 질문에 답할 재료입니다.</p>
+    <div class="tbl-scroll bridge">
+      <table style="min-width:680px">
+        <tbody><tr><th>고전 시대의 원칙</th><th>고전 사례</th><th>현대적 진화</th><th>현대 사례</th></tr>
+        <tr>
+          <td>기능이 먼저다</td>
+          <td>젤다 시크릿 징글의 정답 통보</td>
+          <td>기능이 시스템 변수와 연동됨</td>
+          <td>데드 스페이스의 오클루전 기반 위치 정보</td>
+        </tr>
+        <tr>
+          <td>느낌의 번역 (추상화)</td>
+          <td>마리오 점프의 상행 스윕</td>
+          <td>물리·거리·상태의 실시간 번역</td>
+          <td>갓 오브 워 도끼의 거리 RTPC 변조</td>
+        </tr>
+        <tr>
+          <td>반복 내성</td>
+          <td>코인·링·버스터의 짧고 정돈된 음형</td>
+          <td>랜덤 컨테이너·베리에이션·자동 트리거</td>
+          <td>FF7R MASTS, 야숨 발소리 매트릭스</td>
+        </tr>
+        <tr>
+          <td>채널의 외교 (음악↔SFX)</td>
+          <td>록맨의 채널 양보 설계</td>
+          <td>런타임 믹스 (HDR·덕킹·대역 분담)</td>
+          <td>둠의 메탈 스코어 속 SFX 대역 전략</td>
+        </tr>
+        <tr>
+          <td>제약 = 아이덴티티</td>
+          <td>펄스파 점프음, FM 링, 8kHz 펀치</td>
+          <td>선택 = 아이덴티티 (무엇을 비울 것인가)</td>
+          <td>야숨의 침묵, 둠의 "청키" 미학</td>
+        </tr>
+      </tbody></table>
+    </div>
+    <p class="dim">요약하면 — 제약이 사라진 자리에 <em>선택</em>이 들어왔습니다. 고전 디자이너는 할 수 없는 것들 사이에서 길을 찾았고, 현대 디자이너는 할 수 있는 것들 사이에서 길을 버립니다. 어느 쪽이든, 좋은 사운드는 언제나 결정의 결과물입니다.</p>
+  </div>
+</section>
+
+<section id="practice">
+  <div class="wrap">
+    <div class="kicker">09 — PRACTICE</div>
+    <h2>실습 가이드</h2>
+
+    <div class="sfx">
+      <div class="sfx-name">실습 A — 거리 RTPC 사운드 (Wwise)</div>
+      <dl>
+        <dt>내용</dt><dd>"던지고 회수하는 무기" 사운드를 Wwise로 구현. 거리 RTPC 하나로 피치·볼륨·레이어 믹스가 변하는 구조 설계</dd>
+        <dt>목표</dt><dd>갓 오브 워식 시스템 사고 체득 — 에셋 3~4개로 무한한 변주 만들기</dd>
+        <dt>확인</dt><dd>Unity/언리얼 연동 데모에서 거리 변화가 소리로 읽히는가</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">실습 B — 임팩트 4층 레이어링</div>
+      <dl>
+        <dt>내용</dt><dd>저역 펀치 / 중역 바디 / 고역 트랜지언트 / 공간 테일 4층 구조로 무기 발사음 1종 제작. 각 레이어를 솔로로 들려주는 분해 영상 포함</dd>
+        <dt>목표</dt><dd>둠식 임팩트 설계의 기본기 + 레이어별 역할 언어화</dd>
+        <dt>확인</dt><dd>레이어 하나를 빼면 무엇이 사라지는지 설명할 수 있는가</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">실습 C — 고전 SFX의 현대 리메이크</div>
+      <dl>
+        <dt>내용</dt><dd>고전편에서 분석한 SFX 1종(젤다 징글, 록맨 버스터 등)을 골라 ① 보존할 음형 정의 → ② 현대적 재설계 → ③ 비교 문서 작성</dd>
+        <dt>목표</dt><dd>FF7R·데드 스페이스의 리메이크 프로세스를 소규모로 체험</dd>
+        <dt>확인</dt><dd>원본을 아는 사람이 "그 소리"로 인지하면서도 현대적으로 들리는가</dd>
+      </dl>
+    </div>
+    <div class="note"><strong>포트폴리오 연결</strong> — 실습 A는 미들웨어 역량 증빙, 실습 C는 리디자인 역량 증빙으로 포트폴리오에 바로 배치 가능합니다. 특히 실습 C는 고전편 자료와 세트로 구성하면 "분석 → 재설계"의 서사가 생겨 면접에서 설명하기 좋습니다.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><strong>참고 자료 및 출처</strong> — 본 자료의 사실 관계는 아래 공개 자료를 기반으로 정리했습니다. 개발자 발언은 해당 매체의 인터뷰·강연을 재정리한 것입니다.</p>
+    <ul class="src-list">
+      <li>A Sound Effect — "Behind the glorious sound of God of War" (마이크 니더퀠 인터뷰: RTPC·시킹·스위트너 시스템)</li>
+      <li>Audiokinetic 블로그 / A Sound Effect — "The Sound of FINAL FANTASY VII REMAKE" (이세 마코토: MASTS, 어드벤트 칠드런 레퍼런스)</li>
+      <li>Final Fantasy Wiki — FF7 리메이크 CEDEC 어워드 사운드 부문 수상</li>
+      <li>닌텐도 공식 블로그·채용 사이트 (Nintendo Everything 번역) — 야숨 1만 개 이상 폴리 녹음, 얼음·모래·풀 녹음 일화, 링크 발소리 폴리</li>
+      <li>GDC 2024 — "Tunes of the Kingdom" (오사다 준야: 왕눈의 공간별 감쇠·에코) / A Sound Effect 요약</li>
+      <li>iMore — 와카이 하지메 발언 정리 (앰비언트 우선, 발소리·장비 사운드 분기)</li>
+      <li>DigiPen — 야숨을 비선형 오디오 교재로 쓰는 교육 사례</li>
+      <li>ADSR Sounds — "The Sound Design of DOOM" 개발진 Q&amp;A (아머 픽업, 무기 리버브 베이크, 글로리킬 제작기)</li>
+      <li>EA 공식 / Windows Central / Inverse / A Sound Effect — 데드 스페이스 리메이크 오디오 라이브스트림 (A.L.I.V.E., 오클루전, 무기음 비교, 원작 오디오 고고학)</li>
+    </ul>
+    <p style="margin-top:24px">엠나인아카데미 게임사운드디자인 과정 · 학습용 자료 · 2부 「정보와 식별」로 이어짐</p>
+  </div>
+</footer>
+
+
+
+</body></html>

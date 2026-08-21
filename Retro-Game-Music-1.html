@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)https://orpina214-glitch.github.io/Retro-game-music-1/ -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>고전 게임음악 레퍼런스 분석 1부 — 문법의 탄생</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link href="./css/styles.css" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12111a;
+    --panel:#1a1926;
+    --panel2:#222031;
+    --ink:#eae7de;
+    --ink-dim:#a8a69e;
+    --line:#2f2c42;
+    --accent:#e0b34e;
+    --l-mel:#e4685c;
+    --l-harm:#5ca8e4;
+    --l-bass:#7ec97e;
+    --l-perc:#8d8d8d;
+    --l-form:#c78ae0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans KR',-apple-system,'Apple SD Gothic Neo',sans-serif;
+    line-height:1.75;
+    font-size:16px;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:0 20px;}
+
+  header{padding:72px 0 48px;border-bottom:1px solid var(--line);}
+  .audience-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(224,179,78,.12);
+    border:1px solid var(--accent);
+    color:var(--accent);
+    font-size:13.5px;font-weight:700;
+    padding:8px 16px;border-radius:999px;
+    margin-bottom:22px;letter-spacing:.3px;
+  }
+  .audience-badge::before{content:"●";font-size:8px;}
+  .era-tag{
+    font-family:'Press Start 2P',monospace;
+    font-size:10px;letter-spacing:2px;
+    color:var(--accent);margin-bottom:20px;
+  }
+  h1{font-size:clamp(26px,5vw,40px);font-weight:700;line-height:1.35;margin-bottom:16px;}
+  .subtitle{color:var(--ink-dim);font-size:15px;max-width:620px;}
+  .hero-staff{margin-top:32px;height:40px;position:relative;}
+  .hero-staff .line{position:absolute;left:0;right:0;height:1px;background:var(--line);}
+  .hero-staff .note{position:absolute;width:9px;height:9px;border-radius:50%;background:var(--accent);}
+
+  nav.toc{padding:28px 0;border-bottom:1px solid var(--line);}
+  nav.toc ol{
+    list-style:none;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+    gap:8px 24px;
+  }
+  nav.toc a{
+    color:var(--ink-dim);text-decoration:none;font-size:14px;
+    display:flex;gap:10px;align-items:baseline;padding:4px 0;
+  }
+  nav.toc a:hover{color:var(--ink);}
+  nav.toc .num{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--accent);}
+
+  section{padding:56px 0;border-bottom:1px solid var(--line);}
+  .kicker{
+    font-family:'Press Start 2P',monospace;
+    font-size:9px;letter-spacing:2px;
+    color:var(--accent);margin-bottom:14px;text-transform:uppercase;
+  }
+  h2{font-size:24px;font-weight:700;margin-bottom:8px;line-height:1.4;}
+  .meta{color:var(--ink-dim);font-size:13.5px;margin-bottom:24px;}
+  h3{font-size:17px;font-weight:700;margin:32px 0 12px;}
+  p{margin-bottom:14px;}
+  p.lead{font-size:17px;}
+  em{font-style:normal;color:var(--accent);font-weight:500;}
+  .dim{color:var(--ink-dim);}
+  .note{
+    background:var(--panel);
+    border-left:3px solid var(--accent);
+    padding:16px 18px;border-radius:0 8px 8px 0;
+    font-size:14.5px;margin:20px 0;
+  }
+  .note strong{color:var(--accent);}
+  .uncertain{
+    font-size:13px;color:var(--ink-dim);
+    border-top:1px dashed var(--line);
+    margin-top:18px;padding-top:10px;
+  }
+
+  .chip-box{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px 20px;margin:22px 0;
+  }
+  .chip-box .chip-name{
+    font-family:'Press Start 2P',monospace;
+    font-size:9px;color:var(--ink-dim);letter-spacing:1px;margin-bottom:12px;
+  }
+  .ch-row{display:flex;flex-wrap:wrap;gap:6px;}
+  .ch{
+    font-size:12px;padding:5px 10px;border-radius:4px;
+    background:var(--panel2);border:1px solid var(--line);
+    display:flex;align-items:center;gap:7px;white-space:nowrap;
+  }
+  .ch i{width:8px;height:8px;border-radius:2px;display:inline-block;}
+  .c-mel{background:var(--l-mel);} .c-harm{background:var(--l-harm);}
+  .c-bass{background:var(--l-bass);} .c-perc{background:var(--l-perc);}
+  .c-form{background:var(--l-form);}
+
+  .sfx{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:20px 22px;margin:18px 0;
+  }
+  .sfx .sfx-name{
+    font-weight:700;font-size:15.5px;margin-bottom:10px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .sfx .sfx-name::before{content:"♪";font-size:13px;color:var(--accent);}
+  .sfx dl{display:grid;grid-template-columns:88px 1fr;gap:6px 14px;font-size:14.5px;}
+  .sfx dt{color:var(--ink-dim);font-weight:500;}
+  .sfx dd{margin:0;}
+  @media(max-width:520px){.sfx dl{grid-template-columns:1fr;gap:2px;}
+    .sfx dt{margin-top:8px;font-size:12.5px;}}
+
+  .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:20px 0;}
+  table{border-collapse:collapse;width:100%;min-width:640px;font-size:13.5px;}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top;}
+  th{background:var(--panel2);font-weight:700;white-space:nowrap;}
+  td{background:var(--panel);}
+
+  .principle{display:flex;gap:16px;margin:22px 0;align-items:flex-start;}
+  .principle .p-num{
+    font-family:'Press Start 2P',monospace;
+    font-size:11px;color:var(--accent);padding-top:5px;flex-shrink:0;
+  }
+  .principle h4{font-size:16px;margin-bottom:6px;}
+  .principle p{font-size:14.5px;margin-bottom:0;}
+
+  #mario{--accent:#e4685c;} #dq{--accent:#e0b34e;} #cv{--accent:#c26a5a;}
+  #ys{--accent:#5c9de4;} #mm2{--accent:#5cc8e4;} #tetris{--accent:#9a8ae0;}
+
+  .listen{
+    font-size:14px;background:var(--panel2);
+    border:1px solid var(--line);border-radius:8px;
+    padding:14px 16px;margin:18px 0;
+  }
+  .listen strong{color:var(--accent);}
+  .listen ul{margin:8px 0 0 18px;}
+  .listen li{margin-bottom:5px;}
+
+  footer{padding:48px 0 80px;color:var(--ink-dim);font-size:13px;}
+  .src-list{margin-top:14px;}
+  .src-list li{margin-bottom:6px;word-break:break-all;}
+  ul.plain{margin:0 0 14px 20px;}
+  ul.plain li{margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="audience-badge">엠나인아카데미 게임음악작곡 과정 수강생용 학습자료</div>
+    <div class="era-tag">M9 ACADEMY — GAME MUSIC REFERENCE / PART 1 OF 2</div>
+    <h1>고전 게임음악 레퍼런스 분석 1부<br><span style="color:var(--accent)">문법의 탄생 — 8비트 시대의 작곡</span></h1>
+    <p class="subtitle">슈퍼 마리오 브라더스 · 드래곤 퀘스트 · 악마성 드라큘라 · 이스 I·II · 록맨 2 · 테트리스(GB) —
+    1985년부터 1989년까지, 성부 서너 개로 게임음악이라는 장르의 문법을 발명한 여섯 작품.
+    왜 그렇게 작곡되었는지, 무엇을 표현하려 했는지, 지금의 게임음악에 무엇을 남겼는지를 작곡가의 관점에서 분석합니다.
+    2부 「표현의 확장」(16비트와 그 너머)으로 이어집니다.</p>
+    <div class="hero-staff" aria-hidden="true">
+      <div class="line" style="top:0"></div><div class="line" style="top:10px"></div><div class="line" style="top:20px"></div><div class="line" style="top:30px"></div><div class="line" style="top:40px"></div>
+      <div class="note" style="left:4%;top:26px"></div><div class="note" style="left:12%;top:16px"></div><div class="note" style="left:20%;top:6px"></div><div class="note" style="left:28%;top:16px"></div><div class="note" style="left:36%;top:26px"></div><div class="note" style="left:47%;top:11px"></div><div class="note" style="left:55%;top:21px"></div><div class="note" style="left:63%;top:1px"></div><div class="note" style="left:74%;top:16px"></div><div class="note" style="left:82%;top:26px"></div><div class="note" style="left:90%;top:6px"></div>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <ol>
+      <li><a href="https://orpina214-glitch.github.io/Retro-game-music-1/#intro"><span class="num">00</span>게임음악 작곡의 특수 조건</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Retro-game-music-1/#map"><span class="num">01</span>칩은 편성표다 — 시대 조건 지도</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Retro-game-music-1/#mario"><span class="num">02</span>슈퍼 마리오 브라더스 (1985)</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Retro-game-music-1/#dq"><span class="num">03</span>드래곤 퀘스트 (1986)</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Retro-game-music-1/#cv"><span class="num">04</span>악마성 드라큘라 (1986)</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Retro-game-music-1/#ys"><span class="num">05</span>이스 I·II (1987–88)</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Retro-game-music-1/#mm2"><span class="num">06</span>록맨 2 (1988)</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Retro-game-music-1/#tetris"><span class="num">07</span>테트리스 GB (1989)</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Retro-game-music-1/#principles"><span class="num">08</span>1부를 관통하는 다섯 원칙</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Retro-game-music-1/#practice"><span class="num">09</span>실습 가이드</a></li>
+    </ol>
+  </div>
+</nav>
+
+<section id="intro">
+  <div class="wrap">
+    <div class="kicker">00 — INTRODUCTION</div>
+    <h2>게임음악 작곡의 특수 조건</h2>
+    <p class="lead">게임음악은 "게임에 들어간 음악"이 아니라, <em>다른 물리 법칙 위에 세워진 별개의 작곡 장르</em>입니다. 그 법칙이 가장 순수하게 드러난 시대가 8비트입니다.</p>
+    <p>일반 음악과 다른 조건을 정리해봅시다. 첫째, <em>끝이 없습니다.</em> 곡은 플레이어가 스테이지에 머무는 동안 무한히 반복되므로, 기승전결이 아니라 "끝나도 다시 시작되는 순환"으로 설계해야 합니다. 둘째, <em>길이를 작곡가가 정하지 못합니다.</em> 30초 루프를 어떤 플레이어는 세 번, 어떤 플레이어는 삼백 번 듣습니다. 셋째, <em>음악이 화면과 경쟁하지 않아야 합니다.</em> 주인공은 게임이고, 음악은 플레이를 밀어주는 리듬 엔진입니다. 넷째, 이 시대에는 <em>편성이 하드웨어로 고정</em>되어 있었습니다. 성부 세 개와 노이즈 하나 — 이 "밴드"로 모든 장르를 연주해야 했습니다.</p>
+    <p>그런데 바로 이 제약들이 게임음악 고유의 작곡 기술을 낳았습니다. 짧은 동기(모티프)의 경제학, 루프의 이음새를 숨기는 기술, 2성부 안에 화성을 암시하는 법, 리듬으로 게임의 몸감각을 번역하는 법. 이 여섯 작품은 그 기술들의 발명 현장입니다. 여러분이 Cubase에서 수백 트랙을 쓰는 시대에도 이 기술들이 유효한 이유 — 제약은 사라졌지만 "반복되는 짧은 음악으로 사람을 붙잡는 문제"는 그대로이기 때문입니다.</p>
+    <div class="note"><strong>분석 관점 3가지</strong> — SFX 시리즈와 같은 틀로 분석합니다.<br>
+    ① 왜 이렇게 작곡되었는가 (조건과 의도)<br>
+    ② 무엇을 표현하고자 했는가 (음악의 기능과 감정)<br>
+    ③ 지금의 게임음악에 무엇을 남겼는가 (계승된 문법)</div>
+  </div>
+</section>
+
+<section id="map">
+  <div class="wrap">
+    <div class="kicker">01 — HARDWARE AS ENSEMBLE</div>
+    <h2>칩은 편성표다 — 시대 조건 지도</h2>
+    <p>SFX 고전편에서 칩을 "소리의 재료"로 봤다면, 작곡가에게 칩은 <em>편성표</em>입니다. 몇 명의 연주자가 어떤 악기를 들고 있는가 — 이 관점으로 세 하드웨어를 다시 읽습니다.</p>
+    <div class="chip-box">
+      <div class="chip-name">FAMICOM / NES — 4인 밴드 (마리오·DQ·악마성·록맨 2)</div>
+      <div class="ch-row">
+        <span class="ch"><i class="c-mel"></i>펄스 1 — 리드 멜로디</span>
+        <span class="ch"><i class="c-harm"></i>펄스 2 — 화음·대선율·에코</span>
+        <span class="ch"><i class="c-bass"></i>삼각파 — 베이스 (볼륨 고정, 옥타브 아래 전담)</span>
+        <span class="ch"><i class="c-perc"></i>노이즈 — 드럼</span>
+      </div>
+    </div>
+    <div class="chip-box">
+      <div class="chip-name">PC-8801 — FM 신스 밴드 (이스)</div>
+      <div class="ch-row">
+        <span class="ch"><i class="c-mel"></i>FM 3성 (YM2203) — 리드·브라스·베이스</span>
+        <span class="ch"><i class="c-harm"></i>SSG 3성 — 서브 화음·아르페지오</span>
+        <span class="ch"><i class="c-form"></i>후기엔 FM 6성 + 리듬 음원으로 확장</span>
+      </div>
+    </div>
+    <div class="chip-box">
+      <div class="chip-name">GAME BOY — 휴대용 4인 밴드 (테트리스)</div>
+      <div class="ch-row">
+        <span class="ch"><i class="c-mel"></i>펄스 ×2</span>
+        <span class="ch"><i class="c-harm"></i>웨이브 채널 (파형 커스텀)</span>
+        <span class="ch"><i class="c-perc"></i>노이즈</span>
+        <span class="ch"><i class="c-form"></i>+ 작은 스피커·이어폰 재생 전제</span>
+      </div>
+    </div>
+    <p class="dim">이 편성 관점이 주는 통찰 하나 — 8비트 작곡은 사실상 <em>3성부 대위법 + 타악기</em>입니다. 바로크 트리오 소나타와 같은 인원. 그래서 이 시대 명곡들이 편곡을 갈아입어도 무너지지 않습니다. 성부 셋으로 완결된 음악은 어떤 편성으로 확장해도 골격이 살아 있기 때문입니다. "제약 속 작곡"이 아니라 "골격의 작곡"을 배우는 것이 이 자료의 목표입니다.</p>
+  </div>
+</section>
+
+<section id="mario">
+  <div class="wrap">
+    <div class="kicker">02 — NINTENDO / 1985 / FAMICOM</div>
+    <h2>슈퍼 마리오 브라더스 — 리듬이 곧 게임이다</h2>
+    <p class="meta">작곡: 콘도 코지(近藤浩治) — 게임음악 최초로 미국 의회도서관 국립 녹음 등재부(2023) 등재</p>
+
+    <h3>① 왜 이렇게 작곡되었는가</h3>
+    <p>지상 테마(Ground Theme)의 탄생 과정은 게임음악 작곡론의 첫 페이지에 놓을 만합니다. 콘도가 처음 쓴 곡은 밝은 하늘과 초원이라는 <em>배경 그림</em>에 맞춘 가볍고 느긋한 곡이었습니다. 결과는 전원 혹평 — 배경에는 맞지만 게임플레이에 맞지 않았던 겁니다. 콘도는 접근을 바꿉니다. 게임을 몇 번이고 직접 플레이하면서, <em>달리고 점프하는 몸의 감각에 정확히 들어맞는 리듬</em>을 찾아 그것을 멜로디로 바꿨습니다. 이후 콘도는 시리즈마다 적의 움직임이 바뀌면 전체 리듬이 바뀌므로, 매번 게임을 반복 플레이하며 리듬부터 다시 찾았다고 밝힙니다.</p>
+    <p>여기서 게임음악 작곡의 제1명제가 나옵니다 — <em>레퍼런스는 화면이 아니라 조작감이다.</em> 그리고 곡을 쓰면 팀이 게임에 넣어보고, 액션을 살리지 못하거나 마리오의 달리기·점프와 타이밍이 맞지 않거나 효과음과 어울리지 않으면 폐기하는 과정을 반복했습니다. 작곡·구현·검증의 이터레이션 — 지금의 인터랙티브 음악 워크플로우가 1985년에 이미 있었던 셈입니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">지상 테마 — 스윙하는 반주, 스트레이트한 멜로디</div>
+      <dl>
+        <dt>구조</dt><dd>라틴·퓨전 어법의 리듬 위에 얹힌 캐치한 멜로디. 콘도 본인이 사다오 와타나베와 퓨전 밴드 T-SQUARE의 영향을 언급 — 하이햇의 푸시감을 곡의 중심에 둠. 반주부는 스윙하는데 멜로디는 스트레이트로 노는 리듬적 대비가 분석가들 사이에서 자주 지적됨</dd>
+        <dt>기능</dt><dd>달리기의 추진력을 음악화 — 곡이 플레이어를 앞으로 민다</dd>
+        <dt>포인트</dt><dd>3성부+노이즈로 "밴드의 그루브"를 구현한 편곡 기술. 멜로디·베이스·리듬의 역할 분담이 교과서적</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">게임오버 — 패배를 재시작으로 작곡하기</div>
+      <dl>
+        <dt>구조</dt><dd>게임오버 곡의 첫 세 음이 지상 테마의 첫 세 음과 같음 — 나란히 재생하면 새 루프의 시작처럼 들리는 설계라는 분석이 있음</dd>
+        <dt>기능</dt><dd>"끝났다"가 아니라 "다시 하자"의 심리 설계 — 죽음조차 밝게 처리하는 닌텐도적 태도의 음악적 구현</dd>
+        <dt>포인트</dt><dd>징글도 작곡이다 — 3초짜리 곡에 게임의 세계관과 심리 설계를 담는 훈련의 표본</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">지하·수중·성 — 3성부로 그리는 공간</div>
+      <dl>
+        <dt>구조</dt><dd>지하는 스타카토와 여백, 수중은 3박자 왈츠, 성은 불협화적 아르페지오 — 같은 편성으로 완전히 다른 공기</dd>
+        <dt>기능</dt><dd>스테이지의 공간감·위험도를 곡풍으로 즉시 전달</dd>
+        <dt>포인트</dt><dd>편성이 고정일 때 대비는 리듬·조성·음역·밀도에서 나온다는 것 — "악기를 못 바꾸면 어법을 바꿔라"</dd>
+      </dl>
+    </div>
+
+    <h3>③ 지금의 게임음악에 무엇을 남겼는가</h3>
+    <ul class="plain">
+      <li><strong>조작감 기반 작곡</strong> — "게임을 플레이하며 템포를 찾는다"는 방법론은 지금도 액션 게임 작곡의 출발점입니다. BPM을 정하기 전에 캐릭터의 이동 속도와 점프 궤적부터 보는 습관.</li>
+      <li><strong>게임음악의 문화적 지위</strong> — 2023년 지상 테마가 게임음악 최초로 미국 의회도서관 국립 녹음 등재부에 올랐습니다. 게임음악이 보존 가치가 있는 문화유산으로 공인된 상징적 사건.</li>
+      <li><strong>모티프 자산의 원형</strong> — 지상 테마의 동기들은 40년간 시리즈 전체에서 변주되며 마리오라는 IP의 청각 자산이 됐습니다. 잘 만든 8마디가 프랜차이즈의 평생 재산이 되는 사례.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>지상 테마를 들으며 반주부(스윙)와 멜로디(스트레이트)를 따로 따라 쳐보기 — 리듬 대비 체감</li>
+        <li>지상 테마 첫 세 음과 게임오버 첫 세 음 연속 재생 비교</li>
+        <li>지상·지하·수중·성 4곡을 같은 편성이라는 사실을 의식하며 연속 청취</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="dq">
+  <div class="wrap">
+    <div class="kicker">03 — ENIX / 1986 / FAMICOM</div>
+    <h2>드래곤 퀘스트 — 클래식이 게임에 들어온 날</h2>
+    <p class="meta">작곡: 스기야마 코이치(すぎやまこういち) — 방송·CM 음악 출신, 클래식 교육을 받은 지휘자</p>
+
+    <h3>① 왜 이렇게 작곡되었는가</h3>
+    <p>스기야마의 합류 경위부터가 이야기입니다. 이미 유명한 방송 음악가였던 그가 에닉스 PC게임의 유저 설문엽서를 보냈고, 이를 본 프로듀서가 "그 스기야마가 맞느냐"고 확인한 뒤 작곡을 의뢰했습니다. 그는 서곡(Overture)의 주제를 <em>5분 만에</em> 썼다고 밝혔는데, 그 뒤에 붙인 말이 핵심입니다 — 짧은 징글에 개성을 담는 것이 어려웠지만 CM 음악 경력이 도움이 됐고, <em>작곡가에게는 청중의 귀를 붙잡을 시간이 3~5초뿐</em>이라는 것. 게임음악의 "즉시 각인" 조건을 상업음악의 훈련으로 돌파한 겁니다.</p>
+    <p>그리고 그는 파미컴의 3성부에 클래식 어법을 이식했습니다. 성부가 셋뿐이라는 조건은 바로크·고전파의 성부 작법과 오히려 궁합이 맞았고, 실제로 그의 작풍은 후기 바로크~초기 고전파 스타일에 비견됩니다. 처음부터 "언젠가 오케스트라로 연주될 음악"으로 설계된 셈이고, 실제로 그렇게 됐습니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">8곡 템플릿 — RPG 사운드트랙의 설계도</div>
+      <dl>
+        <dt>구조</dt><dd>오프닝·성·마을·필드·던전·전투·최종전·엔딩의 8곡 구성 — 이후 수많은 RPG 사운드트랙이 이 편제를 따름</dd>
+        <dt>기능</dt><dd>게임의 장소·국면마다 고유한 음악적 정체성 부여 — "지금 어디에 있는가"를 곡이 말해줌</dd>
+        <dt>포인트</dt><dd>작곡 이전에 편제 설계가 있다 — RPG 음악 의뢰를 받으면 곡 목록부터 짜는 지금의 관행이 여기서 시작</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">서곡 — 5분 만에 쓴 평생의 주제</div>
+      <dl>
+        <dt>구조</dt><dd>팡파르적 도입과 행진곡풍 주제 — 시리즈 전체에서 거의 동일하게 유지되는 오프닝 테마</dd>
+        <dt>기능</dt><dd>기동 의식(儀式) — 이 곡이 울리면 모험이 시작된다는 조건반사</dd>
+        <dt>포인트</dt><dd>"5분 작곡"의 진실은 수십 년의 훈련 — 즉흥은 축적의 출력이라는 것. 시리즈 전곡에 모티프를 재사용해 통일감과 향수를 설계한 점도 주목</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">오케스트라화 — 게임음악 콘서트의 발명</div>
+      <dl>
+        <dt>구조</dt><dd>1986년 런던 필하모닉 오케스트라와 교향 모음곡 음반 녹음, 1987년 8월 20일 산토리홀에서 세계 최초의 게임음악 콘서트 "패밀리 클래식 콘서트" 개최 (본인 편곡·지휘)</dd>
+        <dt>기능</dt><dd>게임음악의 사회적 지위 격상 — 칩 음악이 콘서트홀의 레퍼토리가 될 수 있음을 증명</dd>
+        <dt>포인트</dt><dd>3성부 원곡이 오케스트라로 확장돼도 성립한 이유 = 골격의 작곡. 이후 우에마츠 등 후배 작곡가들이 "게임음악의 큰 보스"로 그를 지목</dd>
+      </dl>
+    </div>
+
+    <h3>③ 지금의 게임음악에 무엇을 남겼는가</h3>
+    <ul class="plain">
+      <li><strong>RPG 음악의 편제 문법</strong> — 마을은 쉼, 필드는 여정, 전투는 긴장, 던전은 압박이라는 기능별 작곡 문법이 장르 표준이 됐습니다. JRPG는 물론 국산 MMORPG의 존 음악 설계까지 이 계보입니다.</li>
+      <li><strong>게임음악 콘서트 산업</strong> — 오늘날 전 세계에서 열리는 게임음악 오케스트라 공연 문화의 출발점이 1987년 산토리홀입니다. 게임 작곡가의 커리어가 무대까지 이어질 수 있음을 보여준 첫 사례.</li>
+      <li><strong>"오케스트라를 상정한 칩 작곡"</strong> — 최종 편성을 상상하며 골격을 쓰는 접근은 지금 모바일 게임(용량 제약)에서 풀 오케스트라 버전을 함께 준비하는 실무 관행으로 이어집니다.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>파미컴 원곡 서곡 → 교향 모음곡 버전 연속 청취 — 3성부 골격이 어디에 살아 있는지 추적</li>
+        <li>8곡 템플릿을 표로 그려놓고 이후 아무 RPG OST와 대응시켜보기</li>
+        <li>마을 곡과 필드 곡의 리듬·화성 어법 차이 — "쉼"과 "여정"의 작곡적 구분</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="cv">
+  <div class="wrap">
+    <div class="kicker">04 — KONAMI / 1986 / FDS·NES</div>
+    <h2>악마성 드라큘라 — 고딕 호러에 록을 입힌 신인들</h2>
+    <p class="meta">작곡: 야마시타 키누요·테라시마 사토에 (공동 명의 "제임스 바나나" — 1958년 영화 드라큘라의 작곡가 제임스 버나드의 말장난)</p>
+
+    <h3>① 왜 이렇게 작곡되었는가</h3>
+    <p>악마성의 음악은 신입사원의 데뷔작이었습니다. 야마시타 키누요는 전자공학을 전공하고 1986년 코나미에 입사해, 첫 프로젝트로 악마성을 맡았습니다. 크레딧은 "제임스 바나나"라는 공동 필명 — 두 사람이 협업한 게 아니라 각자 곡을 나눠 쓰고 하나의 이름으로 묶은 방식이었고, 곡별 크레딧은 지금도 자료마다 조금씩 엇갈립니다(당시 게임업계에서 작곡가 실명 표기가 드물었다는 시대상까지 포함해 배울 점이 있는 대목입니다).</p>
+    <p>음악적 선택이 흥미롭습니다. 감독 아카마츠 히토시는 플레이어가 클래식 호러 영화 속에 떨어진 듯한 게임을 원했습니다. 정석대로라면 어둡고 느린 공포 음악이어야 할 곳에, 이들은 <em>빠른 비트의 록</em>을 깔았습니다. 고딕적 선율 어법(단조, 반음계, 바로크풍 장식)과 질주하는 리듬의 결합 — 공포를 "무서움"이 아니라 "무서운 곳으로 쳐들어가는 용기"로 번역한 겁니다. 이 배합이 시리즈 음악 포맷의 원형이 됐습니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">Vampire Killer — 장르 배합의 교과서</div>
+      <dl>
+        <dt>구조</dt><dd>단조의 고딕적 멜로디 + 8비트 록 리듬 + 바로크풍 순차 진행. 스테이지 1의 첫 곡으로서 시리즈 전체의 상징이 됨</dd>
+        <dt>기능</dt><dd>공포 세계관과 액션 게임플레이의 동시 충족 — 분위기는 어둡게, 몸은 앞으로</dd>
+        <dt>포인트</dt><dd>"세계관의 어법 × 게임플레이의 리듬"이라는 2축 배합 공식. 호러 게임인데 왜 신나는가에 대한 모범답안</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">스테이지 진행과 곡풍의 드라마투르기</div>
+      <dl>
+        <dt>구조</dt><dd>성에 진입할수록 곡들의 긴장도·불협화도가 상승하는 배치 (Wicked Child, Heart of Fire 등)</dd>
+        <dt>기능</dt><dd>최종 보스로 향하는 서사의 음악적 계단</dd>
+        <dt>포인트</dt><dd>곡 하나가 아니라 곡 배열이 만드는 드라마 — OST를 트랙 순서로 설계하는 감각의 초기 사례</dd>
+      </dl>
+    </div>
+
+    <h3>③ 지금의 게임음악에 무엇을 남겼는가</h3>
+    <ul class="plain">
+      <li><strong>고딕×록이라는 장르 브랜드</strong> — 이후 시리즈 전체(월하의 야상곡의 야마네 미치루로 이어지는 계보)와 수많은 액션 게임이 이 배합을 표준으로 씁니다. 최근의 캐슬바니아풍 인디 게임들도 이 어법으로 "악마성답다"를 구현합니다.</li>
+      <li><strong>테마의 세대 계승</strong> — Vampire Killer는 수십 년간 거의 모든 시리즈 작품에서 편곡을 바꿔 재등장합니다. 하나의 멜로디가 프랜차이즈의 등뼈가 되는 운용의 표본.</li>
+      <li><strong>신입에게도 열려 있는 장르</strong> — 데뷔작이 40년 가는 고전이 된 사례는, 게임음악이 경력보다 해법의 신선함으로 승부할 수 있는 분야임을 보여줍니다.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>Vampire Killer의 멜로디만 느리게 쳐보기 — 리듬을 걷어내면 드러나는 고딕적 선율 어법</li>
+        <li>시리즈 후속작들의 Vampire Killer 편곡 3종 비교 — 무엇이 유지되고 무엇이 갱신되는가</li>
+        <li>스테이지 1→5 곡을 순서대로 들으며 긴장도의 계단 그려보기</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="ys">
+  <div class="wrap">
+    <div class="kicker">05 — NIHON FALCOM / 1987–88 / PC-8801</div>
+    <h2>이스 I·II — "PC-88이라는 악기"를 위한 작곡</h2>
+    <p class="meta">작곡: 고시로 유조·이시카와 미에코 외 — 훗날 "팔콤 사운드 팀 JDK" 명의의 뿌리</p>
+
+    <h3>① 왜 이렇게 작곡되었는가</h3>
+    <p>고시로 유조의 이력은 게임 작곡가 지망생에게 그대로 교재입니다. 피아니스트 어머니에게 세 살부터 피아노를, 훗날 지브리 음악으로 유명해지는 히사이시 조에게 어린 시절 3년간 음악을 배웠고, 고교 시절 PC-8801로 남코·코나미·세가의 아케이드 음악을 귀카피하며 시퀀싱을 독학했습니다. 오락실에서 녹음기로 딴 곡을 컴퓨터에 찍어 넣던 소년이, 자작곡 데모 테이프를 들고 집 근처 팔콤을 직접 찾아가 18세에 입사합니다.</p>
+    <p>그의 작곡관에서 두 가지를 새겨야 합니다. 첫째, <em>움직임 기반 작곡.</em> "게임의 움직임을 분석해 템포와 리듬을 화면에 맞춘다. 움직임이 없는 게임의 곡은 쓰기 어렵다"고 그는 말합니다 — 콘도 코지와 독립적으로 같은 결론에 도달한 겁니다. 게임이 70% 정도 완성되어 화면에 뭔가 움직일 때부터 곡을 쓴다는 워크플로우까지 구체적입니다. 둘째, <em>하드웨어를 악기로 보는 태도.</em> 그는 이스의 곡들이 "PC-88이라는 악기를 위해 쓰인 음악"이며, 다른 기종 이식은 리믹스일 뿐 원곡의 본질은 PC-88의 FM 칩 사양까지 포함한 것이라고 수십 년간 일관되게 말해왔습니다. 원하는 소리를 내기 위해 자기만의 사운드 드라이버까지 만들었습니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">오프닝·필드 곡 — 질주하는 록 퓨전</div>
+      <dl>
+        <dt>구조</dt><dd>FM 신스의 예리한 리드와 브라스, 드라이빙 베이스 위의 록·퓨전 어법 (The Alfee 등 밴드 음악의 영향을 본인이 언급)</dd>
+        <dt>기능</dt><dd>논스톱 액션 RPG의 속도감을 음악이 견인 — 이스의 "부딪혀 베는" 전투 리듬과 동기화</dd>
+        <dt>포인트</dt><dd>PC게임 음악이 아케이드·콘솔과 다른 독자적 세련미를 가질 수 있음을 증명 — 일본 PC게임 음악의 위상을 바꾼 작품</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">Feena — 서정의 FM</div>
+      <dl>
+        <dt>구조</dt><dd>질주하는 곡들 사이에 배치된 서정적 발라드 — 이후 CD 매체(터보그래픽스-CD) 이식에서 게임음악 초기의 CD 오디오 트랙으로 재탄생</dd>
+        <dt>기능</dt><dd>캐릭터·정서의 조형 — 액션 게임 OST에도 완급의 호흡이 필요함을 보여줌</dd>
+        <dt>포인트</dt><dd>같은 멜로디가 FM 칩 버전과 생악기 편곡 버전으로 공존하는 초기 사례 — "골격과 옷"을 구분하는 감각</dd>
+      </dl>
+    </div>
+
+    <h3>③ 지금의 게임음악에 무엇을 남겼는가</h3>
+    <ul class="plain">
+      <li><strong>사운드 팀 브랜드의 원형</strong> — 팔콤 사운드 팀 JDK는 개인이 아닌 팀 명의가 브랜드가 된 초기 사례로, 이스·궤적 시리즈의 록 기반 어법을 수십 년간 유지하고 있습니다. 국내외 개발사 사운드팀 운영 모델의 참고점.</li>
+      <li><strong>작곡가 고시로의 계보</strong> — 팔콤 이후 그는 베어 너클(스트리트 오브 레이지)에서 클럽 뮤직을 게임에 이식하며 또 한 번 장르를 넓힙니다. "게임 작곡가는 한 어법에 갇히지 않는다"는 커리어의 모범.</li>
+      <li><strong>하드웨어 = 악기론</strong> — 칩튠 리바이벌 시대에 이 태도는 그대로 유효합니다. 에뮬레이션 음원을 "제약의 흉내"가 아니라 "고유 음색의 악기"로 다루는 관점의 원조.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>PC-88 원곡과 이후 이식판(PC엔진 CD판 등)의 같은 곡 비교 — 고시로가 말한 "본질의 왜곡"을 직접 판단해보기</li>
+        <li>FM 음색의 어택·배음 질감 관찰 — 펄스파(NES)와 어떻게 다른 편곡을 가능하게 하는가</li>
+        <li>필드 곡의 베이스 라인만 따라 쳐보기 — 질주감의 절반이 베이스 설계임을 확인</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="mm2">
+  <div class="wrap">
+    <div class="kicker">06 — CAPCOM / 1988 / FAMICOM</div>
+    <h2>록맨 2 — "귀엽게" 말고 "멋있게": 디렉션과 작곡</h2>
+    <p class="meta">작곡: 타테이시 타카시(필명 오게레츠 군) — 데뷔작 / 일부 곡·효과음: 마츠마에 마나미 / 사운드 드라이버: 사카구치 요시히로</p>
+
+    <h3>① 왜 이렇게 작곡되었는가</h3>
+    <p>록맨 2의 음악사는 <em>디렉션이 작곡을 어떻게 조각하는가</em>의 기록입니다. 신인 타테이시가 처음 써낸 곡들은 "귀여운" 곡들이었고, 디렉터 키타무라 아키라는 "멋있는(cool)" 곡을 요구하며 반려했습니다. 귀여운 곡 중 살아남은 건 크래시맨 스테이지 하나뿐. 처음 승인된 곡이 그 유명한 <em>와일리 스테이지 1</em>이었고, 이 곡이 사운드트랙 전체의 톤을 결정했습니다. 키타무라는 이 곡이 마음에 들어 "비슷한 곡을 하나 더" 주문했고, 그렇게 나온 게 우드맨 스테이지입니다. 퀵맨 스테이지는 "서두르라고 재촉하는 곡"이라는 브리프로 작곡됐습니다.</p>
+    <p>제약의 기록도 구체적입니다. 파미컴은 베이스 표현이 약해서 히트맨 스테이지는 <em>3개 채널을 전부 동원해 베이스 음색을 합성</em>했고, 카트리지 메모리가 바닥나 와일리 스테이지 2는 스테이지 1의 곡을 재사용했습니다. 곡은 음표에서 MML 기계어 코드로 일일이 변환해 사카구치의 드라이버에 입력해야 했습니다. 그리고 유명한 일화 하나 — 에어맨 스테이지의 기타 솔로 8마디는 옆자리의 마츠마에 마나미가 슬럼프에 빠진 타테이시를 도와 몰래 써준 것이고, 타테이시는 훗날 다른 게임의 곡으로 그 빚을 갚았습니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">와일리 스테이지 1 — 8비트 록의 정점</div>
+      <dl>
+        <dt>구조</dt><dd>질주하는 베이스 오스티나토 위의 서사적 멜로디 — 절정으로 몰아가는 코드 진행과 브릿지의 상승감</dd>
+        <dt>기능</dt><dd>최종 결전 직전의 고양 — "여기까지 왔다"는 성취와 "이제 끝장을 낸다"는 결의의 동시 표현</dd>
+        <dt>포인트</dt><dd>게임음악 역사상 가장 많이 리믹스된 곡 중 하나. 멜로디의 힘이 편곡·시대를 초월하는 표본</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">보스 스테이지 8곡 — 캐릭터를 그리는 곡풍</div>
+      <dl>
+        <dt>구조</dt><dd>보스마다 다른 곡풍(버블맨의 피아노 지향, 메탈맨의 긴박, 크래시맨의 경쾌 등) — 다만 "너무 조용하면 반려"라는 디렉션의 하한선 안에서</dd>
+        <dt>기능</dt><dd>스테이지 선택형 구조에서 각 세계의 정체성을 곡이 담당</dd>
+        <dt>포인트</dt><dd>레벨 디자인을 작곡의 골격으로 — "한곳에 머물지 말고 경쾌하게 전진"이라는 프레이즈를 프레임 삼아 썼다는 제작 방식은 스테이지 음악 작곡의 실전 공식</dd>
+      </dl>
+    </div>
+
+    <h3>③ 지금의 게임음악에 무엇을 남겼는가</h3>
+    <ul class="plain">
+      <li><strong>디렉션 언어의 번역술</strong> — "귀엽게 말고 멋있게", "서두르는 느낌으로" 같은 형용사 브리프를 곡으로 번역하는 것이 게임 작곡가의 일상 업무임을 보여주는 가장 유명한 사례. SFX 시리즈에서 다룬 "형용사를 스펙으로" 원칙의 작곡 버전.</li>
+      <li><strong>스테이지 음악 = 캐릭터 음악</strong> — 보스별 곡풍 차별화는 이후 액션 게임 전반의 표준이 됐고, 2부에서 다룰 스트리트 파이터 2 캐릭터 테마의 직계 선배입니다.</li>
+      <li><strong>제약 극복 기술의 유산</strong> — 3채널 합성 베이스 같은 트릭은 칩튠 아티스트들의 기본기가 됐습니다. 지금 칩튠 VST로 작업할 때도 그대로 쓰는 기법.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>와일리 스테이지 1의 베이스 라인만 분리해 따라 치기 — 질주감의 엔진 확인</li>
+        <li>크래시맨(귀여움 생존자)과 퀵맨(재촉 브리프)을 비교 — 디렉션이 곡에 남긴 지문 찾기</li>
+        <li>에어맨 스테이지의 기타 솔로 구간 — 앞뒤와 어법이 어떻게 다른지 (마츠마에의 8마디)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="tetris">
+  <div class="wrap">
+    <div class="kicker">07 — NINTENDO / 1989 / GAME BOY</div>
+    <h2>테트리스 — 편곡이 원곡을 이긴 사건</h2>
+    <p class="meta">음악: 타나카 히로카즈(田中宏和) — 메트로이드·마더의 작곡가, Type A는 러시아 민요 "코로베이니키" 편곡</p>
+
+    <h3>① 왜 이렇게 작곡되었는가</h3>
+    <p>게임보이 테트리스의 음악 구성은 편곡·선곡 공부의 보고입니다. 타나카는 인게임 음악의 방향을 잡는 데 고심하다 세 갈래로 정리했습니다 — 왈츠, 바로크, 그리고 러시아풍. 흥미롭게도 초기 버전(v1.0)의 Type A는 자작곡이었는데, 이후 러시아 민요 <em>코로베이니키</em>의 편곡으로 교체됩니다. Type C에는 바흐의 프랑스 모음곡 미뉴에트가 편곡되어 들어갔습니다. 게임의 출신지(소련)를 존중한 선곡 — 음악이 게임의 정체성을 설명하는 장치로 쓰인 겁니다.</p>
+    <p>코로베이니키는 1861년 네크라소프의 시를 바탕으로 한 19세기 민요로, 행상인과 처녀의 흥정을 구애의 은유로 그린 노래입니다. 점점 빨라지는 템포와 순환적 구조 — 블록이 쌓일수록 급박해지는 테트리스와 구조적으로 정확히 맞아떨어졌습니다. 그리고 놀라운 후일담: 타나카가 채택한 선율 변형(높은 음에서 시작해 아래로 도약하는 형태)은 테트리스 이전의 음원에서는 거의 발견되지 않는 형태였는데, 테트리스 이후로는 <em>이 형태가 원곡의 표준처럼 자리잡았습니다.</em> 편곡이 민요의 역사를 다시 쓴 사건입니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">Type A — 무한 반복을 버티는 루프</div>
+      <dl>
+        <dt>구조</dt><dd>단조 선율의 강한 훅 + 명확한 프레이즈 단위 + 이음새 없는 순환 — 게임보이 4채널로 구현</dd>
+        <dt>기능</dt><dd>수백 시간 반복 청취를 견디는 견고함 — 3,500만 장의 게임보이판과 함께 지구에서 가장 많이 반복된 게임음악 중 하나가 됨</dd>
+        <dt>포인트</dt><dd>루프 내성의 비밀은 "질리지 않는 화려함"이 아니라 "구조의 명료함" — 민요가 수백 년을 버틴 것과 같은 원리</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">A·B·C 선택제 — 플레이어에게 준 편성권</div>
+      <dl>
+        <dt>구조</dt><dd>성격이 다른 3곡(러시아 민요·오리지널·바흐 편곡)을 플레이어가 선택</dd>
+        <dt>기능</dt><dd>장시간 플레이의 청각 피로 관리를 플레이어에게 위임</dd>
+        <dt>포인트</dt><dd>"BGM 선택"이라는 UX — 반복이 숙명인 퍼즐 게임의 음악 설계 해법으로 지금도 유효 (리듬게임·방치형 게임의 주크박스 구조로 계승)</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">차용과 권리 — 편곡가가 알아야 할 것</div>
+      <dl>
+        <dt>구조</dt><dd>퍼블릭 도메인 민요(코로베이니키)와 클래식(바흐)의 차용 — 이후 테트리스 컴퍼니는 2002년부터 모든 테트리스에 코로베이니키 수록을 요구하는 브랜드 정책을 채택</dd>
+        <dt>기능</dt><dd>저작권 만료 선율의 상업적 활용과, 편곡 자체가 브랜드 자산이 되는 과정의 실례</dd>
+        <dt>포인트</dt><dd>편곡가의 실무 교양 — 원곡의 권리 상태 확인, 편곡 저작권의 성립, 그리고 "누구의 곡도 아니었던 멜로디가 게임의 것이 되는" 브랜딩의 역학</dd>
+      </dl>
+    </div>
+
+    <h3>③ 지금의 게임음악에 무엇을 남겼는가</h3>
+    <ul class="plain">
+      <li><strong>선곡·편곡도 작곡이다</strong> — 기존 선율의 선택과 재해석으로 게임의 정체성을 만든 대표 사례. 트레일러·이벤트의 클래식 편곡, 민요 모티프 차용 등 지금도 흔한 실무의 원형입니다.</li>
+      <li><strong>게임이 음악을 재정의하는 힘</strong> — 코로베이니키는 이제 전 세계에서 "테트리스 노래"로 불립니다. 게임이라는 매체가 가진 문화적 전파력의 증명 — 여러분의 편곡 하나가 원곡의 운명을 바꿀 수도 있습니다.</li>
+      <li><strong>휴대기기 음악 설계의 출발점</strong> — 작은 스피커, 짧은 세션, 무한 반복이라는 게임보이의 조건은 지금 모바일 게임 음악의 조건과 정확히 같습니다. 2부 포켓몬 항목으로 이어지는 다리.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>코로베이니키 전통 가창 버전과 Type A 비교 — 타나카가 바꾼 선율 형태(고음 시작) 찾기</li>
+        <li>Type A를 20분 연속 재생 — 루프 이음새가 어디인지, 왜 안 질리는지 자가 분석</li>
+        <li>Type C와 바흐 원곡(프랑스 모음곡) 비교 — 4채널 편곡에서 무엇이 생략되고 무엇이 남았는가</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="principles">
+  <div class="wrap">
+    <div class="kicker">08 — COMPOSITION PRINCIPLES</div>
+    <h2>1부를 관통하는 다섯 원칙</h2>
+
+    <div class="principle"><div class="p-num">01</div><div>
+      <h4>레퍼런스는 화면이 아니라 조작감이다</h4>
+      <p>콘도는 게임을 반복 플레이하며 리듬을 찾았고, 고시로는 움직임을 분석해 템포를 맞췄습니다. 서로 독립적으로 도달한 같은 결론 — 게임음악의 템포와 그루브는 그림이 아니라 손맛에서 나옵니다.</p>
+    </div></div>
+
+    <div class="principle"><div class="p-num">02</div><div>
+      <h4>골격으로 작곡하라 — 편성은 옷이다</h4>
+      <p>3성부로 완결된 드래곤 퀘스트가 오케스트라가 되어도 무너지지 않았습니다. 멜로디·베이스·화성 골격이 자립하면 칩튠도 풀 오케스트라도 같은 곡의 다른 옷입니다. 트랙을 쌓기 전에 3성부로 성립하는지 확인하는 습관.</p>
+    </div></div>
+
+    <div class="principle"><div class="p-num">03</div><div>
+      <h4>루프는 순환으로 설계한다</h4>
+      <p>끝나는 곡이 아니라 돌아오는 곡. 명료한 프레이즈 구조, 자연스러운 이음새, 그리고 마리오의 게임오버처럼 "끝"조차 "다시 시작"으로 들리게 하는 심리 설계까지 — 반복이 숙명인 매체의 형식론입니다.</p>
+    </div></div>
+
+    <div class="principle"><div class="p-num">04</div><div>
+      <h4>세계관의 어법 × 게임플레이의 리듬</h4>
+      <p>악마성은 고딕 선율에 록 리듬을, 이스는 판타지 세계에 퓨전의 질주를 입혔습니다. 분위기는 선율·화성이, 몸은 리듬이 담당하는 2축 배합 — 장르 게임 작곡의 기본 공식입니다.</p>
+    </div></div>
+
+    <div class="principle"><div class="p-num">05</div><div>
+      <h4>디렉션의 형용사를 곡으로 번역하라</h4>
+      <p>"멋있게", "서두르는 느낌으로", "3초 안에 붙잡게". 게임 작곡가의 브리프는 언제나 형용사로 옵니다. 그것을 템포·조성·리듬·음색의 결정으로 번역하는 능력이 실무의 본체이고, 록맨 2가 그 가장 유명한 기록입니다.</p>
+    </div></div>
+  </div>
+</section>
+
+<section id="practice">
+  <div class="wrap">
+    <div class="kicker">09 — PRACTICE</div>
+    <h2>실습 가이드</h2>
+
+    <div class="sfx">
+      <div class="sfx-name">실습 A — 3성부 + 노이즈 챌린지</div>
+      <dl>
+        <dt>내용</dt><dd>펄스 2성 + 삼각파 베이스 + 노이즈 드럼 편성(칩튠 VST 사용)으로 30초 루프 스테이지 곡 1곡 작곡. 가상의 게임 조작감(빠른 러닝 액션 등)을 먼저 한 줄로 정의하고 시작</dd>
+        <dt>목표</dt><dd>골격 작곡 훈련 — 성부 셋으로 멜로디·화성·추진력을 전부 해결</dd>
+        <dt>확인</dt><dd>루프 이음새가 들리지 않는가, 정의한 조작감이 템포·리듬에 반영됐는가</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">실습 B — 같은 멜로디, 두 벌의 옷</div>
+      <dl>
+        <dt>내용</dt><dd>실습 A의 곡을 그대로 풀 편성(오케스트라 또는 밴드)으로 확장 편곡. 골격(멜로디·베이스·화성 진행)은 1음도 바꾸지 않는 조건</dd>
+        <dt>목표</dt><dd>드래곤 퀘스트식 "칩 → 오케스트라" 확장의 체험 — 골격과 옷의 분리 감각</dd>
+        <dt>확인</dt><dd>두 버전을 연속 재생했을 때 같은 곡으로 즉시 인지되는가</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">실습 C — 퍼블릭 도메인 편곡</div>
+      <dl>
+        <dt>내용</dt><dd>저작권이 만료된 민요·클래식 1곡을 골라 가상 게임(장르 지정)의 메인 테마로 편곡. 원곡의 권리 상태 확인 메모와 "무엇을 바꿨고 왜 바꿨는지" 편곡 노트 동봉</dd>
+        <dt>목표</dt><dd>테트리스식 선곡·편곡 실무 — 차용의 기술과 권리 감각을 함께 훈련</dd>
+        <dt>확인</dt><dd>원곡을 아는 사람이 "그 곡이면서 이 게임의 곡"으로 느끼는가</dd>
+      </dl>
+    </div>
+    <div class="note"><strong>포트폴리오 연결</strong> — 실습 A+B 세트는 "골격 작곡 → 편성 확장" 역량을 한 번에 증빙하는 구성으로, 게임 작곡 포트폴리오에서 기본기를 보여주는 첫 항목으로 적합합니다. 실습 C의 편곡 노트는 면접에서 음악적 판단력을 설명하는 재료가 됩니다.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><strong>참고 자료 및 출처</strong> — 본 자료의 사실 관계는 아래 공개 자료를 기반으로 정리했습니다. 작곡가 발언은 해당 매체의 인터뷰를 재정리한 것입니다.</p>
+    <ul class="src-list">
+      <li>shmuplations — 콘도 코지 2001년 인터뷰 번역 (T-SQUARE·사다오 와타나베 영향, 하이햇 푸시, 첫 곡 폐기)</li>
+      <li>Nintendo Everything(NHK 인터뷰 번역) — 콘도의 리듬 발견 과정, 시리즈마다 반복 플레이 후 작곡</li>
+      <li>미국 의회도서관 — 지상 테마 국립 녹음 등재부(2023) 해설 문서 / Slate(33 1/3 시리즈 발췌) — 게임오버 테마의 심리 설계</li>
+      <li>Wikipedia·Dragon Quest Wiki — 스기야마 코이치: 설문엽서 일화, 서곡 5분 작곡·"3~5초" 발언, 8곡 템플릿, 런던 필 교향 모음곡(1986), 산토리홀 패밀리 클래식 콘서트(1987.8.20)</li>
+      <li>VGMO — 야마시타 키누요 인터뷰 / Castlevania Wiki·Wikipedia — "제임스 바나나" 필명(제임스 버나드 말장난), 야마시타·테라시마 분담과 곡별 크레딧의 자료 간 차이</li>
+      <li>shmuplations·VGMO·Red Bull Music Academy — 고시로 유조: 히사이시 조 사사, 귀카피 독학, 데모 테이프 입사, "PC-88은 악기" 발언, 움직임 기반 작곡, 자작 사운드 드라이버</li>
+      <li>Siliconera·Rockman Corner·GoNintendo·VGMPF(MAGFest 2019 인터뷰 정리) — 타테이시 타카시: "귀여움 반려" 일화, 와일리 1 최초 승인, 퀵맨 브리프, 3채널 베이스, 메모리 부족으로 와일리 2 재사용, 에어맨 기타 솔로 8마디(마츠마에), MML 변환</li>
+      <li>VGMPF·Wikipedia·Boston Globe — 테트리스 GB: 타나카의 왈츠·바로크·러시아 3방향 구상, v1.0 자작곡, 코로베이니키(1861 네크라소프)·바흐 미뉴에트 편곡, 고음 시작 변형의 표준화, 테트리스 컴퍼니의 2002년 수록 정책</li>
+    </ul>
+    <p style="margin-top:24px">엠나인아카데미 게임음악작곡 과정 수강생용 학습자료 · 2부 「표현의 확장」으로 이어짐</p>
+  </div>
+</footer>
+
+
+
+</body></html>

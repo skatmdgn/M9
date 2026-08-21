@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)https://orpina214-glitch.github.io/FPSSFX/ -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>장르 심화 — FPS 사운드 디자인 분석</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link href="./css/styles.css" rel="stylesheet">
+<style>
+  :root{
+    --bg:#101319;
+    --panel:#181c26;
+    --panel2:#1f2431;
+    --ink:#e9e7de;
+    --ink-dim:#a9a89f;
+    --line:#2c3242;
+    --accent:#d47a4a;
+    --l-mech:#f2c14e;
+    --l-body:#e4685c;
+    --l-tail:#5ca8e4;
+    --l-crack:#c78ae0;
+    --l-info:#7ec97e;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans KR',-apple-system,'Apple SD Gothic Neo',sans-serif;
+    line-height:1.75;
+    font-size:16px;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:0 20px;}
+
+  header{padding:72px 0 48px;border-bottom:1px solid var(--line);}
+  .era-tag{
+    font-family:'Press Start 2P',monospace;
+    font-size:10px;letter-spacing:2px;
+    color:var(--accent);margin-bottom:20px;
+  }
+  h1{font-size:clamp(26px,5vw,40px);font-weight:700;line-height:1.35;margin-bottom:16px;}
+  .subtitle{color:var(--ink-dim);font-size:15px;max-width:620px;}
+  .hero-wave{display:flex;gap:3px;align-items:flex-end;height:34px;margin-top:32px;}
+  .hero-wave span{width:6px;background:var(--accent);opacity:.85;border-radius:1px;}
+
+  nav.toc{padding:28px 0;border-bottom:1px solid var(--line);}
+  nav.toc ol{
+    list-style:none;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+    gap:8px 24px;
+  }
+  nav.toc a{
+    color:var(--ink-dim);text-decoration:none;font-size:14px;
+    display:flex;gap:10px;align-items:baseline;padding:4px 0;
+  }
+  nav.toc a:hover{color:var(--ink);}
+  nav.toc .num{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--accent);}
+
+  section{padding:56px 0;border-bottom:1px solid var(--line);}
+  .kicker{
+    font-family:'Press Start 2P',monospace;
+    font-size:9px;letter-spacing:2px;
+    color:var(--accent);margin-bottom:14px;text-transform:uppercase;
+  }
+  h2{font-size:24px;font-weight:700;margin-bottom:8px;line-height:1.4;}
+  .meta{color:var(--ink-dim);font-size:13.5px;margin-bottom:24px;}
+  h3{font-size:17px;font-weight:700;margin:32px 0 12px;}
+  p{margin-bottom:14px;}
+  p.lead{font-size:17px;}
+  em{font-style:normal;color:var(--accent);font-weight:500;}
+  .dim{color:var(--ink-dim);}
+  .note{
+    background:var(--panel);
+    border-left:3px solid var(--accent);
+    padding:16px 18px;border-radius:0 8px 8px 0;
+    font-size:14.5px;margin:20px 0;
+  }
+  .note strong{color:var(--accent);}
+  .uncertain{
+    font-size:13px;color:var(--ink-dim);
+    border-top:1px dashed var(--line);
+    margin-top:18px;padding-top:10px;
+  }
+
+  .chip-box{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px 20px;margin:22px 0;
+  }
+  .chip-box .chip-name{
+    font-family:'Press Start 2P',monospace;
+    font-size:9px;color:var(--ink-dim);letter-spacing:1px;margin-bottom:12px;
+  }
+  .ch-row{display:flex;flex-wrap:wrap;gap:6px;}
+  .ch{
+    font-size:12px;padding:5px 10px;border-radius:4px;
+    background:var(--panel2);border:1px solid var(--line);
+    display:flex;align-items:center;gap:7px;white-space:nowrap;
+  }
+  .ch i{width:8px;height:8px;border-radius:2px;display:inline-block;}
+  .c-mech{background:var(--l-mech);} .c-body{background:var(--l-body);}
+  .c-tail{background:var(--l-tail);} .c-crack{background:var(--l-crack);}
+  .c-info{background:var(--l-info);}
+
+  .sfx{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:20px 22px;margin:18px 0;
+  }
+  .sfx .sfx-name{
+    font-weight:700;font-size:15.5px;margin-bottom:10px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .sfx .sfx-name::before{content:"▶";font-size:10px;color:var(--accent);}
+  .sfx dl{display:grid;grid-template-columns:88px 1fr;gap:6px 14px;font-size:14.5px;}
+  .sfx dt{color:var(--ink-dim);font-weight:500;}
+  .sfx dd{margin:0;}
+  @media(max-width:520px){.sfx dl{grid-template-columns:1fr;gap:2px;}
+    .sfx dt{margin-top:8px;font-size:12.5px;}}
+
+  .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:20px 0;}
+  table{border-collapse:collapse;width:100%;min-width:640px;font-size:13.5px;}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top;}
+  th{background:var(--panel2);font-weight:700;white-space:nowrap;}
+  td{background:var(--panel);}
+
+  .principle{display:flex;gap:16px;margin:22px 0;align-items:flex-start;}
+  .principle .p-num{
+    font-family:'Press Start 2P',monospace;
+    font-size:11px;color:var(--accent);padding-top:5px;flex-shrink:0;
+  }
+  .principle h4{font-size:16px;margin-bottom:6px;}
+  .principle p{font-size:14.5px;margin-bottom:0;}
+
+  #codmw{--accent:#8a9e6a;} #valorant{--accent:#e46a6a;} #battlefield{--accent:#5c9de4;}
+  #pubg{--accent:#e0b34e;}
+
+  .listen{
+    font-size:14px;background:var(--panel2);
+    border:1px solid var(--line);border-radius:8px;
+    padding:14px 16px;margin:18px 0;
+  }
+  .listen strong{color:var(--accent);}
+  .listen ul{margin:8px 0 0 18px;}
+  .listen li{margin-bottom:5px;}
+
+  footer{padding:48px 0 80px;color:var(--ink-dim);font-size:13px;}
+  .src-list{margin-top:14px;}
+  .src-list li{margin-bottom:6px;word-break:break-all;}
+  ul.plain{margin:0 0 14px 20px;}
+  ul.plain li{margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="era-tag">M9 ACADEMY — GENRE DEEP DIVE / FPS</div>
+    <h1>장르 심화 — FPS<br><span style="color:var(--accent)">총성의 해부학, 정보의 전장</span></h1>
+    <p class="subtitle">콜 오브 듀티: 모던 워페어 · 발로란트 · 배틀필드 · PUBG: 배틀그라운드 —
+    게임 사운드에서 가장 치열하게 연구된 단일 소리, 총성.
+    그리고 소리 한 조각이 생사를 가르는 전장의 정보 설계.
+    FPS라는 장르가 사운드 디자인의 최전선인 이유를 네 작품으로 파고듭니다.
+    MMORPG편과 짝을 이루는 장르 심화편입니다.</p>
+    <div class="hero-wave" aria-hidden="true">
+      <span style="height:100%"></span><span style="height:85%"></span><span style="height:60%"></span><span style="height:40%"></span><span style="height:28%"></span><span style="height:20%"></span><span style="height:15%"></span><span style="height:100%"></span><span style="height:80%"></span><span style="height:55%"></span><span style="height:38%"></span><span style="height:25%"></span><span style="height:18%"></span><span style="height:12%"></span><span style="height:8%"></span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <ol>
+      <li><a href="https://orpina214-glitch.github.io/FPSSFX/#intro"><span class="num">00</span>총과 정보 — FPS 사운드의 두 기둥</a></li>
+      <li><a href="https://orpina214-glitch.github.io/FPSSFX/#anatomy"><span class="num">01</span>총성의 해부학</a></li>
+      <li><a href="https://orpina214-glitch.github.io/FPSSFX/#codmw"><span class="num">02</span>콜 오브 듀티: 모던 워페어 (2019)</a></li>
+      <li><a href="https://orpina214-glitch.github.io/FPSSFX/#valorant"><span class="num">03</span>발로란트 (2020~)</a></li>
+      <li><a href="https://orpina214-glitch.github.io/FPSSFX/#battlefield"><span class="num">04</span>배틀필드와 HDR 오디오</a></li>
+      <li><a href="https://orpina214-glitch.github.io/FPSSFX/#pubg"><span class="num">05</span>PUBG: 배틀그라운드 (2017~)</a></li>
+      <li><a href="https://orpina214-glitch.github.io/FPSSFX/#principles"><span class="num">06</span>FPS 사운드의 다섯 원칙</a></li>
+      <li><a href="https://orpina214-glitch.github.io/FPSSFX/#practice"><span class="num">07</span>실습 가이드</a></li>
+    </ol>
+  </div>
+</nav>
+
+<section id="intro">
+  <div class="wrap">
+    <div class="kicker">00 — INTRODUCTION</div>
+    <h2>총과 정보 — FPS 사운드의 두 기둥</h2>
+    <p class="lead">FPS 사운드는 두 개의 질문으로 요약됩니다. <em>"내 총이 얼마나 강하게 느껴지는가"</em>, 그리고 <em>"저 소리가 어디서 났는가."</em></p>
+    <p>첫 번째 질문은 쾌감의 영역입니다. 플레이 시간의 대부분을 차지하는 단일 사운드인 총성은, 게임 전체의 인상을 혼자 짊어집니다. 시리즈 내내 반복된 원칙 — 가장 자주 들리는 소리에 가장 공을 들인다 — 이 극한으로 적용되는 곳입니다. 두 번째 질문은 생존의 영역입니다. 1인칭 시야는 좁고, 위협은 대부분 화면 밖에서 옵니다. 발소리의 방향, 총성의 거리, 재장전의 기척 — FPS에서 귀는 눈이 못 보는 270도를 담당합니다.</p>
+    <p>네 작품은 이 두 기둥의 서로 다른 배합입니다. 모던 워페어는 총의 쾌감과 리얼리즘을, 발로란트는 정보의 순도를, 배틀필드는 전장 스케일의 믹스 기술을, PUBG는 거리·방향 정보가 곧 생존인 배틀로얄의 조건을 대표합니다. MMORPG편이 "오래 사는 소리"의 공부였다면, FPS편은 <em>"순간에 모든 것을 거는 소리"</em>의 공부입니다.</p>
+    <div class="note"><strong>분석 관점 3가지</strong> — 시리즈 공통 틀로 분석합니다.<br>
+    ① 왜 이렇게 표현되었는가 (장르 조건과 설계 의도)<br>
+    ② 무엇을 표현하고자 했는가 (소리의 기능과 감정)<br>
+    ③ 무엇을 배울 것인가 (실무에 가져갈 것)</div>
+  </div>
+</section>
+
+<section id="anatomy">
+  <div class="wrap">
+    <div class="kicker">01 — ANATOMY</div>
+    <h2>총성의 해부학</h2>
+    <p>본론 전에 공용 어휘를 만듭니다. 현대 FPS의 총성은 하나의 소리가 아니라, 거리와 입장에 따라 다르게 조립되는 <em>레이어 시스템</em>입니다. 아래 다섯 층을 기억해두면 어떤 게임의 총성이든 분해해 들을 수 있습니다.</p>
+    <div class="chip-box">
+      <div class="chip-name">GUNSHOT LAYER SYSTEM</div>
+      <div class="ch-row">
+        <span class="ch"><i class="c-mech"></i>메커니즘 — 트리거·볼트·탄피 (사수 본인만)</span>
+        <span class="ch"><i class="c-body"></i>바디 — 발사 임팩트의 본체 (근거리)</span>
+        <span class="ch"><i class="c-tail"></i>테일 — 공간 반사·에코 (환경이 결정)</span>
+        <span class="ch"><i class="c-crack"></i>크랙 — 탄이 곁을 스칠 때의 파열음 (피격측)</span>
+        <span class="ch"><i class="c-info"></i>리포트 — 원거리에서 들리는 둔탁한 총성 (정보)</span>
+      </div>
+    </div>
+    <p>중요한 통찰은 이것입니다 — <em>같은 한 발이 듣는 사람마다 다른 소리입니다.</em> 쏘는 사람은 메커니즘+바디+테일을, 근처를 스쳐간 사람은 크랙을, 500m 밖의 사람은 리포트만 듣습니다. 총성 디자인은 "좋은 소리 하나"가 아니라 이 역할 분담 전체를 설계하는 일입니다. 2부 오버워치의 "듣는 사람에 따라 다른 소리"가 FPS에서는 물리 법칙의 형태로 구현되는 셈입니다.</p>
+    <div class="tbl-scroll">
+      <table>
+        <tbody><tr><th>게임</th><th>계열 / 오디오 환경</th><th>이 자료에서 주목할 설계</th></tr>
+        <tr>
+          <td>콜 오브 듀티: 모던 워페어<br><span class="dim">2019 · 인피니티 워드</span></td>
+          <td>밀리터리 리얼리즘</td>
+          <td>실총 필드 레코딩과 총기 폴리의 표준, 무기의 "캐릭터화" 3원칙, TGA 2019 베스트 오디오</td>
+        </tr>
+        <tr>
+          <td>발로란트<br><span class="dim">2020~ · 라이엇 게임즈</span></td>
+          <td>택티컬 정보전</td>
+          <td>HRTF 도입, 발소리 가청 반경의 규칙화, 명료성 최우선 믹스</td>
+        </tr>
+        <tr>
+          <td>배틀필드 시리즈<br><span class="dim">DICE · 프로스트바이트</span></td>
+          <td>대규모 전장</td>
+          <td>HDR 오디오의 발명 — dB SPL 기반 자동 믹스, "모든 소리가 아니라 옳은 소리를"</td>
+        </tr>
+        <tr>
+          <td>PUBG: 배틀그라운드<br><span class="dim">2017~ · 크래프톤</span></td>
+          <td>배틀로얄</td>
+          <td>초원거리 총성 정보, 발소리로 읽는 자세와 재질, 사운드 변경의 운영 커뮤니케이션</td>
+        </tr>
+      </tbody></table>
+    </div>
+  </div>
+</section>
+
+<section id="codmw">
+  <div class="wrap">
+    <div class="kicker">02 — INFINITY WARD / 2019 / PC·CONSOLE</div>
+    <h2>콜 오브 듀티: 모던 워페어 — 총을 캐릭터로 만드는 법</h2>
+    <p class="meta">오디오 디렉터: 스티븐 밀러 / 프린시펄 사운드 디자이너: 스튜어트 프로빈 — 2019 더 게임 어워드 베스트 오디오 디자인 수상작</p>
+
+    <h3>① 왜 이렇게 표현되었는가</h3>
+    <p>프로빈이 밝힌 무기 사운드의 3원칙이 이 게임의 설계도입니다. 첫째, <em>각 총을 고유한 "캐릭터"로 차별화할 것.</em> 둘째, 사람들의 역사적 기대에서 지나치게 벗어나지 말 것 — 관객은 이 총들을 수백 편의 영화와 게임에서 이미 들어왔습니다. 셋째, 그 안에서 리얼리즘의 기준을 끌어올릴 것. 물론 이 모든 것을 게임 메모리와 엔진의 기술 제약 안에서 해내야 했습니다.</p>
+    <p>제작 방식은 물량과 집요함이었습니다. 팀은 사막을 비롯한 여러 장소에서 실총들을 직접 녹음했고, 저명한 총기 레코디스트 왓슨 우와 함께 <em>소리의 반사만을 잡기 위한 필드 레코딩 원정을 두 차례</em> 따로 진행했습니다. 여기에 시리즈 사상 유례없는 수준의 총기 폴리 — 트리거 리셋(방아쇠 복귀)과 디스커넥터 소리, 기관총의 오픈볼트 작동음까지 녹음했습니다. 프로빈은 "마법의 플러그인도, 표준 이펙트 체인도 없었다"며 총마다 바퀴를 다시 발명해야 했다고 회고합니다. 발사된 탄피 하나하나가 3D 공간을 날아가 바닥에 떨어지는 소리까지 물리 시스템으로 재생되고, 같은 총이라도 넓은 공간에서는 크고 깊은 에코가, 좁은 공간에서는 먹먹하고 반향이 적은 소리가 납니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">무기의 캐릭터 — 총성이 곧 이름표</div>
+      <dl>
+        <dt>구조</dt><dd>총기별 고유 녹음 + 개별 설계된 이펙트 체인. 표준 레시피 없이 총마다 다른 접근</dd>
+        <dt>기능</dt><dd>쾌감 + 정보 — 강하게 느껴지면서, 소리만으로 어떤 총인지 식별됨</dd>
+        <dt>포인트</dt><dd>"역사적 기대를 존중하라"는 2원칙이 핵심 통찰 — 리얼리즘은 실제 소리의 복제가 아니라, 관객의 기억 속 소리와 실제 사이의 협상</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">총기 폴리 — 쾌감은 발사 전후에 산다</div>
+      <dl>
+        <dt>구조</dt><dd>트리거 리셋, 볼트, 장전, 탄피 배출의 기계식 디테일 레이어</dd>
+        <dt>기능</dt><dd>무기를 "든 느낌"의 촉각화 — 발사하지 않는 순간에도 총이 존재감을 유지</dd>
+        <dt>포인트</dt><dd>1부 둠에서 본 "발사 전후가 캐릭터를 만든다"의 리얼리즘 진영 완성형. 폴리의 해상도가 곧 몰입의 해상도</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">공간 반응 총성 — 환경이 이펙터다</div>
+      <dl>
+        <dt>구조</dt><dd>반사음 전용 필드 레코딩 자산 + 공간 규모·재질에 반응하는 테일 시스템. 폭발음에도 동일 원리 확장</dd>
+        <dt>기능</dt><dd>공간 정보의 무의식적 전달 — 소리만으로 실내/실외, 골목/광장이 구분됨</dd>
+        <dt>포인트</dt><dd>테일은 장식이 아니라 위치 정보 — 상대의 총성 테일을 듣고 교전 위치의 공간 유형을 추정하는 플레이가 가능해짐</dd>
+      </dl>
+    </div>
+
+    <h3>③ 무엇을 배울 것인가</h3>
+    <ul class="plain">
+      <li><strong>레시피가 아니라 태도를 배울 것</strong> — "표준 체인은 없었다"는 증언이 진짜 교훈입니다. 총 하나하나를 개별 문제로 대하는 집요함이 결과의 품질을 만들었습니다.</li>
+      <li><strong>기대 관리라는 개념</strong> — 관객이 이미 아는 소리(총, 검, 폭발)를 다룰 때는 실측 리얼리즘과 문화적 기억 사이의 균형점을 찾아야 합니다. 리얼한데 어색한 소리가 나오는 이유가 여기 있습니다.</li>
+      <li><strong>녹음 기획력</strong> — "반사음만을 위한 원정 2회"처럼, 무엇을 녹음할지 설계하는 능력이 좋은 소스의 절반입니다. 폴리·필드 레코딩 실습에서 녹음 리스트를 먼저 쓰는 습관.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>같은 총을 실내/실외/엄폐물 뒤에서 발사 — 테일 레이어의 변화 비교</li>
+        <li>발사음을 빼고 장전 시퀀스만 반복 청취 — 기계식 폴리의 단계 분해</li>
+        <li>서로 다른 소총 3종의 총성을 블라인드로 구분해보기 — "캐릭터화"의 체감</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="valorant">
+  <div class="wrap">
+    <div class="kicker">03 — RIOT GAMES / 2020~ / PC</div>
+    <h2>발로란트 — 소리의 순도가 곧 경쟁의 공정</h2>
+    <p class="meta">라이엇 게임즈 오디오 팀 — 공식 패치 노트 및 오디오 관련 공개 자료 기준</p>
+
+    <h3>① 왜 이렇게 표현되었는가</h3>
+    <p>발로란트는 정보가 의도적으로 제한된 게임입니다. 벽 너머는 보이지 않고, 모든 통로를 동시에 볼 수 없으며, 로테이션엔 위험이 따릅니다. 그 공백을 메우는 게 소리입니다 — 조기 경보이자, 상대의 거짓말 탐지기이자, 타이밍의 근거. 그래서 이 게임의 사운드 철학은 오버워치의 "Play by Sound"보다 한층 금욕적입니다. 화려함은 정보의 적이고, 믹스의 목표는 몰입이 아니라 <em>판독 가능성</em>입니다.</p>
+    <p>대표적 결정 두 가지. 첫째, <em>발소리 가청 반경의 규칙화</em> — 라이엇은 발소리가 들리는 거리 개념을 공식적으로 설명해왔고, 걷기(shift)는 무음이라는 규칙이 게임 디자인의 일부로 고정되어 있습니다. 소리가 나는 조건과 안 나는 조건이 명문화된 규칙이라는 것 — 사운드가 밸런스 문서에 등재된 셈입니다. 둘째, <em>HRTF 도입</em> — 머리전달함수 기반 3D 정위 처리를 옵션으로 제공해, 스테레오 헤드폰만으로 전후·상하 방향 판별을 돕습니다. 패치 노트에 명시된 공식 기능으로, 스테레오 설정과 함께 쓰도록 안내됩니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">발소리 — 규칙이 된 소리</div>
+      <dl>
+        <dt>구조</dt><dd>달리기는 일정 반경 내 가청, 걷기는 무음이라는 이분법적 규칙 + 재질별 질감</dd>
+        <dt>기능</dt><dd>존재 정보의 공정한 분배 — "소리를 냈는가"가 플레이어의 선택이 됨</dd>
+        <dt>포인트</dt><dd>소리 유무 자체가 전술 자원이 된 설계. 사운드 디자이너가 만든 규칙이 게임의 메타를 형성하는 사례</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">HRTF — 헤드폰 두 개로 만드는 구형 공간</div>
+      <dl>
+        <dt>구조</dt><dd>발소리·재장전 등 위치 정보가 중요한 소리에 머리전달함수 기반 3D 정위 적용 (옵션)</dd>
+        <dt>기능</dt><dd>전후 구분이라는 스테레오의 고질적 약점 보완</dd>
+        <dt>포인트</dt><dd>공간 오디오 기술이 몰입용이 아닌 경쟁 정보용으로 도입된 대표 사례 — 같은 기술도 장르가 목적을 바꿈</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">스킬 사운드의 어휘 통제</div>
+      <dl>
+        <dt>구조</dt><dd>모든 요원 스킬에 시전·전개·지속의 구분된 사운드 — MOBA에서 검증된 라이엇의 식별성 방법론이 FPS 정밀도로 이식됨</dd>
+        <dt>기능</dt><dd>화면 밖 스킬 사용의 종류·위치 판독</dd>
+        <dt>포인트</dt><dd>2부 LoL 항목과 직접 비교할 것 — 같은 회사가 장르에 따라 어휘의 밀도와 믹스의 금욕 수준을 어떻게 조절하는지</dd>
+      </dl>
+    </div>
+    <p class="uncertain">확실하지 않음 표기 — 발로란트 오디오 팀의 상세 제작 강연은 오버워치의 GDC 강연만큼 정리된 형태로 공개되어 있지 않습니다. 위 내용은 공식 패치 노트(HRTF), 라이엇의 공개 자료(발소리 반경 등), 그리고 널리 검증된 게임 내 규칙에 기반하며, 내부 제작 프로세스 서술은 포함하지 않았습니다.</p>
+
+    <h3>③ 무엇을 배울 것인가</h3>
+    <ul class="plain">
+      <li><strong>사운드 규칙의 문서화</strong> — "언제 소리가 나는가"를 게임 규칙으로 명문화하면 사운드는 밸런스의 일부가 됩니다. 사운드 기획서를 쓸 줄 아는 디자이너가 되는 길.</li>
+      <li><strong>금욕적 믹스의 용기</strong> — 화려한 이펙트를 깎아내는 결정은 데모 영상에서 손해처럼 보이지만 경쟁 게임의 수명을 만듭니다. "덜어낸 이유"를 설명할 수 있는 디자이너가 되기.</li>
+      <li><strong>공간 오디오의 목적 규정</strong> — HRTF·바이노럴을 쓸 때 "몰입용인가 정보용인가"를 먼저 정하면 파라미터 튜닝의 기준이 생깁니다.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>사격장에서 HRTF 온/오프를 전환하며 전후 방향 판별 정확도 자가 테스트</li>
+        <li>달리기·걷기·점프 착지의 가청 조건을 직접 실험해 규칙표로 정리</li>
+        <li>연막 속 교전 녹화에서 소리만으로 상황을 받아쓰고 실제 화면과 대조</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="battlefield">
+  <div class="wrap">
+    <div class="kicker">04 — DICE / FROSTBITE / 2008~</div>
+    <h2>배틀필드와 HDR 오디오 — 업계의 믹스 문법을 바꾼 발명</h2>
+    <p class="meta">DICE 오디오 팀 (데이비드 묄레르스테트, 안데르스 클레르발 외) — 배틀필드: 배드 컴퍼니에서 도입, GDC 발표로 업계 표준화</p>
+
+    <h3>① 왜 이렇게 표현되었는가</h3>
+    <p>이 섹션의 주인공은 게임 한 편이 아니라 기술 하나입니다. 64인이 탱크와 전투기와 폭발 속에서 싸우는 배틀필드의 조건에서, 전통적 믹싱 — 더킹과 스냅샷 — 은 한계에 부딪혔습니다. DICE의 회고가 정확합니다. <em>"모든 소리가 중요하다"며 전부 11까지 올려놓으니, 볼륨 1.0이라는 값에 아무 의미가 없어졌다.</em> 예측 불가능한 멀티플레이 사운드스케이프에서 수작업 믹스는 감당이 안 됐던 겁니다.</p>
+    <p>해법이 <em>HDR(High Dynamic Range) 오디오</em>입니다. 발상의 전환은 단순하고 강력합니다 — 소리를 진폭(amplitude)이 아니라 <em>실제 세계의 음압(dB SPL)</em>으로 지정하는 것. 속삭임부터 고통 한계선까지 약 130dB에 이르는 현실의 다이내믹 레인지를 값으로 부여하고, 청자 위치에서 각 소리의 라우드니스를 실시간 계산한 뒤, 그 순간 가장 큰 소리가 "HDR 윈도우"를 끌고 다니며 작은 소리들을 자연스럽게 마스킹합니다. HDR 라이팅의 톤 매핑과 같은 원리 — 자동 믹서이자, 자동 우선순위 시스템이자, 효율적인 컬링 장치입니다. 사운드 디자이너의 일은 절대 볼륨 조정에서 <em>상대적 라우드니스 관계의 설계</em>로 바뀌었습니다. DICE 스스로 패러다임 전환이라 불렀던 변화입니다.</p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">"모든 소리가 아니라 옳은 소리를"</div>
+      <dl>
+        <dt>구조</dt><dd>라우드니스 = 중요도의 근사치라는 전제 아래, 우선순위가 자동 배분되는 믹스</dd>
+        <dt>기능</dt><dd>전장의 혼돈을 재현하면서도 매 순간 판독 가능한 소리만 남김</dd>
+        <dt>포인트</dt><dd>포격 한 발이 울리면 발소리가 물리적으로 당연하게 사라짐 — 마스킹이 버그가 아니라 리얼리즘이 되는 설계</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">전장 스케일의 총성 — 거리의 리얼리즘</div>
+      <dl>
+        <dt>구조</dt><dd>거리대별로 교체되는 총성 레이어 — 근거리의 임팩트에서 원거리의 둔탁한 리포트까지, 광활한 맵 전체가 하나의 어쿠스틱 공간</dd>
+        <dt>기능</dt><dd>수백 미터 밖 교전의 방향·규모 정보 + 전장의 스케일감</dd>
+        <dt>포인트</dt><dd>이 거리 기반 레이어 문법이 이후 밀리터리 FPS와 배틀로얄 전반의 표준이 됨 — PUBG 섹션으로 직결되는 계보</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">HDR의 대가 — 통제의 양도</div>
+      <dl>
+        <dt>구조</dt><dd>특정 소리가 항상 들린다는 보장이 사라지고, 절대 볼륨의 예측이 불가능해짐</dd>
+        <dt>기능</dt><dd>자동화의 비용 — 시스템에 믹스를 맡긴 만큼 디자이너의 직접 통제는 줄어듦</dd>
+        <dt>포인트</dt><dd>DICE가 스스로 명시한 한계이자, 모든 자동 믹스 시스템의 공통 교훈 — 자동화를 도입할 때는 무엇을 포기하는지 함께 문서화할 것</dd>
+      </dl>
+    </div>
+
+    <h3>③ 무엇을 배울 것인가</h3>
+    <ul class="plain">
+      <li><strong>단위를 바꾸면 사고가 바뀐다</strong> — 진폭에서 dB SPL로 단위를 바꾸자 믹스 전체가 재발명됐습니다. 문제가 안 풀릴 때 측정 단위 자체를 의심하는 사고법.</li>
+      <li><strong>HDR은 지금 여러분의 도구다</strong> — 이 개념은 Wwise에 HDR 기능으로 내장되어 있습니다. 배틀필드의 발명을 오늘 실습에서 직접 켜볼 수 있다는 것 — 이 자료의 이론이 곧 실기입니다.</li>
+      <li><strong>기술 공유의 문화</strong> — DICE가 GDC에서 방법론을 공개했기에 업계 전체가 진보했습니다. 강연 자료·포스트모템을 읽는 습관이 곧 최신 기술의 습득 경로입니다.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>대규모 전장에서 포격 순간 주변 소리들이 어떻게 잠겼다 돌아오는지 관찰</li>
+        <li>같은 총성을 10m/100m/500m 거리에서 청취 — 레이어 교체 지점 찾기</li>
+        <li>Wwise의 HDR 기능을 켠 프로젝트와 끈 프로젝트 비교 체험</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="pubg">
+  <div class="wrap">
+    <div class="kicker">05 — KRAFTON / 2017~ / PC·CONSOLE·MOBILE</div>
+    <h2>PUBG: 배틀그라운드 — 소리가 곧 목숨인 섬</h2>
+    <p class="meta">크래프톤(구 펍지주식회사) 오디오 조직 — 100명 규모 전장의 배틀로얄, 국산 글로벌 히트작</p>
+
+    <h3>① 왜 이렇게 표현되었는가</h3>
+    <p>배틀로얄은 FPS 사운드의 조건을 극단화합니다. 8km 사방의 섬, 100명의 플레이어, 단 한 번의 죽음. 이 조건에서 소리는 편의 기능이 아니라 <em>1차 생존 감각</em>입니다. 발소리의 거리와 유형으로 상대가 뛰는지, 앉아 걷는지, 엎드려 있는지를 판별하고, 총성의 방향과 성질로 위치를 특정하며, 무기마다 고유한 사운드 프로필이 있어 소리만으로 상대의 화력을 추정합니다. 차량 엔진음은 차종과 거리까지 알려줍니다. 플레이어들이 EQ까지 동원해 발소리를 증폭하는 세팅 문화를 만든 것도 이 게임 — 사운드가 실력의 일부로 취급되는 생태계입니다.</p>
+    <p>그리고 이 게임은 라이브 사운드 운영의 값진 반면교사도 남겼습니다. 한 패치에서 사운드 작동 방식을 바꾸고 패치노트에 기재하지 않았다가, 유저들의 항의에 공식 사과문을 내고 변경 내용을 뒤늦게 설명한 일이 있습니다 — "패치노트에 설명했어야 했다. 우리가 잘못했다"는 문장 그대로입니다. MMORPG편 아이온2에서 본 교훈의 선행 사례: <em>경쟁 게임에서 사운드 변경은 밸런스 패치이며, 문서화되지 않은 사운드 변경은 신뢰의 문제가 됩니다.</em></p>
+
+    <h3>② 무엇을 표현하고자 했는가</h3>
+    <div class="sfx">
+      <div class="sfx-name">초원거리 총성 — 정보로서의 리포트</div>
+      <dl>
+        <dt>구조</dt><dd>거리대별 총성 레이어(배틀필드 계보) + 무기별 고유 프로필의 유지</dd>
+        <dt>기능</dt><dd>수백 미터 밖 교전의 방향·무기 종류·전황 판독 — 지도 위 위험 지역의 청각 표시</dd>
+        <dt>포인트</dt><dd>멀리서 들리는 총성이 "남의 싸움 구경"이 아니라 "내 다음 이동의 근거"가 되는 장르 — 정보 가치가 극대화된 리포트 설계</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">발소리 — 자세와 재질의 판독</div>
+      <dl>
+        <dt>구조</dt><dd>이동 자세(달리기/앉아걷기/포복)와 바닥 재질(목재/콘크리트/풀)별로 구분되는 발소리 세트</dd>
+        <dt>기능</dt><dd>건물 내 교전의 핵심 정보 — 층·방향·상대의 의도까지 추정</dd>
+        <dt>포인트</dt><dd>실내 근접전에서는 발소리가 총성보다 중요한 소리가 됨 — 장르 내에서도 국면에 따라 정보 우선순위가 뒤집히는 사례</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">사운드 운영의 사회성</div>
+      <dl>
+        <dt>구조</dt><dd>사운드 변경 → 커뮤니티 감지 → 공식 사과·설명이라는 실제 사건의 흐름</dd>
+        <dt>기능</dt><dd>운영 층 — 사운드가 유저와 맺는 신뢰 계약의 존재 증명</dd>
+        <dt>포인트</dt><dd>수백만 명이 소리를 "실력의 근거"로 쓰는 게임에서, 소리의 변경은 규칙의 변경 — 사운드 디자이너가 패치노트 문장까지 책임지는 시대</dd>
+      </dl>
+    </div>
+    <p class="uncertain">확실하지 않음 표기 — 크래프톤 오디오 조직의 존재와 역할 분화(공식 블로그), 사운드 변경 사과문(공식 공지), 모바일판 돌비 애트모스 도입(공식 보도자료)은 확인된 사실입니다. 다만 발소리·총성 시스템의 내부 구현 세부는 공개 강연이 제한적이라, 해당 서술은 플레이어 커뮤니티에서 검증된 게임 내 규칙과 관찰에 기반합니다.</p>
+
+    <h3>③ 무엇을 배울 것인가</h3>
+    <ul class="plain">
+      <li><strong>정보 사운드의 극한 설계</strong> — "이 소리로 플레이어가 어떤 결정을 내리는가"를 소리마다 답할 수 있어야 하는 장르입니다. 사운드 명세서에 '전달 정보' 칸을 만드는 습관.</li>
+      <li><strong>유저의 청취 문화까지가 결과물</strong> — EQ 세팅 가이드가 공유되는 생태계는 사운드 정보 설계가 성공했다는 증거이자, 디자이너가 통제할 수 없는 재생 환경의 다양성을 뜻합니다. 극단적 EQ에서도 정보가 깨지지 않는 견고함이 필요합니다.</li>
+      <li><strong>국내 취업의 직접 레퍼런스</strong> — 크래프톤은 오디오 직군을 세분화해 운영하는 국내 대표 조직입니다. 공식 블로그의 오디오 팀 인터뷰는 국내 사운드 직무의 실제를 보여주는 1차 자료이니 꼭 읽어볼 것.</li>
+    </ul>
+
+    <div class="listen"><strong>청취 포인트</strong>
+      <ul>
+        <li>훈련장에서 같은 무기의 총성을 거리별로 녹음해 레이어 교체 지점 정리</li>
+        <li>목조 건물에서 자세별 발소리 3종을 비교 — 정보량의 차이 분석</li>
+        <li>영점 없는 상태에서 소리만으로 총성 방향을 지목하고 킬캠으로 검증</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="principles">
+  <div class="wrap">
+    <div class="kicker">06 — DESIGN PRINCIPLES</div>
+    <h2>FPS 사운드의 다섯 원칙</h2>
+
+    <div class="principle"><div class="p-num">01</div><div>
+      <h4>한 발의 총성은 여러 개의 소리다</h4>
+      <p>사수의 메커니즘, 근거리의 바디, 공간의 테일, 스치는 크랙, 원거리의 리포트 — 같은 사건이 입장과 거리마다 다른 소리로 조립됩니다. 총성 디자인은 이 역할 분담 전체의 설계입니다.</p>
+    </div></div>
+
+    <div class="principle"><div class="p-num">02</div><div>
+      <h4>리얼리즘은 기억과의 협상이다</h4>
+      <p>관객은 실총 소리가 아니라 영화 속 총소리를 기억합니다. 실측의 정확성과 문화적 기대 사이의 균형점을 찾는 것 — 모던 워페어 3원칙의 두 번째가 괜히 있는 게 아닙니다.</p>
+    </div></div>
+
+    <div class="principle"><div class="p-num">03</div><div>
+      <h4>믹스의 단위를 현실에서 빌려라</h4>
+      <p>DICE는 진폭 대신 음압(dB SPL)으로 사고를 전환해 HDR 오디오를 발명했습니다. 예측 불가능한 전장의 믹스는 수작업이 아니라 물리 법칙을 닮은 규칙으로 풉니다.</p>
+    </div></div>
+
+    <div class="principle"><div class="p-num">04</div><div>
+      <h4>소리의 유무는 게임 규칙이다</h4>
+      <p>발로란트의 무음 걷기, PUBG의 자세별 발소리 — 언제 소리가 나는지가 명문화된 규칙이 되면, 사운드는 밸런스 문서의 일부가 됩니다. 그리고 규칙이 된 소리의 변경에는 공지가 따라야 합니다.</p>
+    </div></div>
+
+    <div class="principle"><div class="p-num">05</div><div>
+      <h4>가장 좋은 마이크는 기획서다</h4>
+      <p>반사음 전용 원정 2회, 트리거 리셋까지 적힌 녹음 리스트 — 좋은 소스는 우연히 잡히지 않습니다. 무엇을, 왜, 어떤 조건에서 녹음할지 먼저 설계하는 것이 레코딩의 절반입니다.</p>
+    </div></div>
+  </div>
+</section>
+
+<section id="practice">
+  <div class="wrap">
+    <div class="kicker">07 — PRACTICE</div>
+    <h2>실습 가이드</h2>
+
+    <div class="sfx">
+      <div class="sfx-name">실습 A — 총성 5층 분해와 재조립</div>
+      <dl>
+        <dt>내용</dt><dd>가상 소총 1정의 총성을 메커니즘/바디/테일/크랙/리포트 5층으로 제작하고, 사수 시점·피격 시점·500m 시점의 3가지 조립 버전 납품</dd>
+        <dt>목표</dt><dd>"한 발 = 여러 소리" 구조의 체득 — 입장별 사운드 설계</dd>
+        <dt>확인</dt><dd>세 버전을 블라인드로 들려줬을 때 청자가 자신의 "입장"을 맞힐 수 있는가</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">실습 B — HDR 믹스 체험 (Wwise)</div>
+      <dl>
+        <dt>내용</dt><dd>발소리·소총·수류탄·포격 4종 소스에 현실 참조 라우드니스 값을 부여하고 Wwise HDR 버스로 자동 믹스 구성. HDR 온/오프 비교 영상 포함</dd>
+        <dt>목표</dt><dd>배틀필드식 라우드니스 기반 사고의 실기 전환</dd>
+        <dt>확인</dt><dd>포격 순간 발소리가 자연스럽게 마스킹되고, 정적에서 다시 살아나는가</dd>
+      </dl>
+    </div>
+    <div class="sfx">
+      <div class="sfx-name">실습 C — 발소리 정보 시스템</div>
+      <dl>
+        <dt>내용</dt><dd>자세 3종(달리기/걷기/포복) × 재질 3종(콘크리트/목재/풀)의 발소리 매트릭스 9종 제작 + "각 소리가 전달하는 정보" 1줄씩 적은 명세서 동봉</dd>
+        <dt>목표</dt><dd>PUBG식 정보 사운드 설계 — 소리마다 결정 근거를 명시하는 훈련</dd>
+        <dt>확인</dt><dd>소리만 듣고 자세와 재질을 판별하는 블라인드 테스트 정답률</dd>
+      </dl>
+    </div>
+    <div class="note"><strong>포트폴리오 연결</strong> — 실습 A는 총기 사운드 리디자인의 정석 포맷이고, B는 미들웨어 믹스 역량, C는 정보 설계 역량의 증빙입니다. MMORPG편 실습과 합치면 국내 취업 시장의 양대 장르를 모두 커버하는 포트폴리오 골격이 완성됩니다.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><strong>참고 자료 및 출처</strong> — 본 자료의 사실 관계는 아래 공개 자료를 기반으로 정리했습니다. 개발자 발언은 해당 매체의 인터뷰·강연을 재정리한 것입니다.</p>
+    <ul class="src-list">
+      <li>A Sound Effect — "Creating Call of Duty: Modern Warfare's Award-Winning Sound" (스튜어트 프로빈 3원칙, "표준 체인은 없었다", 스티븐 밀러 팀 인터뷰)</li>
+      <li>액티비전 공식 블로그 — 모던 워페어 무기 오디오 해설 (탄피 3D 물리, 공간별 에코 변화, 필드 레코딩)</li>
+      <li>Sound Design Addict / Watson Wu — 총기 폴리(트리거 리셋·오픈볼트) 및 반사음 전용 필드 레코딩 2회</li>
+      <li>라이엇 게임즈 공식 패치 노트 및 공개 자료 — 발로란트 HRTF 도입, 발소리 가청 반경 설명, 스테레오+HRTF 권장</li>
+      <li>GDC — DICE "How High Dynamic Range Audio Makes Battlefield: Bad Company Go BOOM" / "HDR Audio: Adaptive Mixing in Frostbite" (dB SPL 지정, HDR 윈도우, 자동 믹서·우선순위·컬링, 통제 양도의 한계 명시)</li>
+      <li>Designing Sound — Wwise의 HDR 기능 해설 (배틀필드 계보의 미들웨어 표준화)</li>
+      <li>PUBG 공식 Steam 공지 — 사운드 변경 미기재에 대한 사과문 ("On Recent Sound Design Changes")</li>
+      <li>크래프톤 공식 블로그 — 오디오 조직 인터뷰 (직군 세분화, Audio Production 팀 구조)</li>
+      <li>돌비·텐센트 공식 보도자료 — PUBG 모바일 돌비 애트모스 도입</li>
+    </ul>
+    <p style="margin-top:24px">엠나인아카데미 게임사운드디자인 과정 · 학습용 자료 · 장르 심화: FPS편 (MMORPG편과 세트)</p>
+  </div>
+</footer>
+
+
+
+</body></html>
