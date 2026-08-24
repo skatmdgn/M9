@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)https://orpina214-glitch.github.io/Game-Voice-Directing-and-Editing/ -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>게임 보이스 디렉팅과 편집 — 현장 가이드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link href="./css/styles.css" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12111a;
+    --panel:#1a1926;
+    --panel2:#222031;
+    --ink:#eae7de;
+    --ink-dim:#a8a69e;
+    --line:#2f2c42;
+    --accent:#e0a44e;
+    --bad:#e4685c;
+    --good:#7ec97e;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:'IBM Plex Sans KR',-apple-system,'Apple SD Gothic Neo',sans-serif;
+    line-height:1.75;font-size:16px;-webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px;}
+
+  header{padding:64px 0 44px;border-bottom:1px solid var(--line);}
+  .audience-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(224,164,78,.12);border:1px solid var(--accent);
+    color:var(--accent);font-size:13.5px;font-weight:700;
+    padding:8px 16px;border-radius:999px;margin-bottom:22px;letter-spacing:.3px;
+  }
+  .audience-badge::before{content:"●";font-size:8px;}
+  .era-tag{font-family:'Press Start 2P',monospace;font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:20px;}
+  h1{font-size:clamp(25px,5vw,38px);font-weight:700;line-height:1.35;margin-bottom:16px;}
+  .subtitle{color:var(--ink-dim);font-size:15px;max-width:660px;}
+
+  nav.toc{padding:26px 0;border-bottom:1px solid var(--line);}
+  nav.toc ol{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:6px 24px;}
+  nav.toc a{color:var(--ink-dim);text-decoration:none;font-size:14px;display:flex;gap:10px;align-items:baseline;padding:4px 0;}
+  nav.toc a:hover{color:var(--ink);}
+  nav.toc .num{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--accent);flex-shrink:0;}
+
+  section{padding:52px 0;border-bottom:1px solid var(--line);}
+  .kicker{font-family:'Press Start 2P',monospace;font-size:9px;letter-spacing:2px;color:var(--accent);margin-bottom:14px;text-transform:uppercase;}
+  h2{font-size:25px;font-weight:700;margin-bottom:8px;line-height:1.4;}
+  .sub{color:var(--ink-dim);font-size:13.5px;margin-bottom:24px;}
+  h3{font-size:17.5px;font-weight:700;margin:32px 0 12px;}
+  h4{font-size:15.5px;font-weight:700;margin:24px 0 8px;color:var(--accent);}
+  p{margin-bottom:14px;}
+  p.lead{font-size:17px;}
+  em{font-style:normal;color:var(--accent);font-weight:500;}
+  .dim{color:var(--ink-dim);}
+  code{background:var(--panel2);padding:2px 6px;border-radius:4px;font-size:13.5px;font-family:ui-monospace,Menlo,monospace;color:#d6d2c6;}
+
+  .note{background:var(--panel);border-left:3px solid var(--accent);padding:16px 18px;border-radius:0 8px 8px 0;font-size:14.5px;margin:20px 0;}
+  .note strong{color:var(--accent);}
+  .uncertain{font-size:13px;color:var(--ink-dim);border-top:1px dashed var(--line);margin-top:18px;padding-top:10px;}
+
+  /* 좋은예/나쁜예 */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0;}
+  @media(max-width:640px){.vs{grid-template-columns:1fr;}}
+  .vsbox{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;font-size:14.5px;}
+  .vsbox.no{border-left:3px solid var(--bad);}
+  .vsbox.yes{border-left:3px solid var(--good);}
+  .vsbox .vt{font-weight:700;margin-bottom:10px;font-size:13.5px;}
+  .vsbox.no .vt{color:var(--bad);}
+  .vsbox.yes .vt{color:var(--good);}
+  .vsbox .say{
+    background:var(--panel2);border-radius:6px;padding:9px 12px;margin:8px 0;
+    font-size:14px;line-height:1.6;
+  }
+  .vsbox .why{font-size:13px;color:var(--ink-dim);margin-top:8px;}
+
+  .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:20px 0;}
+  table{border-collapse:collapse;width:100%;min-width:620px;font-size:13.5px;}
+  th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top;}
+  th{background:var(--panel2);font-weight:700;white-space:nowrap;}
+  td{background:var(--panel);}
+
+  .fig{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:22px 0;}
+  .fig svg{width:100%;height:auto;display:block;}
+  .fig .cap{font-size:13px;color:var(--ink-dim);margin-top:10px;}
+  .fig .cap b{color:var(--ink);}
+
+  .checkbox{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin:16px 0;font-size:14px;}
+  .checkbox .cbt{font-weight:700;color:var(--accent);margin-bottom:8px;font-size:13.5px;}
+  .checkbox ul{list-style:none;margin:0;}
+  .checkbox li{padding-left:24px;position:relative;margin-bottom:6px;}
+  .checkbox li::before{content:"☐";position:absolute;left:0;color:var(--accent);}
+
+  .roles{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0;}
+  @media(max-width:640px){.roles{grid-template-columns:1fr;}}
+  .role{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;font-size:14.5px;}
+  .role .rt{font-weight:700;margin-bottom:8px;font-size:14px;}
+  .role.sd .rt{color:#e0954e;}
+  .role.mu .rt{color:#c78ae0;}
+
+  ul.plain{margin:0 0 14px 20px;}
+  ul.plain li{margin-bottom:8px;}
+  ol.steps2{margin:0 0 14px 20px;}
+  ol.steps2 li{margin-bottom:8px;}
+
+  #types{--accent:#8ac2e0;} #cast{--accent:#c78ae0;} #script{--accent:#7ec9a8;}
+  #plan{--accent:#e0b34e;} #direct{--accent:#e4685c;} #session{--accent:#e4915c;}
+  #edit{--accent:#6fd4b1;} #impl{--accent:#8d9ce4;} #loc{--accent:#e08ac2;}
+  #ai{--accent:#e0a44e;}
+
+  footer{padding:44px 0 80px;color:var(--ink-dim);font-size:13px;}
+  footer li{margin-bottom:6px;}
+
+  #toTop{
+    position:fixed;right:26px;bottom:26px;
+    height:50px;padding:0 20px 0 16px;
+    border-radius:999px;
+    background:var(--accent);
+    border:none;
+    color:#1a1926;
+    display:inline-flex;align-items:center;gap:9px;
+    cursor:pointer;z-index:999;
+    font-family:inherit;font-size:14px;font-weight:700;letter-spacing:-.2px;
+    box-shadow:0 6px 20px rgba(0,0,0,.45), 0 0 0 4px rgba(18,17,26,.55);
+    opacity:0;visibility:hidden;transform:translateY(14px) scale(.94);
+    transition:opacity .22s ease, transform .22s cubic-bezier(.2,.9,.3,1.2), visibility .22s, filter .18s;
+  }
+  #toTop.show{opacity:1;visibility:visible;transform:translateY(0) scale(1);}
+  #toTop:hover{filter:brightness(1.12);}
+  #toTop:active{transform:translateY(1px) scale(.97);}
+  #toTop:focus-visible{outline:3px solid #fff;outline-offset:3px;}
+  #toTop svg{width:18px;height:18px;display:block;flex-shrink:0;}
+  #toTop .lbl{white-space:nowrap;}
+  @media(max-width:720px){
+    #toTop{right:16px;bottom:16px;height:46px;width:46px;padding:0;justify-content:center;}
+    #toTop .lbl{display:none;}
+    #toTop svg{width:20px;height:20px;}
+  }
+  @media(prefers-reduced-motion:reduce){
+    #toTop{transition:opacity .12s;transform:none;}
+    #toTop.show{transform:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="audience-badge">엠나인아카데미 게임사운드디자인 · 게임음악작곡 과정 수강생용 학습자료</div>
+    <div class="era-tag">M9 ACADEMY — GAME VOICE DIRECTING &amp; EDITING</div>
+    <h1>게임 보이스 디렉팅과 편집<br><span style="color:var(--accent)">현장 가이드</span></h1>
+    <p class="subtitle">성우가 부스에 들어가 있고, 스튜디오 시간은 흘러가고, 오늘 안에 400줄을 녹음해야 합니다.
+    그런데 방금 나온 연기가 원하는 것과 다릅니다. 이럴 때 뭐라고 말해야 할까요.
+    이 자료는 그 순간을 위한 것입니다. 캐스팅과 대본 준비부터 세션 운영, 편집, 게임 구현, 다국어 대응,
+    그리고 AI 음성을 둘러싼 최근 상황까지 — 다른 사람과 함께 만드는 작업의 실제를 다룹니다.</p>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <ol>
+      <li><a href="https://orpina214-glitch.github.io/Game-Voice-Directing-and-Editing/#intro"><span class="num">00</span>사람을 앞에 두고 하는 일</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Game-Voice-Directing-and-Editing/#types"><span class="num">01</span>게임 보이스의 네 갈래</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Game-Voice-Directing-and-Editing/#cast"><span class="num">02</span>캐스팅 — 목소리를 고르는 일</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Game-Voice-Directing-and-Editing/#script"><span class="num">03</span>대본 — 게임 대본은 다르다</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Game-Voice-Directing-and-Editing/#plan"><span class="num">04</span>세션 설계 — 시간과 목</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Game-Voice-Directing-and-Editing/#direct"><span class="num">05</span>디렉팅 ① 무엇을 말할 것인가</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Game-Voice-Directing-and-Editing/#session"><span class="num">06</span>디렉팅 ② 세션 운영의 실제</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Game-Voice-Directing-and-Editing/#edit"><span class="num">07</span>편집 — 수천 개의 파일</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Game-Voice-Directing-and-Editing/#impl"><span class="num">08</span>게임에 넣기</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Game-Voice-Directing-and-Editing/#loc"><span class="num">09</span>다국어 — 로컬라이제이션</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Game-Voice-Directing-and-Editing/#ai"><span class="num">10</span>AI 음성과 권리</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Game-Voice-Directing-and-Editing/#roles"><span class="num">11</span>두 과정에서의 쓰임</a></li>
+      <li><a href="https://orpina214-glitch.github.io/Game-Voice-Directing-and-Editing/#practice"><span class="num">12</span>실습</a></li>
+    </ol>
+  </div>
+</nav>
+
+<section id="intro">
+  <div class="wrap">
+    <div class="kicker">00 — INTRODUCTION</div>
+    <h2>사람을 앞에 두고 하는 일</h2>
+    <p class="lead">지금까지 배운 작업들은 대부분 혼자 앉아서 했습니다. 보이스는 다릅니다. <em>사람이 앞에 있고, 그 사람의 컨디션과 감정이 결과물을 좌우합니다.</em></p>
+    <p>이 차이가 생각보다 큽니다. 효과음이 마음에 안 들면 다시 만들면 그만이죠. 몇 번을 고쳐도 지치는 사람이 없습니다. 그런데 성우에게 같은 대사를 열 번 시키면 목이 상합니다. 스무 번 시키면 연기가 오히려 나빠지고요. 보이스는 <em>다시 하는 데 비용이 붙는 작업</em>입니다. 다른 오디오 작업과 갈리는 지점이 여기죠.</p>
+    <p>그래서 이 분야에서는 기술만큼이나 <b>준비</b>와 <b>말하는 법</b>이 중요합니다. 준비가 부실하면 스튜디오에서 시간을 태웁니다. 말을 잘못하면 성우가 무엇을 해야 할지 몰라 헤매고요. 반대로 준비가 탄탄하고 디렉션이 분명하면 예산이 적어도 결과가 좋습니다.</p>
+
+    <div class="note"><strong>이 자료의 성격</strong> — 여기 적힌 수치와 방법은 <em>반드시 이렇게 해야 하는 정답이 아닙니다.</em> 업계에서 널리 쓰이는 기준과 경험을 정리한 것입니다. 프로젝트 규모나 스튜디오 사정, 성우의 경력에 따라 얼마든지 달라집니다. 다만 처음 세션을 맡으면 어디서부터 손대야 할지 막막하니, 일단 이 값으로 시작해 자기 방식을 만들어가시기 바랍니다.</div>
+
+    <div class="note"><strong>용어 표기</strong> — 이 자료는 현장에서 실제로 쓰는 말을 그대로 씁니다. 테이크, 픽업, 배틀 보이스, 바크(barks) 같은 용어는 번역하지 않고 처음 나올 때 뜻을 풀어드립니다. 나중에 스튜디오에 들어가면 이 말들이 그대로 오가기 때문입니다.</div>
+  </div>
+</section>
+
+<section id="types">
+  <div class="wrap">
+    <div class="kicker">01 — TYPES</div>
+    <h2>게임 보이스의 네 갈래</h2>
+    <p>"게임 대사 녹음"이라고 뭉뚱그리면 안 됩니다. 종류마다 연기 방향도, 녹음 방식도, 편집 기준도 다릅니다. 이 구분을 모르고 세션에 들어갔다가는 하루를 통째로 날릴 수도 있습니다.</p>
+
+    <div class="tbl-scroll">
+      <table>
+        <tbody><tr><th>종류</th><th>어떤 것</th><th>연기 방향</th><th>주의할 점</th></tr>
+        <tr>
+          <td><b>시네마틱 대사</b><br><span class="dim">컷신·스토리</span></td>
+          <td>연출된 장면 속 인물의 대사. 영화 연기에 가장 가까움</td>
+          <td>상대와 주고받는 호흡, 감정의 흐름, 장면 전체의 온도</td>
+          <td>화면과 입 모양이 맞아야 하는 경우가 많음. 길이 제약이 붙음</td>
+        </tr>
+        <tr>
+          <td><b>배틀 보이스</b><br><span class="dim">전투 중 발화</span></td>
+          <td>공격·피격·스킬 사용·사망 시 나오는 짧은 소리와 대사</td>
+          <td>짧고 강하게. 대사보다 <em>에포트</em>(힘쓰는 소리·신음·비명)의 비중이 큼</td>
+          <td>목에 부담이 가장 크다. 세션 순서 배치가 중요</td>
+        </tr>
+        <tr>
+          <td><b>바크(barks)</b><br><span class="dim">환경 대사</span></td>
+          <td>NPC가 지나가며 하는 혼잣말, 경계 중 중얼거림, 상점 인사말</td>
+          <td>연기하지 않는 듯한 자연스러움. 과하면 귀에 거슬림</td>
+          <td>수백 번 반복 재생된다. 인상이 강하면 금방 질림</td>
+        </tr>
+        <tr>
+          <td><b>시스템 보이스</b><br><span class="dim">UI·안내</span></td>
+          <td>메뉴 안내, 튜토리얼, 알림, 카운트다운</td>
+          <td>명료함이 최우선. 감정보다 전달</td>
+          <td>게임 소음 속에서도 들려야 함. 대사 처리와 믹스가 다름</td>
+        </tr>
+      </tbody></table>
+    </div>
+
+    <div class="note"><strong>배틀 보이스가 특히 까다로운 이유</strong> — 이 갈래에는 <em>에포트(effort)</em>라 부르는 소리들이 포함됩니다. 칼을 휘두를 때의 기합, 맞았을 때의 신음, 죽을 때의 비명 같은 것들입니다. 말이 아니라 몸에서 터져 나오는 소리라, 성우의 체력과 목을 크게 소모합니다. 그래서 <b>세션 맨 마지막에 배치하는 것이 업계의 상식</b>이죠. 목이 쉰 뒤에는 평범한 대사를 녹음할 수 없습니다. 반대로 대사를 먼저 다 따두면 그 뒤에 목을 써도 괜찮고요.</div>
+
+    <div class="fig">
+      <svg viewBox="0 0 820 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="세션 내 녹음 순서 배치">
+        <g font-family="sans-serif">
+          <text x="0" y="14" font-size="12.5" fill="#e0a44e" font-weight="700">하루 세션의 권장 순서</text>
+          <rect x="0" y="26" width="820" height="46" rx="6" fill="#222031"></rect>
+          <rect x="6" y="32" width="180" height="34" rx="4" fill="#1a1926" stroke="#7ec97e"></rect>
+          <text x="20" y="53" font-size="12" fill="#eae7de">① 워밍업 · 톤 잡기</text>
+          <rect x="192" y="32" width="240" height="34" rx="4" fill="#1a1926" stroke="#8ac2e0"></rect>
+          <text x="214" y="53" font-size="12" fill="#eae7de">② 시네마틱 · 일반 대사</text>
+          <rect x="438" y="32" width="200" height="34" rx="4" fill="#1a1926" stroke="#c78ae0"></rect>
+          <text x="470" y="53" font-size="12" fill="#eae7de">③ 바크 · 시스템</text>
+          <rect x="644" y="32" width="170" height="34" rx="4" fill="#1a1926" stroke="#e4685c"></rect>
+          <text x="660" y="53" font-size="12" fill="#e4685c">④ 고함 · 에포트</text>
+
+          <text x="0" y="98" font-size="11.5" fill="#a8a69e">목이 가장 깨끗한 앞쪽에 섬세한 연기를 두고, 목을 소모하는 소리는 뒤로 미룹니다.</text>
+          <text x="0" y="118" font-size="11.5" fill="#a8a69e">순서를 거꾸로 하면 어떻게 될까요. 비명을 먼저 지르고 나서 잔잔한 독백을 녹음하려 들면, 그날 세션 전체를 다시 잡아야 할 수도 있습니다.</text>
+          <text x="0" y="146" font-size="11.5" fill="#7ec97e">성우 프리다 울프의 조언이 정확합니다: "고함·비명·에포트는 언제나 세션 마지막에 두세요."</text>
+          <text x="0" y="168" font-size="11.5" fill="#a8a69e">여기서 '고함(projected)'이란 회의실에서 대화하는 것보다 큰 모든 발성을 뜻합니다.</text>
+        </g>
+      </svg>
+      <div class="cap"><b>순서 하나로 세션의 성패가 갈립니다.</b> 대본을 받으면 가장 먼저 할 일이 대사를 이 네 갈래로 분류하는 것입니다.</div>
+    </div>
+  </div>
+</section>
+
+<section id="cast">
+  <div class="wrap">
+    <div class="kicker">02 — CASTING</div>
+    <h2>캐스팅 — 목소리를 고르는 일</h2>
+    <p>캐스팅이 어긋나면 디렉팅으로는 되돌릴 수 없습니다. 아무리 좋은 성우라도 배역과 맞지 않으면 세션 내내 억지로 끌고 가야 하죠.</p>
+
+    <h3>캐릭터 프로필을 먼저 쓴다</h3>
+    <p>오디션을 열기 전에 배역마다 프로필을 정리해야 합니다. 이것 없이 "20대 남성, 주인공"만 적어 보내면 지원자들이 저마다 다른 방향으로 연기해 옵니다. 그러면 비교할 방법이 없어지죠.</p>
+    <div class="tbl-scroll">
+      <table>
+        <tbody><tr><th>항목</th><th>왜 필요한가</th><th>예시</th></tr>
+        <tr><td>이름·나이·성별</td><td>기본 정보. 실제 나이 말고 <em>목소리로 느껴지는 나이</em>를 적을 것</td><td>"이한, 남, 목소리 나이 30대 초반"</td></tr>
+        <tr><td>출신·배경</td><td>말투와 억양의 근거</td><td>"변방 출신, 정규 교육을 받지 못함"</td></tr>
+        <tr><td>성격 특징 3가지</td><td>연기 방향의 뼈대</td><td>"무뚝뚝함 / 속으로는 겁이 많음 / 화가 나면 말이 빨라짐"</td></tr>
+        <tr><td>관계</td><td>상대에 따라 말투가 달라짐</td><td>"주인공에게는 퉁명스럽지만 동생에게는 부드러움"</td></tr>
+        <tr><td>이 인물의 모순</td><td>연기에 깊이를 만드는 핵심</td><td>"용감해 보이지만 사실 도망치고 싶어 함"</td></tr>
+        <tr><td>참고 자료</td><td>말로 설명하기 어려운 것을 전달</td><td>컨셉 아트, 비슷한 톤의 영상, 게임 플레이 화면</td></tr>
+      </tbody></table>
+    </div>
+    <p class="dim">현장에서 자주 지적되는 문제 중 하나가 <em>성우가 자기 배역이 어떤 인물인지 모른 채 녹음에 들어오는 상황</em>입니다. 프로필을 미리 만들어 공유하는 것만으로 이 문제의 대부분이 해결됩니다.</p>
+
+    <h3>오디션 운영</h3>
+    <ul class="plain">
+      <li><b>실제 대본의 일부로 시험하기</b> — 일반적인 데모 릴만 듣지 말고, 이 프로젝트의 실제 대사 몇 줄을 녹음해 보내달라고 요청하세요. 배역과의 궁합은 그 대사에서만 드러납니다.</li>
+      <li><b>감정 폭을 확인하기</b> — 평온한 대사 하나, 고조된 대사 하나, 에포트 하나. 게임은 한 인물이 하루에 이 셋을 다 해야 하는 매체입니다.</li>
+      <li><b>주요 배역은 겹치지 않게</b> — 대본이 길다면 주요 인물은 각각 다른 성우로 가는 것이 원칙입니다. 반면 단역이나 군중은 한 사람이 여러 역을 맡아 예산을 아낄 수 있습니다.</li>
+      <li><b>기존 언어판이 있다면 참고 자료로</b> — 해외 게임의 한국어 더빙이라면 원판 연기가 좋은 기준이 됩니다. 억양과 호흡을 어디까지 맞출지 미리 정해두세요.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="script">
+  <div class="wrap">
+    <div class="kicker">03 — SCRIPT</div>
+    <h2>대본 — 게임 대본은 다르다</h2>
+    <p class="lead">영화 대본은 순서대로 읽히지만, <em>게임 대본은 순서가 없습니다.</em></p>
+    <p>이 차이가 모든 것을 바꿉니다. 게임에서는 3번 대사 다음에 47번 대사가 나올 수도 있고, 어떤 대사는 플레이어가 평생 못 듣기도 합니다. 성우는 앞뒤 맥락 없이 툭 떨어진 한 줄을 연기해야 하죠. 그래서 게임 대본에는 영화 대본에 없는 항목들이 들어갑니다.</p>
+
+    <h3>게임 대본의 필수 항목</h3>
+    <div class="tbl-scroll">
+      <table>
+        <tbody><tr><th>항목</th><th>내용</th><th>예</th></tr>
+        <tr><td><b>파일명(ID)</b></td><td>이 대사가 게임에서 갖는 고유 이름. 편집과 구현의 기준이 됨</td><td><code>NPC_MERCHANT_GREET_01</code></td></tr>
+        <tr><td><b>대사</b></td><td>실제로 말할 내용</td><td>"어서 오게, 오랜만이군."</td></tr>
+        <tr><td><b>상황 설명</b></td><td>언제·어디서·누구에게 하는 말인지</td><td>"낮, 상점 안. 오래 알고 지낸 손님이 들어올 때"</td></tr>
+        <tr><td><b>감정 지시</b></td><td>필요한 경우에만. 남발 금지(아래 참고)</td><td>"반가움"</td></tr>
+        <tr><td><b>길이 제한</b></td><td>화면 연출이나 자막에 맞춰야 하는 경우</td><td>"3초 이내"</td></tr>
+        <tr><td><b>발음 안내</b></td><td>고유명사·판타지 용어의 읽는 법</td><td>"카일렌 = 카일런(X) / 카이렌(O)"</td></tr>
+      </tbody></table>
+    </div>
+
+    <h3>감정 지시를 얼마나 넣을 것인가</h3>
+    <p>초보 디렉터가 가장 많이 하는 실수가 <em>모든 줄에 지시를 붙이는 것</em>이죠. 좋은 뜻으로 하는 일인데 결과는 정반대입니다.</p>
+
+    <div class="vs">
+      <div class="vsbox no">
+        <div class="vt">✕ 모든 줄에 지시</div>
+        <div class="say">(화가 나서) "왜 여기 있는 거야."<br>(당황하며) "그건... 설명하기 어려워."<br>(단호하게) "지금 당장 나가."</div>
+        <div class="why">성우가 선택할 여지가 사라집니다. 지시대로만 읽으면 세 줄이 각각 따로 놀고, 장면 전체의 흐름이 끊깁니다. 게다가 이렇게 지정한 지시는 실제 녹음에서 대부분 무시되거나 수정됩니다.</div>
+      </div>
+      <div class="vsbox yes">
+        <div class="vt">○ 상황을 주고 맡기기</div>
+        <div class="say">[상황] 절대 마주치면 안 될 사람을 골목에서 마주침. 이 인물은 상대를 배신한 적이 있고, 아직 들키지 않았다고 믿고 있음.<br><br>"왜 여기 있는 거야."<br>"그건... 설명하기 어려워."<br>"지금 당장 나가."</div>
+        <div class="why">성우가 인물의 처지를 알면 감정은 알아서 나옵니다. 그리고 디렉터가 생각지 못한 해석이 나올 여지도 생깁니다.</div>
+      </div>
+    </div>
+
+    <p>다만 지시가 전혀 없어도 안 됩니다. <b>"화난 상태"나 "속삭이듯" 같은 짧은 지시는 왜 그렇게 말하는지에 대한 맥락을 주므로 유용합니다.</b> 문제는 그것이 매 줄, 혹은 한 줄 걸러 붙을 때입니다. 성우가 연기할 수 있는 폭은 딱 디렉터가 열어준 만큼입니다.</p>
+
+    <div class="note"><strong>배역마다 대본을 따로 뽑을 것</strong> — 전체 대본을 통으로 주면 성우가 자기 대사를 찾아 헤맵니다. 스튜디오 시간은 그렇게 날아갑니다. 배역별로 자기 대사만 순서대로 정리한 대본을 따로 만들어주세요. 다만 대화 장면에서는 <em>상대 대사도 함께</em> 보이게 해야 호흡을 잡을 수 있습니다.</div>
+
+    <div class="checkbox">
+      <div class="cbt">대본 점검</div>
+      <ul>
+        <li>모든 대사에 고유 파일명이 붙어 있는가</li>
+        <li>대사마다 어떤 상황인지 한 줄로 적혀 있는가</li>
+        <li>감정 지시가 한 줄 걸러 붙어 있지는 않은가</li>
+        <li>고유명사 발음이 정리되어 있는가</li>
+        <li>배역별 대본이 따로 준비되어 있는가</li>
+        <li>대화 장면에서 상대 대사가 함께 보이는가</li>
+        <li>네 갈래(시네마틱·배틀·바크·시스템)로 분류되어 있는가</li>
+      </ul>
+    </div>
+  </div>
+</section>
+<section id="plan">
+  <div class="wrap">
+    <div class="kicker">04 — SESSION PLANNING</div>
+    <h2>세션 설계 — 시간과 목</h2>
+    <p class="lead">스튜디오는 시간 단위로 돈이 나갑니다. 그런데 성우의 목은 시간이 지나서가 아니라 얼마나 썼느냐로 지칩니다. 이 두 가지를 함께 계산하는 것이 세션 설계입니다.</p>
+
+    <h3>하루에 몇 줄을 녹음할 수 있나</h3>
+    <p>업계에서 흔히 쓰는 기준이 있습니다. 게임 오디오 디렉터 알렉산더 브랜던은 <em>좋은 디렉터가 붙었을 때 시간당 80~100줄</em>을 잡으라고 권합니다. 절대적인 수치는 아니지만 처음 일정을 짤 때 출발점으로 삼을 만합니다.</p>
+
+    <div class="fig">
+      <svg viewBox="0 0 820 244" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="대사 종류별 시간당 녹음 가능 분량">
+        <g font-family="sans-serif">
+          <text x="0" y="14" font-size="12.5" fill="#e0b34e" font-weight="700">시간당 녹음 가능 분량 (기준값)</text>
+
+          <text x="0" y="46" font-size="12" fill="#eae7de">일반 대사</text>
+          <rect x="130" y="34" width="500" height="20" rx="3" fill="#8ac2e0" opacity=".85"></rect>
+          <text x="642" y="49" font-size="12" fill="#8ac2e0">80~100줄 / 시간</text>
+
+          <text x="0" y="80" font-size="12" fill="#eae7de">고함 · 감정 격한 대사</text>
+          <rect x="130" y="68" width="400" height="20" rx="3" fill="#e4685c" opacity=".85"></rect>
+          <text x="542" y="83" font-size="12" fill="#e4685c">약 80줄 / 시간</text>
+
+          <text x="0" y="110" font-size="12" fill="#eae7de">이미 만든 영상에 맞추는 재녹음(ADR)</text>
+          <rect x="240" y="98" width="250" height="20" rx="3" fill="#c78ae0" opacity=".85"></rect>
+          <text x="502" y="113" font-size="12" fill="#c78ae0">50줄 이하 / 시간</text>
+
+          <text x="0" y="148" font-size="12" fill="#7ec97e" font-weight="700">그리고 반드시 — 버퍼 15~20%</text>
+          <rect x="0" y="158" width="820" height="34" rx="5" fill="#222031"></rect>
+          <rect x="6" y="164" width="660" height="22" rx="3" fill="#1a1926" stroke="#8ac2e0"></rect>
+          <text x="20" y="179" font-size="11.5" fill="#eae7de">계획된 녹음 시간</text>
+          <rect x="672" y="164" width="142" height="22" rx="3" fill="#1a1926" stroke="#7ec97e"></rect>
+          <text x="690" y="179" font-size="11.5" fill="#7ec97e">여유분</text>
+
+          <text x="0" y="214" font-size="11.5" fill="#a8a69e">줄 수를 시간으로 그냥 나눠 빽빽하게 짜면 대본 수정 하나, 장비 문제 하나로 일정 전체가 무너집니다.</text>
+          <text x="0" y="234" font-size="11.5" fill="#a8a69e">여유분을 안 쓰게 되면 그만큼 추가 테이크를 따거나 일찍 끝내면 됩니다. 손해 보는 일이 아닙니다.</text>
+        </g>
+      </svg>
+      <div class="cap"><b>ADR이란</b> — 이미 만들어진 영상이나 애니메이션에 입을 맞춰 다시 녹음하는 작업입니다. 타이밍을 맞춰야 해서 속도가 절반 이하로 떨어집니다.<br><b>예시</b> — 일반 대사 400줄이라면 순수 녹음 4~5시간, 여기에 여유분을 더해 <b>5~6시간</b>으로 잡습니다. 준비와 휴식 시간은 여기에 별도로 붙습니다. 다만 이 수치는 성우의 경력과 대사의 난이도에 따라 크게 달라지니, 처음 몇 번은 실제 걸린 시간을 기록해 자기 팀의 기준을 만드는 편이 낫습니다.</div>
+    </div>
+
+    <h3>휴식을 챙기는 것도 품질 관리다</h3>
+    <p>성우가 지치면 연기부터 나빠집니다. 그런데 본인은 잘 모릅니다. 계속 하려 들고 그러다 목이 상하죠. <em>쉬는 시간을 챙기는 것은 디렉터의 일</em>입니다.</p>
+    <ul class="plain">
+      <li>대체로 <b>45~60분마다 5~10분</b> 휴식을 넣습니다. 물을 마시고 목을 쉬게 하는 시간입니다. 정해진 규칙은 아니니 성우와 상의해 조정하세요.</li>
+      <li>에포트나 고함이 몰린 구간 뒤에는 더 길게 쉬어야 합니다.</li>
+      <li><b>고함·비명·으르렁거림이 이어지는 세션은 한 번에 2시간을 넘기지 않는 것이 권장됩니다.</b> 성우 본인이 괜찮다고 해도 마찬가지입니다 — 그날은 버텨도 다음 날 목이 나갑니다.</li>
+      <li>세션 전체는 <b>2~4시간</b>이 일반적입니다. 하루 종일 잡는 것은 대개 무리한 계획입니다.</li>
+      <li>목이 확실히 상했다고 판단되면 <em>그날은 접는 것이 낫습니다.</em> 억지로 딴 테이크는 어차피 쓰지 못하고 다음 날 세션까지 망칩니다.</li>
+    </ul>
+
+    <h3>준비물 점검</h3>
+    <div class="checkbox">
+      <div class="cbt">세션 전날까지 확인</div>
+      <ul>
+        <li>대본 최종본이 확정되었는가 (당일 수정은 일정을 무너뜨립니다)</li>
+        <li>배역별 대본이 인쇄 또는 태블릿으로 준비되었는가</li>
+        <li>캐릭터 프로필과 참고 자료를 성우가 미리 받았는가</li>
+        <li>녹음 파일명 규칙이 정해졌는가</li>
+        <li>장비 점검이 끝났는가 (마이크·인터페이스·헤드폰·백업 녹음)</li>
+        <li>물이 준비되어 있는가</li>
+        <li>대화 장면에서 상대 대사를 들려줄 방법이 있는가</li>
+      </ul>
+    </div>
+    <p class="dim">복장 안내도 미리 하면 좋습니다. 마이크는 대단히 민감해서 옷깃 스치는 소리, 장신구 부딪히는 소리까지 잡아냅니다. 부스럭거리는 옷과 액세서리는 피해달라고 사전에 전달하세요.</p>
+  </div>
+</section>
+
+<section id="direct">
+  <div class="wrap">
+    <div class="kicker">05 — DIRECTING ①</div>
+    <h2>디렉팅 ① 무엇을 말할 것인가</h2>
+    <p class="lead">이 장이 이 자료의 중심입니다. <em>편집 기술이야 찾아보면 배울 수 있습니다. 그런데 성우에게 어떻게 말해야 하는지는 어디에도 잘 적혀 있지 않죠.</em></p>
+
+    <h3>가장 흔한 실패 — 결과를 말하기</h3>
+    <p>원하는 연기가 안 나올 때 대부분 이렇게 말합니다. "좀 더 자연스럽게 해주세요." "감정을 더 실어주세요." "그거 말고 다른 느낌으로요."</p>
+    <p>이 말들의 공통점이 있습니다. <em>결과만 말하고 방법을 말하지 않습니다.</em> 성우 입장에서는 "지금 것이 틀렸다"는 사실만 알게 됩니다. 무엇을 바꿔야 하는지는 여전히 모르는 채로요. 그래서 감으로 이것저것 바꿔보게 되고 테이크만 쌓입니다.</p>
+
+    <div class="vs">
+      <div class="vsbox no">
+        <div class="vt">✕ 결과를 말하는 디렉션</div>
+        <div class="say">"좀 더 자연스럽게요."</div>
+        <div class="say">"슬픈 느낌으로 부탁드려요."</div>
+        <div class="say">"그건 좀 아닌 것 같아요, 다시 한번."</div>
+        <div class="why">무엇을 바꿔야 하는지 알 수 없습니다. 성우는 추측으로 대응하게 되고 서로 답답해집니다.</div>
+      </div>
+      <div class="vsbox yes">
+        <div class="vt">○ 상황과 정보를 주는 디렉션</div>
+        <div class="say">"이 사람은 지금 상대가 거짓말하는 걸 알면서도 모른 척하고 있어요."</div>
+        <div class="say">"방금 장례식에서 돌아온 참입니다. 아직 실감이 안 나는 상태예요."</div>
+        <div class="say">"조금 전 테이크에서 두 번째 문장이 좋았어요. 그 톤으로 앞 문장도 가볼까요?"</div>
+        <div class="why">인물이 처한 상황을 알면 감정은 따라옵니다. 그리고 좋았던 부분을 짚어주면 방향이 명확해집니다.</div>
+      </div>
+    </div>
+
+    <div class="note"><strong>성우가 직접 밝힌 원리</strong> — 게임 성우 프리다 울프는 이렇게 설명합니다. <em>"우리 캐릭터가 파란색을 좋아하는 것처럼 들리게 연기할 수는 없습니다. 하지만 파란색이 그 인물의 첫 차 색깔이었다거나, 사랑하는 할머니가 묻힐 때 입었던 드레스 색이었다고 말해주면, 우리는 그 정보를 소화해서 자연스럽게 연기로 내놓게 됩니다."</em><br><br>디렉션의 원칙이 이 한 문단에 다 들어 있습니다 — <b>감정을 지시하지 말고, 그 감정이 나올 수밖에 없는 정보를 주세요.</b></div>
+
+    <h3>바꿔 말하는 법 — 대조표</h3>
+    <div class="tbl-scroll">
+      <table>
+        <tbody><tr><th>흔히 하는 말</th><th>무엇이 문제인가</th><th>이렇게 바꿔보세요</th></tr>
+        <tr>
+          <td>"자연스럽게"</td><td>가장 모호한 말. 무엇이 부자연스러운지 알 수 없음</td>
+          <td>"지금은 문장을 끝까지 또박또박 읽고 계신데, 실제로 말할 때처럼 중간에 끊어도 됩니다"</td>
+        </tr>
+        <tr>
+          <td>"감정을 더"</td><td>어떤 감정인지, 얼마나인지 불명</td>
+          <td>"이 대사를 하는 순간 이미 마음을 정한 상태예요. 설득하려는 게 아니라 통보하는 겁니다"</td>
+        </tr>
+        <tr>
+          <td>"좀 더 강하게"</td><td>볼륨인지, 단호함인지, 분노인지 구분 안 됨</td>
+          <td>"소리를 키우는 게 아니라, 물러설 생각이 없다는 게 느껴지면 좋겠어요"</td>
+        </tr>
+        <tr>
+          <td>"다시 한번요"</td><td>같은 것을 반복하게 됨</td>
+          <td>"방금 것도 좋았어요. 하나만 다르게 — 이번엔 상대를 아예 안 보고 말한다고 생각해보실래요?"</td>
+        </tr>
+        <tr>
+          <td>"조금 빠르게"</td><td>기계적 조정으로 이어져 연기가 사라짐</td>
+          <td>"이 인물은 지금 쫓기고 있어요. 말을 다 끝내기 전에 움직이기 시작할 정도로요"</td>
+        </tr>
+        <tr>
+          <td>"틀렸어요"</td><td>연기를 위축시킴</td>
+          <td>"그 해석도 재미있네요. 다만 이 장면에서는 —" (먼저 인정하고 방향을 제시)</td>
+        </tr>
+      </tbody></table>
+    </div>
+
+    <h3>실제 사람은 문장을 완성하지 않는다</h3>
+    <p>게임 대사가 어색하게 들리는 이유는 대개 하나입니다. 성우가 대사를 <em>대사로 읽기</em> 때문이죠. 한 줄을 완결된 문장으로, 처음부터 끝까지 또박또박.</p>
+    <p>하지만 실제 사람은 그렇게 말하지 않습니다. 구절 단위로 뚝뚝 끊어 말하고, 중간에 멈추고, 말을 고치고, "어" 같은 소리를 냅니다. 완벽하게 유창한 대화는 연극 무대에서나 나옵니다. <b>실수와 정정과 멈춤을 허용하면 대사가 살아납니다.</b></p>
+    <p class="dim">특히 세션 초반에는 성우가 "일을 잘 해내야 한다"는 마음에 사로잡혀 또박또박 읽으려는 경향이 강합니다. 몇 분쯤 여유를 주고 긴장을 풀게 하면 그때부터 인물이 나오기 시작하죠.</p>
+
+    <h3>세션 시작 — 톤을 잡는 방법</h3>
+    <ol class="steps2">
+      <li><b>짧은 문장부터.</b> 인물의 목소리를 함께 찾아가는 단계에서는 긴 대사보다 한 문장짜리를 쓰세요. 주고받기가 빠르고 조정이 쉽습니다.</li>
+      <li><b>여러 방향을 시험하기.</b> "이번엔 조금 차갑게, 다음엔 조금 지친 느낌으로" 하는 식으로 두세 가지를 해보고 함께 고릅니다.</li>
+      <li><b>정해지면 기준 테이크를 남기기.</b> 나중에 톤이 흔들릴 때 돌아올 지점이 됩니다. 여러 날에 걸친 세션이라면 반드시 필요합니다.</li>
+      <li><b>중간에 방향을 바꿔야 한다면 대사 끝에서.</b> 연기하는 도중에 끼어들면 흐름이 끊기고 성우가 위축됩니다.</li>
+    </ol>
+
+    <h3>대화 장면 — 혼자 하는 대화는 어색하다</h3>
+    <p>게임 녹음은 대개 성우 한 명씩 따로 진행합니다. 일정을 맞추기 어렵기 때문입니다. 그런데 이러면 대화 장면이 문제가 됩니다. 상대가 없는데 주고받는 연기를 해야 하니까요.</p>
+    <ul class="plain">
+      <li><b>가장 좋은 방법</b> — 이미 녹음된 상대 대사를 헤드폰으로 들려주면서 연기하게 합니다.</li>
+      <li><b>차선</b> — 디렉터가 직접 상대역을 읽어줍니다. 연기를 잘할 필요는 없습니다. 주고받을 대상이 있다는 것만으로 대사가 달라집니다.</li>
+      <li><b>필요 없는 경우</b> — 전투 중 외치는 콜아웃("재장전!")이나 도발("덤벼!") 같은 대사는 상대역이 없어도 됩니다. 누구에게 하는 말이 아니니까요.</li>
+    </ul>
+
+    <div class="note"><strong>디렉터도 열려 있어야 합니다</strong> — 성우는 훈련을 통해 그 순간에 열려 있도록 배웁니다. 디렉터가 자기 계획에만 매달리면 그 열림이 닫힙니다. 대본에 쓰인 것과 조금 다른 해석이 나왔을 때, 그것이 더 좋다면 받아들이는 편이 낫습니다. 좋은 결과가 누구 아이디어에서 나왔는지는 완성된 게임에서 아무도 묻지 않습니다.</div>
+  </div>
+</section>
+
+<section id="session">
+  <div class="wrap">
+    <div class="kicker">06 — DIRECTING ②</div>
+    <h2>디렉팅 ② 세션 운영의 실제</h2>
+
+    <h3>세션 시작할 때 공유할 것</h3>
+    <p>부스에 들어가기 전에 아래를 한 번에 알려주세요. 성우가 하루의 지도를 갖고 시작하게 됩니다.</p>
+    <ul class="plain">
+      <li>오늘 다룰 분량과 대략의 진행 순서</li>
+      <li>어떤 감정 상태들이 나오는지, 각각 게임의 어느 지점인지</li>
+      <li>휴식 시간의 대략적 배치</li>
+      <li>고함·에포트가 언제 나오는지 (마음의 준비가 필요합니다)</li>
+      <li>오늘 꼭 끝내야 하는 것과, 시간이 남으면 하는 것의 구분</li>
+    </ul>
+
+    <h3>테이크 관리</h3>
+    <p>같은 대사를 몇 번 반복할지는 판단의 문제죠. 너무 적으면 고를 것이 없고 너무 많으면 목과 시간을 버립니다.</p>
+    <div class="tbl-scroll">
+      <table>
+        <tbody><tr><th>상황</th><th>권장</th><th>이유</th></tr>
+        <tr><td>중요한 시네마틱 대사</td><td>3~5테이크. 서로 다른 해석 포함</td><td>편집 단계에서 선택지가 필요함</td></tr>
+        <tr><td>일반 대사</td><td>2~3테이크</td><td>하나가 어긋났을 때의 대비</td></tr>
+        <tr><td>바크</td><td>2테이크, 필요하면 여러 변형</td><td>같은 상황에 여러 대사를 돌려 쓰므로 변형이 더 중요</td></tr>
+        <tr><td>에포트·비명</td><td>2테이크 이하</td><td>목 소모가 큼. 욕심내면 뒤가 없음</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="note"><strong>좋았던 테이크는 그 자리에서 기록하세요</strong> — 세션 중에 "지금 3번째 테이크가 좋았다"고 메모해두면 편집이 몇 배 빨라집니다. 하루에 400줄을 녹음하고 나서 나중에 전부 다시 듣는 것은 사실상 불가능합니다. 스튜디오에서는 이 메모를 편집 담당자에게 그대로 넘깁니다.</div>
+
+    <h3>원격 세션</h3>
+    <p>최근에는 성우가 자기 집 부스에서 녹음하고 디렉터는 화상으로 참여하는 방식이 흔해졌습니다. 여러 도시와 시간대에 걸쳐 캐스팅할 수 있게 된 대신 새로운 문제도 딸려 왔습니다.</p>
+    <ul class="plain">
+      <li><b>환경이 제각각</b> — 옷장을 개조한 부스, 방음이 완전하지 않은 방. 비행기 소리나 문 두드리는 소리로 녹음이 중단되는 일이 흔합니다.</li>
+      <li><b>더위</b> — 밀폐된 좁은 공간이라 오래 녹음하면 견디기 힘들어집니다. 휴식이 대면 세션보다 더 중요합니다.</li>
+      <li><b>미묘한 반응을 못 봄</b> — 표정과 몸짓이 안 보이니 디렉터가 상태를 알아채기 어렵습니다. 말로 더 자주 확인해야 합니다.</li>
+      <li><b>시차</b> — 상대가 새벽에 작업하고 있을 수 있습니다. 컨디션을 감안한 일정이 필요합니다.</li>
+    </ul>
+
+    <h3>픽업 세션</h3>
+    <p>녹음이 끝나고 나면 빠진 것이 꼭 나옵니다. 대사가 추가되거나, 특정 테이크가 쓸 수 없거나, 기획이 바뀌어 대사 내용이 달라지거나. 이렇게 나중에 다시 녹음하는 것을 <em>픽업(pickup)</em>이라 부릅니다.</p>
+    <ul class="plain">
+      <li>픽업은 <b>반드시 생긴다</b>고 가정하고 예산과 일정에 미리 넣어두세요.</li>
+      <li>같은 마이크, 같은 방, 같은 세팅으로 녹음해야 합니다. 조건이 달라지면 앞뒤 대사와 소리가 튑니다.</li>
+      <li>원래 세션의 기준 테이크를 들려주고 시작하세요. 몇 주가 지나면 성우도 그 인물의 톤을 잊습니다.</li>
+    </ul>
+
+    <div class="checkbox">
+      <div class="cbt">세션 중 디렉터 체크리스트</div>
+      <ul>
+        <li>좋았던 테이크를 그때그때 기록하고 있는가</li>
+        <li>연기 중간에 끼어들지 않고 대사 끝에서 말하고 있는가</li>
+        <li>고함·에포트를 세션 뒤쪽으로 미뤄뒀는가</li>
+        <li>45~60분마다 쉬고 있는가</li>
+        <li>지금 상황을 설명해주고 있는가 (결과만 요구하고 있지는 않은가)</li>
+        <li>잘 나온 것에 대해 말해주고 있는가 (지적만 하고 있지 않은가)</li>
+        <li>녹음 레벨이 클리핑되지 않는지 계속 확인하고 있는가</li>
+      </ul>
+    </div>
+  </div>
+</section>
+<section id="edit">
+  <div class="wrap">
+    <div class="kicker">07 — EDITING</div>
+    <h2>편집 — 수천 개의 파일</h2>
+    <p class="lead">보이스 편집이 다른 편집과 갈리는 지점은 <em>분량</em>입니다. 효과음 하나를 정성껏 다듬는 일과 4천 개 파일을 고른 품질로 정리하는 일은 아예 다른 작업이죠.</p>
+    <p>그래서 그래서 개별 파일을 얼마나 예쁘게 다듬느냐보다 <b>일관성과 속도</b>가 중요해집니다. 규칙을 정해 끝까지 지키는 것, 반복 작업을 자동화하는 것. 이 둘이 실력입니다.</p>
+
+    <h3>편집 순서</h3>
+    <ol class="steps2">
+      <li><b>테이크 선택</b> — 세션 중 남긴 메모를 기준으로 쓸 테이크를 고릅니다. 메모가 없으면 이 단계에서 하루가 날아갑니다.</li>
+      <li><b>앞뒤 자르기</b> — 대사 앞뒤의 불필요한 공백과 잡음을 제거합니다. 다만 <em>너무 바짝 자르지 마세요.</em> 숨소리 시작 부분까지 잘라내면 대사가 갑자기 튀어나옵니다.</li>
+      <li><b>잡음 처리</b> — 립스맥(입술이 떨어지며 나는 "쩝" 소리), 침 삼키는 소리, 옷 스치는 소리, 코 훌쩍이는 소리를 제거하거나 줄입니다.</li>
+      <li><b>숨소리 정리</b> — 전부 지우면 사람 같지 않아집니다. 거슬리는 것만 줄이고 감정을 담은 숨은 살립니다.</li>
+      <li><b>레벨 정리</b> — 파일 간 음량을 고르게 맞춥니다. 대사마다 소리 크기가 들쭉날쭉하면 게임에서 곧바로 티가 납니다.</li>
+      <li><b>처리(선택)</b> — EQ·컴프레서 등. 프로젝트 방침에 따라 다릅니다.</li>
+      <li><b>파일명과 포맷</b> — 규칙에 맞춰 저장하고 요구 사양(샘플레이트·비트뎁스)으로 변환합니다.</li>
+    </ol>
+
+    <h3>숨소리를 어떻게 다룰 것인가</h3>
+    <div class="vs">
+      <div class="vsbox no">
+        <div class="vt">✕ 숨을 전부 제거</div>
+        <div class="why">깨끗하지만 사람 같지 않습니다. 특히 시네마틱 대사에서는 숨이 감정의 일부입니다. 놀란 숨, 참았던 숨, 지친 숨을 지우면 연기의 절반이 사라집니다.</div>
+      </div>
+      <div class="vsbox yes">
+        <div class="vt">○ 거슬리는 것만 선별</div>
+        <div class="why">마이크에 너무 가까이 들어와 과장된 숨, 문장 사이의 의미 없는 들숨은 <b>아예 지우기보다 볼륨만 줄이는</b> 편이 자연스럽습니다. 감정이 실린 숨은 그대로 둡니다.</div>
+      </div>
+    </div>
+
+    <h3>레벨 — 무엇을 기준으로 맞출 것인가</h3>
+    <p>파일마다 최대 음량(피크)을 똑같이 맞추면 오히려 어색합니다. 속삭이는 대사와 외치는 대사의 피크가 같아지면 속삭임이 이상하게 크게 들리니까요.</p>
+    <p>그래서 실무에서는 <em>라우드니스</em>(사람이 느끼는 소리 크기)를 기준으로 맞추되, <b>대사의 성격별로 다른 목표값</b>을 둡니다. 예를 들어 일반 대사를 기준으로 삼고, 속삭임은 그보다 낮게, 고함은 높게 두는 식입니다. 게임 안에서 상대적 관계가 살아 있어야 연출이 됩니다.</p>
+    <p class="dim">프로젝트에 따라 요구 기준이 정해져 있는 경우가 많으니, 작업 전에 반드시 확인하세요. 사양서에 목표 라우드니스와 피크 상한이 적혀 있는 것이 보통입니다.</p>
+
+    <h3>파일명 규칙</h3>
+    <p>수천 개 파일에서 파일명은 <em>유일한 단서</em>입니다. 규칙이 없으면 나중에 어떤 파일이 어디 들어가야 하는지 아무도 알 수 없죠.</p>
+    <div class="tbl-scroll">
+      <table>
+        <tbody><tr><th>요소</th><th>역할</th><th>예</th></tr>
+        <tr><td>캐릭터</td><td>누구의 대사인가</td><td><code>KAILEN</code></td></tr>
+        <tr><td>분류</td><td>어떤 종류인가</td><td><code>CINE</code> / <code>BATTLE</code> / <code>BARK</code> / <code>SYS</code></td></tr>
+        <tr><td>상황</td><td>어떤 맥락인가</td><td><code>GREET</code> / <code>HIT</code> / <code>DEATH</code></td></tr>
+        <tr><td>번호</td><td>같은 상황의 변형 구분</td><td><code>01</code>, <code>02</code>, <code>03</code></td></tr>
+        <tr><td>언어</td><td>다국어 버전 구분</td><td><code>KO</code> / <code>EN</code> / <code>JA</code></td></tr>
+      </tbody></table>
+    </div>
+    <p style="font-size:14.5px">조합하면 이런 식이 됩니다 — <code>KAILEN_BATTLE_HIT_03_KO.wav</code></p>
+    <div class="note"><strong>규칙은 개발팀과 함께 정합니다</strong> — 사운드 담당자 혼자 정하면 안 됩니다. 게임 안에서 대사를 불러오는 쪽은 프로그래머입니다. 대본을 관리하는 쪽은 기획자고요. 세 쪽이 같은 이름을 쓰지 않으면 나중에 대조 작업에 엄청난 시간이 듭니다. <b>녹음을 시작하기 전에</b> 정해두세요.</div>
+
+    <h3>자동화</h3>
+    <p>4천 개 파일을 하나씩 손으로 다듬는 건 현실적이지 않죠. 반복되는 처리는 일괄로 돌리고, 사람이 판단해야 하는 것에만 시간을 씁니다.</p>
+    <ul class="plain">
+      <li><b>일괄 처리에 맞는 것</b> — 레벨 정규화, 포맷 변환, 파일명 일괄 변경, 앞뒤 무음 정리, 공통 EQ</li>
+      <li><b>사람이 해야 하는 것</b> — 테이크 선택, 립스맥 제거, 숨소리 판단, 감정 표현이 걸린 구간</li>
+      <li><b>대조 확인</b> — 대본의 줄 수와 납품 파일 수가 맞는지 반드시 확인하세요. 빠진 파일은 게임에서 무음으로 나타납니다. 이걸 출시 후에 발견하면 큰일이죠.</li>
+    </ul>
+
+    <div class="checkbox">
+      <div class="cbt">납품 전 확인</div>
+      <ul>
+        <li>대본의 줄 수와 파일 개수가 일치하는가</li>
+        <li>파일명이 규칙에 어긋난 것이 하나도 없는가</li>
+        <li>무음이거나 지나치게 짧은 파일이 없는가</li>
+        <li>클리핑(음량 초과로 소리가 깨진 것)된 파일이 없는가</li>
+        <li>같은 캐릭터의 파일들이 고른 음량인가</li>
+        <li>샘플레이트·비트뎁스가 요구 사양과 맞는가</li>
+        <li>무작위로 20개를 뽑아 실제로 들어봤는가</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="impl">
+  <div class="wrap">
+    <div class="kicker">08 — IMPLEMENTATION</div>
+    <h2>게임에 넣기</h2>
+    <p>파일을 넘겼다고 끝이 아닙니다. 대사가 게임 안에서 <em>어떻게 재생될지</em>도 설계해야 합니다.</p>
+
+    <h3>대사는 우선순위의 꼭대기에 있다</h3>
+    <p>시스템 변천사 자료에서 다룬 프라이오리티 개념이 여기서 실제로 쓰입니다. 대사는 대개 <b>가장 높은 우선순위</b>를 갖습니다. 정보를 나르는 소리라, 놓치면 플레이어가 이야기를 따라갈 수 없기 때문입니다.</p>
+    <ul class="plain">
+      <li><b>덕킹</b> — 대사가 나오면 음악과 환경음이 자동으로 눌리도록 설정합니다. 낮추는 정도는 프로젝트마다 다르지만, 대사가 묻히지 않으면서 음악이 사라졌다는 인상은 주지 않는 선에서 잡습니다. 대사가 끝나면 원래대로 돌아옵니다.</li>
+      <li><b>중복 방지</b> — 대사 두 개가 겹치면 둘 다 안 들립니다. 하나가 재생 중이면 다음 것을 대기시키거나 취소하는 규칙이 필요합니다.</li>
+      <li><b>중역 확보</b> — 사람 목소리는 대체로 중역대에 정보가 몰려 있습니다. 음악과 효과음이 그 대역을 비워주면 대사가 훨씬 또렷해집니다. 톤 메이킹 가이드에서 다룬 대역 배분이 여기서 회수됩니다.</li>
+    </ul>
+
+    <h3>바크의 반복 문제</h3>
+    <p>NPC가 같은 말을 되풀이하면 금방 지겨워집니다. 이걸 다루는 표준적인 방법이 몇 가지 있죠.</p>
+    <div class="tbl-scroll">
+      <table>
+        <tbody><tr><th>방법</th><th>내용</th></tr>
+        <tr><td><b>변형 여러 개</b></td><td>같은 상황에 쓸 대사를 5~10개 녹음해 무작위로 재생. 미들웨어의 랜덤 컨테이너를 씁니다</td></tr>
+        <tr><td><b>최근 것 제외</b></td><td>방금 나온 대사는 당분간 다시 뽑지 않도록 설정. 무작위인데도 같은 게 연달아 나오는 상황을 막습니다</td></tr>
+        <tr><td><b>쿨다운</b></td><td>한 번 말한 뒤 일정 시간 동안 침묵. 계속 떠드는 NPC보다 가끔 말하는 NPC가 자연스럽습니다</td></tr>
+        <tr><td><b>거리 제한</b></td><td>멀리 있는 NPC의 혼잣말까지 다 들리면 소음이 됩니다. 일정 거리 안에서만 재생</td></tr>
+      </tbody></table>
+    </div>
+
+    <h3>자막과 맞추기</h3>
+    <p>대사와 자막이 어긋나면 바로 눈에 띕니다. 특히 접근성 면에서 중요한 부분이죠.</p>
+    <ul class="plain">
+      <li>자막 텍스트는 <em>실제로 녹음된 내용</em>과 일치해야 합니다. 현장에서 대사가 조금 바뀌었다면 자막도 고쳐야 합니다.</li>
+      <li>자막이 뜨는 타이밍과 사라지는 타이밍을 대사 길이에 맞춥니다.</li>
+      <li>청각에 어려움이 있는 플레이어를 위해 <em>누가 말하는지</em>를 표시하는 옵션을 고려하세요. 최근 게임에서는 화자 이름 표시가 표준에 가까워지고 있습니다.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="loc">
+  <div class="wrap">
+    <div class="kicker">09 — LOCALIZATION</div>
+    <h2>다국어 — 로컬라이제이션</h2>
+    <p class="lead">국산 게임은 대부분 여러 언어로 출시됩니다. 한국어로 녹음한 것을 영어·일본어·중국어로 다시 만들거나, 반대로 해외 게임의 한국어 더빙을 맡거나. <em>이 구조를 모르면 실무에서 곧바로 막힙니다.</em></p>
+
+    <h3>언어마다 길이가 다르다</h3>
+    <p>같은 뜻의 문장도 언어에 따라 길이가 달라집니다. 다국어 작업에서 가장 자주 부딪히는 문제죠.</p>
+    <div class="note"><strong>왜 문제가 되나</strong> — 캐릭터가 문을 여는 애니메이션이 3초인데 대사가 4초라면, 대사가 끝나기 전에 장면이 넘어갑니다. 원어에 딱 맞춰 만든 연출은 다른 언어에서 어긋나기 쉽죠.<br><br><b>해법</b> — ① 원어 녹음 단계에서 여유를 두기 ② 번역 단계에서 길이 제한을 명시하기 ③ 연출을 대사 길이에 반응하도록 만들기(가능하다면 가장 좋은 방법입니다).</div>
+
+    <h3>립싱크</h3>
+    <p>입 모양을 맞춰야 한다면 언어별로 어디까지 대응할지 미리 정해두세요.</p>
+    <ul class="plain">
+      <li><b>완전 립싱크</b> — 언어마다 입 모양 애니메이션을 새로 만듭니다. 비용이 가장 큽니다.</li>
+      <li><b>자동 생성</b> — 음성 파일을 분석해 입 모양을 자동으로 만드는 방식. 최근 대부분의 대형 프로젝트가 씁니다.</li>
+      <li><b>맞추지 않음</b> — 카메라가 멀거나 얼굴이 잘 안 보이는 게임에서는 굳이 맞추지 않기도 합니다. 판단의 문제입니다.</li>
+    </ul>
+
+    <h3>문화적 조정</h3>
+    <ul class="plain">
+      <li><b>존댓말 체계</b> — 한국어와 일본어에는 있고 영어에는 없습니다. 인물 관계를 어떤 말투로 드러낼지 번역 단계에서 정해야 합니다. 캐릭터 해석의 문제이기도 하죠.</li>
+      <li><b>고유명사 발음</b> — 판타지 용어는 언어마다 읽는 법이 달라질 수 있습니다. 전체 언어에 걸친 발음 기준표를 만들어두면 나중에 혼란이 줍니다.</li>
+      <li><b>연기 톤</b> — 같은 장면도 문화권에 따라 자연스럽다고 느끼는 연기의 강도가 다릅니다. 원어 연기를 그대로 흉내 낼지, 그 언어권에 맞게 조정할지 방침을 정하세요.</li>
+    </ul>
+
+    <div class="note"><strong>한국어 더빙의 특수 사정</strong> — 한국 게임 시장에서는 자막만 제공하고 음성은 원어로 두는 경우도 많습니다. 예산 문제이기도 하고 원어 연기를 선호하는 이용자층이 있기 때문이기도 합니다. 반대로 국산 게임의 한국어 음성은 기본으로 기대되는 요소입니다. 프로젝트가 어느 쪽인지에 따라 보이스 예산의 규모와 우선순위가 완전히 달라집니다.</div>
+  </div>
+</section>
+
+<section id="ai">
+  <div class="wrap">
+    <div class="kicker">10 — AI VOICE</div>
+    <h2>AI 음성과 권리</h2>
+    <p class="lead">이 주제는 지금 이 분야에서 가장 논쟁적인 영역입니다. 이 자료는 <em>어느 쪽이 옳다고 주장하지 않고</em>, 확인된 사실과 실무에서 알아야 할 사항을 정리합니다.</p>
+
+    <h3>무슨 일이 있었나</h3>
+    <p>미국의 배우·성우 노동조합 SAG-AFTRA가 2024년 7월부터 게임업계를 상대로 파업에 들어갔습니다. 임금 문제도 걸려 있었습니다. 다만 <b>파업의 직접적인 원인은 인공지능 하나였습니다.</b> 성우들의 목소리를 학습시켜 디지털 복제본을 만드는 일을 어떤 조건에서 허용할지 합의가 되지 않았기 때문입니다.</p>
+    <p>파업은 320일간 이어졌고, 2025년 7월 9일 새 협약이 <b>95.04% 찬성</b>으로 비준되며 끝났습니다. 협약의 주요 내용은 이렇습니다.</p>
+
+    <div class="tbl-scroll">
+      <table>
+        <tbody><tr><th>항목</th><th>내용</th></tr>
+        <tr><td><b>동의 요건</b></td><td>성우의 목소리·외모·움직임에 인공지능을 쓰려면 <em>사전에 서면으로 명확한 동의</em>를 받아야 합니다. 어떻게 쓸 것인지 구체적으로 설명해야 합니다.</td></tr>
+        <tr><td><b>공개 요건</b></td><td>디지털 복제본을 쓴다는 사실을 알려야 합니다.</td></tr>
+        <tr><td><b>파업 중 철회권</b></td><td>파업이 벌어지면 성우가 자기 복제본으로 새 대사를 만드는 일에 준 동의를 거둘 수 있습니다. 인공지능이 파업을 무력화하는 것을 막기 위한 조항입니다.</td></tr>
+        <tr><td><b>실시간 생성</b></td><td>게임 안에서 인공지능이 즉석으로 대사를 만들어내는 방식(플레이어와 대화하는 캐릭터 등)에는 최저 임금의 <em>7.5배</em>라는 높은 기준이 적용됩니다.</td></tr>
+        <tr><td><b>보수</b></td><td>비준 즉시 15.17% 인상, 이후 2025·2026·2027년 11월마다 3%씩 추가 인상.</td></tr>
+      </tbody></table>
+    </div>
+
+    <p class="dim">협약에 참여한 회사에는 액티비전, 일렉트로닉 아츠, 디즈니 캐릭터 보이시스, 인섬니악 게임즈, 워너브라더스 게임즈 등이 포함됩니다. 이 협약의 협상을 이끈 사람은 파이널 판타지 15와 콜 오브 듀티에 참여한 성우 세라 엘말레였습니다.</p>
+
+    <h3>이것이 왜 우리에게 중요한가</h3>
+    <p>SAG-AFTRA는 미국 노조라 한국 게임업계에 그대로 적용되지는 않습니다. 그런데도 알아둘 이유가 있죠.</p>
+    <ul class="plain">
+      <li><b>해외 퍼블리싱을 하면 만나게 됩니다</b> — 국산 게임이 북미에 나가면서 현지 성우를 쓸 때, 이 협약의 적용을 받습니다.</li>
+      <li><b>업계 기준이 되어가고 있습니다</b> — 미국 캘리포니아·뉴욕 등에서 관련 법률이 만들어지고 있고, 다른 나라도 비슷한 방향으로 움직이는 중입니다.</li>
+      <li><b>계약서에 반영해야 합니다</b> — 한국에서 녹음하더라도 "이 녹음물을 인공지능 학습에 쓸 것인가"를 계약서에 명시하지 않으면 나중에 분쟁이 생깁니다. 성우 입장에서도, 발주자 입장에서도 미리 정해두는 편이 안전합니다.</li>
+    </ul>
+
+    <h3>실무에서 지킬 것</h3>
+    <div class="note"><strong>세 가지 원칙</strong><br>
+    ① <b>동의 없이 쓰지 않는다</b> — 녹음물을 인공지능 학습에 쓰거나 목소리를 합성하려면 반드시 사전 동의를 받으세요. "계약서에 안 적혀 있으니 괜찮다"는 판단은 위험합니다.<br>
+    ② <b>범위를 구체적으로 적는다</b> — "AI 활용 가능" 같은 뭉뚱그린 문구가 아니라, 어떤 게임에 어떤 용도로 얼마 동안 쓸 것인지 적어야 서로 안전합니다.<br>
+    ③ <b>대가를 별도로 정한다</b> — 녹음료와 별개의 문제입니다. 한 번 녹음한 목소리가 무한히 재사용된다면 그에 상응하는 조건이 있어야 합니다.</div>
+
+    <h3>기술 자체는 어디에 쓰이고 있나</h3>
+    <p>논쟁과 별개로 인공지능 음성이 실제로 쓰이는 영역이 있습니다. 판단하려면 현황부터 알아야겠죠.</p>
+    <ul class="plain">
+      <li><b>임시 음성</b> — 개발 중에 연출 타이밍을 확인하려고 임시로 넣는 대사. 최종본에는 사람 목소리가 들어갑니다. 현재 가장 널리 받아들여지는 용도입니다.</li>
+      <li><b>대량 단역</b> — 군중의 웅성거림처럼 개별 연기가 필요 없는 소리.</li>
+      <li><b>실시간 대화</b> — 플레이어와 자유롭게 대화하는 캐릭터. 미리 녹음할 수 없는 구조라 인공지능이 필요합니다. 바로 그래서 권리 문제가 가장 첨예한 영역이기도 하죠.</li>
+      <li><b>합의된 음성 라이선스</b> — 성우가 자기 목소리의 디지털 복제본 사용을 명시적으로 허락하고 대가를 받는 방식. SAG-AFTRA도 일부 업체와 이런 형태의 협약을 맺은 사례가 있습니다.</li>
+    </ul>
+
+    <p class="uncertain">확실하지 않음 표기 — 이 장의 내용은 변화가 매우 빠른 영역입니다. 위 사실들은 2025년 7월 비준 시점을 기준으로 확인된 것이며, 이후 상황은 달라졌을 수 있습니다. 실제 계약이나 프로젝트 판단이 필요할 때는 반드시 최신 정보를 확인하세요. 필요하면 법률 자문도 받으시고요. 또한 한국의 법·관행은 미국과 다르므로 그대로 적용할 수 없습니다.</p>
+  </div>
+</section>
+
+<section id="roles">
+  <div class="wrap">
+    <div class="kicker">11 — FOR YOUR TRACK</div>
+    <h2>두 과정에서의 쓰임</h2>
+    <p>보이스는 사운드 디자인 쪽 업무로 분류됩니다. 그래도 작곡 과정에서 알아둬야 할 이유가 분명히 있죠.</p>
+
+    <div class="roles">
+      <div class="role sd">
+        <div class="rt">게임사운드디자인 과정</div>
+        <ul class="plain" style="margin-left:16px">
+          <li><b>보이스는 오디오 팀의 가장 큰 물량</b> — 대형 프로젝트에서 파일 수로 따지면 대사가 압도적입니다. 이 물량을 관리하는 능력이 곧 실무 역량입니다.</li>
+          <li><b>디렉팅은 배울 수 있는 기술</b> — 타고난 감각의 문제로 여기기 쉽습니다. 그런데 이 자료에서 다룬 것들은 전부 익힐 수 있는 방법이죠. 원하는 결과를 말하는 대신 인물이 처한 상황을 설명하는 것부터 연습해보세요.</li>
+          <li><b>대사 믹스는 다른 규칙을 따른다</b> — 명료함이 최우선이고, 프라이오리티 꼭대기에 있으며, 다른 소리들이 자리를 비켜줘야 합니다.</li>
+          <li><b>사람을 대하는 일이라는 점</b> — 성우의 컨디션을 살피고, 잘 나온 것을 말해주고, 무리하지 않게 하는 것. 이것도 실력의 일부입니다.</li>
+        </ul>
+      </div>
+      <div class="role mu">
+        <div class="rt">게임음악작곡 과정</div>
+        <ul class="plain" style="margin-left:16px">
+          <li><b>음악은 대사에 자리를 내준다</b> — 시네마틱 장면에서 대사가 나오면 음악이 물러납니다. 이걸 알고 작곡하면 나중에 깎일 걱정 없이 곡을 쓸 수 있습니다. 대사 구간에는 멜로디를 비워두는 식으로요.</li>
+          <li><b>중역을 비우는 편곡</b> — 사람 목소리와 같은 대역에 멜로디가 몰려 있으면 둘 다 안 들립니다. 대사가 얹힐 곡이라면 편곡 단계에서 그 자리를 비워두세요.</li>
+          <li><b>감정 연출의 분담</b> — 어떤 장면에서는 음악이 감정을 이끌고, 어떤 장면에서는 연기가 이끕니다. 둘 다 밀어붙이면 서로를 방해합니다. 어느 쪽이 주도할지 연출팀과 미리 정하는 감각이 필요합니다.</li>
+          <li><b>보컬 곡이 들어간다면</b> — 게임 주제가나 삽입곡을 맡게 되면 가수 디렉팅이 필요합니다. 이 자료의 세션 운영과 디렉션 방법이 그대로 적용됩니다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="note"><strong>공통으로 남는 것</strong> — 다른 자료들이 "어떻게 만들 것인가"를 다뤘다면, 이 자료는 <em>"다른 사람과 어떻게 함께 만들 것인가"</em>를 다뤘습니다. 실무에서 오래 일하는 사람과 그렇지 않은 사람의 차이는 대개 기술보다 여기서 갈립니다.</div>
+  </div>
+</section>
+
+<section id="practice">
+  <div class="wrap">
+    <div class="kicker">12 — PRACTICE</div>
+    <h2>실습</h2>
+
+    <h3>실습 A — 캐릭터 프로필과 대본 만들기</h3>
+    <p>가상의 게임 인물 한 명을 정해 이 자료의 항목대로 캐릭터 프로필을 작성하세요. 그다음 그 인물의 대사 20줄을 네 갈래(시네마틱·배틀·바크·시스템)로 나눠 대본으로 만듭니다. 파일명 규칙과 상황 설명을 반드시 포함하세요.<br>
+    <span class="dim">무엇을 얻나 — 준비가 세션의 절반이라는 것을 직접 확인하게 됩니다. 그리고 이 대본은 이후 실습의 재료가 됩니다.</span></p>
+
+    <h3>실습 B — 디렉션 바꿔 말하기</h3>
+    <p>실습 A의 대사 중 다섯 줄을 골라, 각각에 대해 "결과를 말하는 디렉션"과 "상황을 주는 디렉션"을 한 쌍씩 써보세요. 그리고 동료에게 두 버전으로 각각 디렉션해 녹음해보고 결과를 비교합니다.<br>
+    <span class="dim">무엇을 얻나 — 같은 대사가 디렉션에 따라 얼마나 달라지는지 자기 귀로 확인하게 됩니다. 이 자료에서 가장 중요한 실습입니다.</span></p>
+
+    <h3>실습 C — 세션 계획서 작성</h3>
+    <p>대사 300줄(일반 240줄, 에포트 60줄)을 녹음한다고 가정하고 세션 계획서를 만드세요. 소요 시간 계산, 녹음 순서, 휴식 배치, 준비물 목록, 그리고 예상되는 문제와 대응책까지 포함합니다.<br>
+    <span class="dim">무엇을 얻나 — 스튜디오 예약을 몇 시간으로 잡아야 하는지 스스로 계산할 수 있게 됩니다.</span></p>
+
+    <h3>실습 D — 편집과 납품</h3>
+    <p>직접 녹음한(또는 동료와 함께 녹음한) 대사 30줄을 편집해 납품 형태로 정리하세요. 립스맥 제거, 숨소리 선별, 레벨 정리, 파일명 규칙 적용, 그리고 납품 명세서(파일 개수·사양·특이사항)까지 작성합니다.<br>
+    <span class="dim">무엇을 얻나 — 개별 편집 기술보다 일관성과 관리가 중요하다는 감각을 얻습니다.</span></p>
+
+    <h3>실습 E — 바크 시스템 설계</h3>
+    <p>상점 NPC 하나를 가정하고 인사말 8종을 녹음한 뒤, 미들웨어(Wwise 또는 FMOD)에서 무작위 재생·최근 것 제외·쿨다운·거리 제한을 설정하세요. 실제로 여러 번 지나다니며 반복이 거슬리는지 확인합니다.<br>
+    <span class="dim">무엇을 얻나 — 대사를 잘 녹음하는 것과 잘 재생되게 만드는 것이 다른 일임을 알게 됩니다.</span></p>
+
+    <div class="note"><strong>포트폴리오로 쓰는 법</strong> — 실습 B의 비교 녹음과 실습 E의 구현 결과는 <em>보이스 작업을 해봤다는 증거</em>가 됩니다. 국내에서 보이스 디렉팅 경험이 있는 신입은 드물기 때문에, 규모가 작더라도 실제로 해봤다는 사실 자체가 차별점이 됩니다. 세션 계획서(실습 C)까지 함께 보여주면 "이 사람은 준비할 줄 안다"는 인상을 줄 수 있습니다.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><strong>참고 자료 및 출처</strong> — 아래 공개 자료를 기반으로 정리했습니다. 현장 조언은 해당 매체에 실린 실무자·성우의 발언을 재정리한 것입니다.</p>
+    <ul style="margin-left:18px">
+      <li>Fryda Wolff, "Directing Voice Over: Best Practices" — 성우 본인이 쓴 디렉터용 조언. "유용한 정보로 디렉션하라"(파란색 예시), 고함·에포트는 세션 마지막에, 상대 대사 재생 또는 디렉터가 상대역 읽어주기, 전투 콜아웃은 상대역 불필요</li>
+      <li>DB Cooper, "Sounding Real: Directing VO for Games" (Designing Sound) — 세션 초반엔 단문으로 톤 잡기, 조정은 대사 끝에서, 실제 사람은 구절 단위로 말한다는 점, 실수·정정·멈춤을 허용할 것</li>
+      <li>Alexander Brandon, "Some simple math for figuring out your game's audio budget" (Game Developer) — 좋은 디렉터가 붙었을 때 시간당 80~100줄, ADR은 시간당 50줄 이하. 저자는 언리얼·데우스 엑스의 오디오 담당이자 게임 오디오 네트워크 길드 이사</li>
+      <li>GameDev.net 포럼 — 한 줄당 2~3테이크를 전제로 시간당 100줄을 잡는다는 현업 증언</li>
+      <li>Voice Acting Club, "Indie Rate Guide" — 고함·비명·으르렁거림이 이어지는 세션은 성우가 원하지 않는 한 한 번에 2시간을 넘기지 말 것</li>
+      <li>Muziument, "Game Voice Directing Guide" — 세션 시간의 15~20%를 여유분으로 확보. 단일 출처이므로 참고 수준으로 볼 것</li>
+      <li>Naturally RP, "How to Direct Voice Actors in Video Games" — 대본에 지시를 과하게 넣으면 성우의 선택지가 줄어든다는 점, 세션 시간을 넉넉히 잡을 것, 세션 시작 시 전체 흐름 공유</li>
+      <li>Somatone Interactive, "Demystifying the Video Game Voice-Over Process" — 세션 중 좋은 테이크를 기록해 편집자에게 넘기는 실무</li>
+      <li>Gamedeveloper.com, "Directing the Voice-over Actor: Tips for Better Communication" — 사전 맥락 제공의 중요성, 디렉터도 열려 있어야 한다는 점</li>
+      <li>Clearly Local, "5 Tips to Mastering the Art of Voiceover in Video Games" — 캐릭터 프로필(이름·성별·배경·나이·성격) 작성의 필요성</li>
+      <li>GetBlend, "5 Expert Tips For Your Next Video Game Voice Over Project" — 세션은 보통 2~4시간, 마이크가 옷·장신구 소리를 잡아내므로 복장 주의, 기존 언어판을 참고 자료로 활용</li>
+      <li>Bernie O'Duffy, "Top Tips for Voice Recordings" — 팬데믹 이후 원격 녹음의 일반화와 그 어려움(좁은 부스의 더위, 주변 소음, 시차)</li>
+      <li>SAG-AFTRA 공식 발표(2025년 7월 9일) 및 Variety·Deadline·Decrypt 보도 — 2025 Interactive Media Agreement 비준(95.04% 찬성), 320일 파업 종료, 인공지능 디지털 복제본의 동의·공개 요건, 파업 중 동의 철회권, 실시간 생성 시 최저 기준 7.5배, 보수 15.17% 인상 및 연 3% 추가 인상, 협상위원장 세라 엘말레</li>
+      <li>Davis+Gilbert LLP, "SAG-AFTRA's New Video Game Agreement" / Frankfurt Kurnit, "Inside the New SAG-AFTRA Interactive Media Agreement" — 협약의 인공지능 관련 조항 해설</li>
+    </ul>
+    <p style="margin-top:24px">엠나인아카데미 게임사운드디자인 · 게임음악작곡 과정 수강생용 학습자료 · 연계: 게임 오디오 시스템의 변천사 · 톤 메이킹 가이드 · 미디 제작 레시피북</p>
+  </div>
+</footer>
+
+<button id="toTop" type="button" aria-label="문서 맨 위로 이동">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M12 19V6"></path><path d="M5 12l7-7 7 7"></path>
+  </svg>
+  <span class="lbl">맨 위로</span>
+</button>
+<script>
+(function(){
+  var btn = document.getElementById('toTop');
+  if(!btn) return;
+  var ticking = false;
+  function update(){
+    if(window.scrollY > 300){ btn.classList.add('show'); }
+    else { btn.classList.remove('show'); }
+    ticking = false;
+  }
+  window.addEventListener('scroll', function(){
+    if(!ticking){ window.requestAnimationFrame(update); ticking = true; }
+  }, {passive:true});
+  btn.addEventListener('click', function(){
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({top:0, behavior: reduce ? 'auto' : 'smooth'});
+  });
+  update();
+})();
+</script>
+
+
+
+</body></html>
